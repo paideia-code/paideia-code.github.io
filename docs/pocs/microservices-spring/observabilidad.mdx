@@ -1,0 +1,191 @@
+---
+title: Observabilidad
+description: Visión general de la observabilidad.
+sidebar_position: 1
+---
+
+# Observabilidad
+
+Este documento describe la observabilidad que está implementada actualmente en el
+POC `paideia-poc-microservices-spring`. La configuración está repartida entre
+`docker/compose.yml`, `docker/prometheus/prometheus.yml`, el repositorio de
+configuración de Spring Cloud y los `pom.xml` de los servicios.
+
+## Diagrama
+
+<iframe
+  frameborder="0"
+  style={{ width: "100%", height: "383px" }}
+  src="https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&layers=1&nav=1&title=paideia-poc-microservices-spring%20-%20Observabilidad&dark=auto#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1UN0_h1osU4rXEKXGXWQylgQhK6rcrOvh%26export%3Ddownload"
+></iframe>
+
+## Arquitectura y flujo de telemetría
+
+El POC concentra el stack en un único contenedor:
+
+```text
+Servicios Spring Boot
+  ├─ métricas Micrometer/Prometheus ──(scrape cada 5 s)──> Prometheus
+  ├─ trazas OTLP/HTTP :4318/v1/traces ───────────────────> OpenTelemetry Collector
+  └─ logs OTLP/HTTP :4318/v1/logs ───────────────────────> OpenTelemetry Collector
+
+OpenTelemetry Collector ──> Tempo (trazas)
+                         ──> Loki (logs)
+Prometheus, Tempo y Loki ──> Grafana
+```
+
+La imagen configurada es `grafana/otel-lgtm:0.33.0`. Esta imagen reúne el
+OpenTelemetry Collector, Prometheus, Tempo, Loki y Grafana en un solo
+contenedor; no hay servicios Docker separados para cada backend. En el POC,
+Grafana tiene configuradas las fuentes de datos `prometheus` y `loki` que usan
+los dashboards provisionados. El flujo de trazas llega al backend Tempo
+incluido en la imagen.
+
+Aunque la imagen también puede incluir componentes adicionales del stack LGTM,
+el POC no configura perfiles ni los documenta como una señal activa: el alcance
+actual es métricas, trazas y logs.
+
+## Métricas
+
+El gateway y los seis servicios de negocio incluyen:
+
+- `spring-boot-starter-actuator`.
+- `micrometer-registry-prometheus`.
+- Exposición de los endpoints `health`, `info`, `metrics` y `prometheus`,
+  mediante la configuración central de `platform/config-repo/application.yml`.
+
+Prometheus usa el archivo montado desde
+`docker/prometheus/prometheus.yml`, con `scrape_interval: 5s`. Cada job hace
+scrape de `/actuator/prometheus` contra el puerto publicado del proceso:
+
+| Job | Objetivo |
+| --- | --- |
+| `api-gateway` | `host.docker.internal:8080` |
+| `course-service` | `host.docker.internal:8081` |
+| `enrollment-service` | `host.docker.internal:8082` |
+| `payment-service` | `host.docker.internal:8083` |
+| `user-service` | `host.docker.internal:8084` |
+| `content-service` | `host.docker.internal:8085` |
+| `notification-service` | `host.docker.internal:8086` |
+
+Por tanto, las métricas no se exportan por OTLP: `management.otlp.metrics.export`
+está deshabilitado y Prometheus las recoge mediante pull. Las métricas HTTP
+que utilizan los dashboards son las series Micrometer
+`http_server_requests_seconds_count` y `http_server_requests_seconds_sum`.
+
+## Trazas
+
+Los módulos incluyen `spring-boot-starter-opentelemetry`. La configuración
+central establece:
+
+- endpoint OTLP/HTTP: `${OTEL_TRACES_ENDPOINT}`;
+- valor usado en Docker: `http://otel-lgtm:4318/v1/traces`;
+- probabilidad de muestreo: `1.0`.
+
+El contenedor `otel-lgtm` publica también `4317` (OTLP/gRPC), pero los servicios
+del compose están configurados explícitamente para enviar trazas por HTTP en
+`4318`. La imagen recibe las trazas mediante el Collector y las almacena en
+Tempo para su consulta desde Grafana.
+
+## Logs y correlación
+
+La configuración central declara exportación OTLP/HTTP de logs hacia
+`${OTEL_LOGS_ENDPOINT}`, con el valor Docker
+`http://otel-lgtm:4318/v1/logs` y un `schedule-delay` de `1s`.
+
+Los seis servicios de negocio (`course`, `enrollment`, `payment`, `user`,
+`content` y `notification`) tienen además un `logback-spring.xml` que conserva
+la salida a consola y añade `OpenTelemetryAppender`. En `user-service` se ve
+explícitamente la instalación del appender con el bean `OpenTelemetry` durante
+el arranque. El patrón de logging añade `traceId` y `spanId` a los mensajes.
+
+El `api-gateway` sí incluye el starter de OpenTelemetry y recibe la
+configuración central, pero no tiene el `logback-spring.xml` de los servicios
+de negocio. No se debe asumir una configuración de appender idéntica para el
+gateway.
+
+Los logs exportados llegan al Collector y de ahí a Loki. El dashboard
+**Flujo de inscripciones** consulta la fuente `loki`, filtra por
+`service_name`, correlaciona por `trace_id` y muestra eventos que contienen
+`event=`. La consulta incluida actualmente cubre `api-gateway`,
+`course-service`, `enrollment-service`, `payment-service` y
+`notification-service`; `user-service` y `content-service` no aparecen en esa
+consulta concreta.
+
+## Puertos y URLs útiles
+
+Con `docker/compose.yml` levantado, las URLs publicadas por el stack de
+observabilidad son:
+
+| Uso | URL |
+| --- | --- |
+| Grafana | `http://localhost:3000` |
+| Prometheus | `http://localhost:9090` |
+| OTLP/gRPC | `localhost:4317` |
+| OTLP/HTTP | `localhost:4318` |
+
+Tempo y Loki forman parte del contenedor `otel-lgtm`, pero el compose no
+publica sus puertos de consulta (`3200` y `3100`). Se consultan a través de
+Grafana y sus fuentes de datos provisionadas, no como URLs independientes del
+host.
+
+Los endpoints de métricas de cada aplicación están disponibles, cuando el
+servicio correspondiente está arrancado, en:
+
+```text
+http://localhost:<puerto>/actuator/prometheus
+```
+
+con `<puerto>` entre `8080` y `8086` según la tabla de jobs anterior.
+
+## Dashboards provisionados
+
+El compose monta `docker/grafana/dashboards` en el directorio de provisioning
+del contenedor y monta `dashboards-provisioning.yml`. Ese provider se llama
+**Paideia Dashboards**, usa la carpeta **Paideia**, comprueba cambios cada 30
+segundos y carga los JSON desde el volumen montado.
+
+Actualmente se provisionan:
+
+- **Disponibilidad de servicios**: consulta Prometheus con `up`.
+- **Flujo de inscripciones**: usa Prometheus para peticiones por segundo,
+  errores HTTP y latencia media del `api-gateway`, y Loki para logs
+  correlacionados por `trace_id`.
+
+Los dashboards dependen de los nombres de jobs y de las fuentes de datos
+presentes en los JSON (`prometheus` y `loki`); no constituyen una cobertura
+automática de todos los endpoints de negocio.
+
+## Cómo levantarlo
+
+Desde la raíz del POC:
+
+```powershell
+# Solo infraestructura, incluyendo observabilidad (modo Docker + Maven)
+docker compose -f docker/compose.yml up -d postgres mongo otel-lgtm keycloak
+
+# O todo el sistema en contenedores
+docker compose -f docker/compose.yml --profile platform --profile apps up -d
+```
+
+En el modo Docker + Maven, los servicios deben iniciarse después en terminales
+separadas con los comandos `spring-boot:run` indicados en el README del POC.
+Cuando estén disponibles, abrir `http://localhost:3000` para consultar
+Grafana y los dashboards de la carpeta **Paideia**.
+
+## Límites y alcance actual
+
+- Es un stack local de desarrollo/demostración: toda la observabilidad vive en
+  un único contenedor con un volumen `otel_lgtm_data`.
+- Solo Prometheus hace scraping explícito, y solo contra los siete targets
+  definidos en `prometheus.yml`; no hay discovery dinámico de targets.
+- La configuración central exporta trazas y logs por OTLP/HTTP, pero el compose
+  no declara autenticación, TLS, retención ni alta disponibilidad.
+- Los dashboards existentes son parciales: están centrados en disponibilidad,
+  tráfico/errores/latencia del gateway y logs del flujo de inscripciones.
+- No hay en esta configuración alertas, reglas de recording, SLOs, perfiles,
+  métricas de infraestructura de Docker ni instrumentación de bases de datos
+  como señales independientes.
+- Los nombres de servicios, jobs y datasources están acoplados a los archivos
+  actuales de provisioning; cambiar esos nombres requiere actualizar los
+  dashboards.

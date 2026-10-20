@@ -1,0 +1,53 @@
+---
+title: Estructura del portal
+sidebar_position: 2
+---
+
+# Estructura del portal
+
+El portal separa el contenido documental de la aplicación React y de los archivos generados. La estructura principal es:
+
+```text
+paideia-code.github.io/
+├── docs/
+│   ├── portal/
+│   ├── theory/
+│   ├── templates/
+│   ├── libraries/
+│   ├── pocs/
+│   └── projects/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── theme/
+│       └── MDXComponents.tsx
+├── static/
+├── docusaurus.config.ts
+├── sidebars*.ts
+├── package.json
+└── tsconfig.json
+```
+
+## Carpetas y archivos principales
+
+| Ruta | Responsabilidad |
+| --- | --- |
+| `docs/` | Contenido documental escrito en Markdown o MDX. Cada carpeta principal corresponde a una sección del portal. |
+| `docs/projects/paideia-code-site/` | Documentación sobre la propia estructura, funcionamiento y operación del portal. |
+| `docs/theory/` | Teoría y material de aprendizaje. Es la instancia de docs principal de Docusaurus. |
+| `docs/templates/` | Templates reutilizables. |
+| `docs/libraries/` | Documentación de librerías. |
+| `docs/pocs/` | Pruebas de concepto. |
+| `docs/projects/` | Proyectos documentados. |
+| `src/components/` | Componentes React propios, como `ConceptCard`, `Quiz` y `DrawioIframe`. |
+| `src/pages/` | Páginas especiales fuera de las instancias de docs, como la homepage y la demo de componentes. |
+| `src/theme/MDXComponents.tsx` | Registro global que hace disponibles los componentes propios en los documentos MDX. |
+| `static/` | Assets estáticos que se copian al sitio final sin pasar por el bundler. |
+| `docusaurus.config.ts` | Configuración general: URL, `baseUrl`, rutas, plugins, tema y navbar. |
+| `sidebars*.ts` | Configuración de navegación lateral para cada instancia de documentación. |
+| `package.json` | Scripts del proyecto y dependencias de Docusaurus, React y TypeScript. |
+| `tsconfig.json` | Configuración del compilador TypeScript. |
+| `build/` | Salida generada por `npm run build`; no es código fuente. |
+| `.docusaurus/` | Caché y metadatos generados por Docusaurus; no es código fuente. |
+
+`build/` y `.docusaurus/` pueden eliminarse y regenerarse. Los cambios de contenido deben hacerse en `docs/`, `src/`, `static/` o en los archivos de configuración, nunca editando directamente esas carpetas generadas.

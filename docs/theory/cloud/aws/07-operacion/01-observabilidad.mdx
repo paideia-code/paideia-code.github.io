@@ -1,0 +1,62 @@
+﻿---
+title: "Observabilidad en AWS"
+description: "Prácticas y servicios para conocer el estado y comportamiento de un sistema."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# Observabilidad en AWS
+
+
+> **🧭 En una mirada**
+> - **Qué es:** prácticas y servicios para conocer el estado y comportamiento de un sistema.
+> - **Por qué importa:** permite detectar, diagnosticar y aprender de fallos con evidencia.
+> - **Cómo funciona:** métricas, logs, trazas y auditoría se correlacionan con alarmas y dashboards.
+> - **Para qué se usa:** operar servicios, proteger SLOs y reducir el tiempo de recuperación.
+
+## CloudWatch
+
+- **Logs**: eventos de aplicaciones y servicios.
+- **Metrics**: valores agregados por periodo.
+- **Alarms**: acciones o notificaciones ante umbrales.
+- **Dashboards**: visión operativa.
+- **Logs Insights**: consultas sobre logs.
+
+## CloudTrail
+
+Registra llamadas a APIs de AWS. Úsalo para saber quién cambió un recurso, desde dónde y cuándo.
+
+## X-Ray y OpenTelemetry
+
+Ayudan a seguir una solicitud entre componentes distribuidos. En Paideia, las trazas deberían conservar un correlation ID y propagarse entre gateway, servicios y consumidores de eventos.
+
+## Qué medir
+
+- Latencia p50, p95 y p99.
+- Tasa de errores.
+- Saturación de CPU y memoria.
+- Throughput.
+- Longitud y antigüedad de colas.
+- Conexiones a bases de datos.
+- Coste y uso.
+
+## 🧩 Señales y propósito
+
+| Señal | Responde a |
+|---|---|
+| Logs | ¿Qué ocurrió en una solicitud concreta? |
+| Métricas | ¿Con qué frecuencia o intensidad ocurre? |
+| Trazas | ¿Dónde se consume el tiempo entre servicios? |
+| Alarmas | ¿Cuándo debemos actuar? |
+
+Diseña la observabilidad junto con la aplicación. En Paideia, un `correlationId` común entre gateway, servicios y eventos será más útil que muchos logs aislados.
+
+Una métrica sin umbral, contexto o acción asociada no constituye una alerta útil.
+
+## ⚠️ Errores frecuentes
+
+- Registrar contraseñas, tokens o datos personales.
+- Crear alarmas sobre métricas que no representan impacto de usuario.
+- No configurar retención de logs.
+- Tener logs sin timestamp, nivel, servicio o correlation ID.
+

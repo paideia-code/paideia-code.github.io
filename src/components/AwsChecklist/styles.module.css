@@ -1,0 +1,14 @@
+.checklist {
+  background: var(--pc-surface);
+  border: 1px solid var(--pc-border);
+  border-radius: var(--ifm-global-radius);
+  margin: 2rem 0;
+  padding: 1.25rem;
+}
+
+.header { align-items: baseline; display: flex; gap: 1rem; justify-content: space-between; }
+.header h2 { margin: 0; }
+.progress { color: var(--pc-text-muted); font-family: var(--ifm-font-family-monospace); font-size: 0.8rem; }
+.items { list-style: none; margin: 1rem 0 0; padding: 0; }
+.item { align-items: baseline; cursor: pointer; display: flex; gap: 0.7rem; padding: 0.55rem 0; }
+.item input { accent-color: var(--pc-primary); block-size: 1.1rem; inline-size: 1.1rem; }

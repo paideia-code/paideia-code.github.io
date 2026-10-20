@@ -1,0 +1,42 @@
+---
+title: Desarrollo local
+sidebar_position: 5
+---
+
+# Desarrollo local
+
+Necesitas Node.js 20 o superior y npm. Desde la carpeta local del proyecto, ejecuta:
+
+```bash
+npm install
+npm run start
+npm run typecheck
+npm run clear
+npm run build
+npm run serve
+```
+
+## Arrancar el portal
+
+`npm run start` inicia el servidor de desarrollo con recarga en vivo. La URL local habitual es `http://localhost:3000/`, porque la configuración define `baseUrl: '/'`. Usa esa ruta raíz al probar enlaces.
+
+## Diferencias entre comandos
+
+- `npm run start`: desarrollo interactivo y recompilación rápida.
+- `npm run build`: compilación de producción en `build/`.
+- `npm run serve`: sirve localmente la salida ya generada en `build/`; no recompila los cambios.
+- `npm run typecheck`: comprueba los tipos TypeScript sin generar JavaScript.
+- `npm run clear`: elimina cachés y artefactos de Docusaurus, incluido `.docusaurus/`.
+
+## Comprobar una página MDX
+
+1. Crea o modifica un documento dentro de la instancia correspondiente.
+2. Ejecuta `npm run start` y abre la ruta con el `baseUrl` correcto.
+3. Comprueba el título, los enlaces internos, el sidebar y cualquier componente interactivo.
+4. Si usaste un componente global, confirma que no necesita un import y revisa la consola del navegador.
+
+## Errores de build
+
+Ante un error, lee primero la ruta y la línea indicadas por Docusaurus. Comprueba el front matter, la sintaxis MDX, los corchetes de los arrays y las props de los componentes. Después ejecuta `npm run clear` y vuelve a probar. Si el error es de TypeScript, ejecuta `npm run typecheck` para aislarlo.
+
+`.docusaurus/` y `build/` son carpetas generadas. No edites su contenido ni lo uses como fuente: se regeneran con `clear`, `start` o `build`.

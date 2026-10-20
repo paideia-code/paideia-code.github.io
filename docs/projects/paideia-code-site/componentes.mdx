@@ -1,0 +1,118 @@
+---
+title: Componentes propios
+sidebar_position: 4
+---
+
+# Componentes propios
+
+Un componente React es una pieza reutilizable de interfaz definida como una función que recibe datos y devuelve elementos para renderizar. Esos datos se llaman **props**. En este portal, los componentes propios están registrados desde `src/theme/MDXComponents.tsx`, por lo que son globales: pueden usarse en cualquier archivo MDX sin escribir imports.
+
+No es necesario ni recomendable modificar componentes internos de Docusaurus para crear componentes propios. Añade el componente en `src/components/` y regístralo en el mapa global cuando deba estar disponible desde MDX.
+
+## `ConceptCard`
+
+### Propósito
+
+Presenta un concepto destacado dentro de una tarjeta con etiqueta visual.
+
+### Props principales
+
+| Prop | Tipo | Descripción |
+| --- | --- | --- |
+| `title` | `string` | Título requerido de la tarjeta. |
+| `type` | `definicion \| principio \| patron \| advertencia` | Tipo visual; por defecto `definicion`. |
+| contenido hijo | `ReactNode` | Explicación que aparece en el cuerpo. |
+
+### Ejemplo MDX
+
+```mdx
+<ConceptCard title="Idempotencia" type="principio">
+  Repetir una operación produce el mismo efecto que ejecutarla una sola vez.
+</ConceptCard>
+```
+
+Úsalo para definiciones, principios, patrones o advertencias que deban destacarse del texto corriente.
+
+## `Quiz`
+
+### Propósito
+
+Renderiza una pregunta interactiva con opciones, validación de la respuesta y explicación opcional.
+
+### Props principales
+
+| Prop | Tipo | Descripción |
+| --- | --- | --- |
+| `question` | `string` | Pregunta que se muestra al lector. |
+| `options` | `{text: string; correct?: boolean}[]` | Opciones disponibles; marca la correcta con `correct: true`. |
+| `explanation` | `string` opcional | Explicación que aparece después de comprobar. |
+
+### Ejemplo MDX
+
+```mdx
+<Quiz
+  question="¿Qué formato admite componentes React?"
+  options={[
+    {text: 'MDX', correct: true},
+    {text: 'Solo texto plano'},
+  ]}
+  explanation="MDX combina Markdown con JSX y permite usar componentes."
+/>
+```
+
+Úsalo para comprobar comprensión después de una explicación breve, no como sustituto de una evaluación completa.
+
+## `DrawioIframe`
+
+### Propósito
+
+Inserta un diagrama publicado por draw.io dentro de un iframe y ofrece un enlace para abrirlo aparte.
+
+### Props principales
+
+| Prop | Tipo | Descripción |
+| --- | --- | --- |
+| `src` | `string` | URL requerida del visor o diagrama. |
+| `title` | `string` opcional | Título accesible del iframe; por defecto `Diagrama`. |
+| `height` | `number` opcional | Alto del iframe en píxeles; por defecto `600`. |
+
+### Ejemplo MDX
+
+```mdx
+<DrawioIframe
+  src="https://viewer.diagrams.net/?url=URL_CODIFICADA_DEL_DIAGRAMA"
+  title="Flujo de despliegue"
+  height={500}
+/>
+```
+
+Úsalo cuando un diagrama sea más claro que una lista o un párrafo. Verifica siempre que el recurso sea accesible para los lectores y evita poner secretos en la URL.
+
+## `AwsMeta`
+
+### Propósito
+
+Muestra etiquetas visuales para certificar, nivel, tipo de contenido y servicio en documentos de la ruta AWS. Úsalo justo después del front matter y antes del título o del contenido principal.
+
+### Ejemplo MDX
+
+```mdx
+<AwsMeta certs={['CLF-C02', 'SAA-C03']} level="básico" type="concepto" service="Amazon S3" />
+```
+
+## `AwsChecklist`
+
+### Propósito
+
+Presenta una lista de preparación o práctica con casillas accesibles y progreso. El estado se mantiene mientras la página está abierta y no se persiste todavía.
+
+### Ejemplo MDX
+
+```mdx
+<AwsChecklist
+  title="Preparación segura"
+  items={['Activar MFA.', 'Crear alertas de coste.', 'Definir limpieza de recursos.']}
+/>
+```
+
+Usa `AwsMeta` en todos los documentos AWS y reserva `AwsChecklist` para pasos que el lector pueda completar de forma verificable.

@@ -1,0 +1,42 @@
+﻿---
+title: "Amazon EKS"
+description: "Kubernetes gestionado para ejecutar y operar workloads en AWS."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="avanzado" type="concepto" />
+
+# Amazon EKS
+
+
+> **🧭 En una mirada**
+> - **Qué es:** Kubernetes gestionado para ejecutar y operar workloads en AWS.
+> - **Por qué importa:** aporta portabilidad y ecosistema, pero añade complejidad operativa.
+> - **Cómo funciona:** AWS gestiona el control plane; el equipo configura workloads, red, identidad y nodos.
+> - **Para qué se usa:** plataformas Kubernetes justificadas por requisitos técnicos u organizativos.
+
+## Qué es
+
+Kubernetes gestionado por AWS. AWS gestiona el control plane según el modelo elegido, pero el equipo sigue gestionando manifests, workloads, policies, red, observabilidad y costes de los nodos o compute.
+
+## Cuándo estudiarlo
+
+Después de dominar:
+
+- Kubernetes local.
+- Docker e imágenes.
+- VPC y balanceadores.
+- IAM y roles para service accounts.
+- ECS/Fargate como alternativa más sencilla.
+
+## Conceptos AWS específicos
+
+- EKS cluster.
+- Managed node groups o Fargate profiles.
+- ECR.
+- AWS Load Balancer Controller.
+- IAM Roles for Service Accounts.
+- VPC CNI.
+- CloudWatch Container Insights.
+
+EKS no es un requisito para aprender AWS ni siempre es la opción más simple para microservicios. Debe justificarse por requisitos de Kubernetes, portabilidad o plataforma.
+

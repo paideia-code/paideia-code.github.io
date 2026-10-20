@@ -1,0 +1,57 @@
+.card {
+  --concept-color: var(--pc-primary);
+  border: 1px solid var(--pc-border);
+  border-left: 4px solid var(--concept-color);
+  border-radius: var(--ifm-global-radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: var(--ifm-spacing-vertical);
+  background-color: var(--pc-surface);
+  box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.definicion {
+  --concept-color: var(--pc-primary);
+}
+
+.principio {
+  --concept-color: var(--pc-accent);
+}
+
+.patron {
+  --concept-color: var(--pc-primary);
+}
+
+.advertencia {
+  --concept-color: var(--pc-accent);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--pc-text);
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: var(--pc-bg);
+  background-color: var(--concept-color);
+}
+
+.body > :last-child {
+  margin-bottom: 0;
+}

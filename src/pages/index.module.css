@@ -1,0 +1,317 @@
+.heroBanner {
+  border-bottom: 1px solid var(--pc-border);
+  padding: 7rem 0 6rem;
+  background-image: var(--hero-image-light);
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: min(48%, 40rem) auto;
+}
+
+[data-theme='dark'] .heroBanner {
+  background-image: var(--hero-image-dark);
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(9rem, 12rem);
+  gap: 3rem;
+  align-items: center;
+  position: relative;
+}
+
+.heroVisual {
+  min-height: clamp(9rem, 18vw, 12rem);
+}
+
+.eyebrow,
+.topics,
+.kicker {
+  color: var(--pc-accent);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.eyebrow {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: clamp(3rem, 8vw, 6.25rem);
+  line-height: 0.98;
+  margin-bottom: 1rem;
+  max-width: 13ch;
+}
+
+.subtitle {
+  color: var(--pc-text-muted);
+  font-size: 1.2rem;
+  margin-bottom: 0;
+  max-width: 38rem;
+}
+
+.topics {
+  color: var(--pc-text-muted);
+  grid-column: 1 / -1;
+  margin: 1rem 0 0;
+}
+
+.topics span {
+  color: var(--pc-accent);
+  padding: 0 0.45rem;
+}
+
+.intro,
+.repositories {
+  border-bottom: 1px solid var(--pc-border);
+  padding: 5rem 0;
+}
+
+.features {
+  padding: 5rem 0;
+  width: 100%;
+}
+
+.sectionHeading {
+  margin-bottom: 2rem;
+  max-width: 42rem;
+}
+
+.sectionHeading h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0.5rem 0 0;
+}
+
+.introContent p {
+  font-family: var(--ifm-heading-font-family);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.25;
+  margin: 0;
+  max-width: 52rem;
+}
+
+.featureKicker,
+.featureIndex {
+  color: var(--pc-accent);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature {
+  background: var(--pc-surface);
+  border: 1px solid var(--pc-border);
+  border-top: 2px solid var(--pc-primary);
+  color: var(--pc-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 14rem;
+  padding: 1.25rem;
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.feature:hover {
+  border-color: var(--pc-accent);
+  color: var(--pc-text);
+  transform: translateY(-3px);
+}
+
+.feature:focus-visible {
+  border-color: var(--pc-primary);
+}
+
+.feature h3 {
+  font-size: 1.4rem;
+  margin: 0.65rem 0;
+}
+
+.icon {
+  display: block;
+  height: 3rem;
+  margin: 0.25rem 0 0.5rem;
+  max-width: 3rem;
+  object-fit: contain;
+  width: 3rem;
+}
+
+.feature p:last-of-type {
+  color: var(--pc-text-muted);
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+
+.featureIndex {
+  margin: 0;
+}
+
+.arrow {
+  color: var(--pc-accent);
+  font-size: 1.25rem;
+  margin-top: auto;
+}
+
+.repositoryGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.repository {
+  background: var(--pc-surface);
+  border: 1px solid var(--pc-border);
+  color: var(--pc-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 13rem;
+  padding: 1.5rem;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.repository:hover {
+  border-color: var(--pc-accent);
+  transform: translateY(-3px);
+}
+
+.repository > span {
+  color: var(--pc-accent);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.repository strong {
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.2rem;
+  margin: 0.7rem 0 0.35rem;
+  overflow-wrap: anywhere;
+}
+
+.repository small {
+  color: var(--pc-text-muted);
+  line-height: 1.45;
+}
+
+.repositoryActions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.documentationLink {
+  color: var(--pc-primary);
+  font-weight: 600;
+  text-underline-offset: 0.25em;
+}
+
+.documentationLink span {
+  color: var(--pc-accent);
+  margin-left: 0.35rem;
+}
+
+.githubLink {
+  align-items: center;
+  border-radius: 0.25rem;
+  color: var(--pc-primary);
+  display: inline-flex;
+  flex: 0 0 2.75rem;
+  height: 2.75rem;
+  justify-content: center;
+  transition: background-color 160ms ease, color 160ms ease;
+  width: 2.75rem;
+}
+
+.githubLink:hover {
+  background: var(--pc-border);
+  color: var(--pc-accent);
+}
+
+.githubLink img {
+  display: block;
+  height: 1.4rem;
+  width: 1.4rem;
+}
+
+.documentationLink:focus-visible,
+.githubLink:focus-visible {
+  border-radius: 0.25rem;
+  outline: 3px solid var(--pc-accent);
+  outline-offset: 4px;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 5rem 1.5rem 4rem;
+  }
+
+  .intro,
+  .repositories {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .featureGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .repositoryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .heroBanner {
+    background-position: center bottom;
+    background-size: 100% auto;
+  }
+
+  .heroContent {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .heroVisual {
+    min-height: 4rem;
+    width: 100%;
+  }
+
+  .features {
+    padding: 3.5rem 1.5rem;
+  }
+
+  .featureGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topics {
+    margin-top: 0;
+  }
+
+  .repositoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .intro,
+  .repositories {
+    padding-bottom: 3.5rem;
+    padding-top: 3.5rem;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+}

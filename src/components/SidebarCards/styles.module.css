@@ -1,0 +1,97 @@
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+  margin: 1.5rem 0 2rem;
+}
+
+.list :global(.col) {
+  width: auto;
+  max-width: none;
+  padding: 0;
+}
+
+.list :global(.theme-doc-card-icon) {
+  display: none;
+}
+
+.list :global(.card) {
+  --ifm-link-color: var(--pc-text);
+  --ifm-link-hover-color: var(--pc-text);
+  --ifm-link-hover-decoration: none;
+
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  padding: clamp(1.15rem, 2vw, 1.5rem);
+  border: 1px solid var(--pc-border);
+  border-inline-start: 3px solid var(--pc-primary);
+  border-radius: var(--ifm-global-radius);
+  background: var(--pc-surface);
+  color: var(--pc-text);
+  box-shadow: 0 2px 8px rgb(28 35 51 / 5%);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.list :global(.theme-doc-card-title) {
+  color: var(--pc-text);
+  font-size: 1.12rem;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+.list :global(.theme-doc-card-description) {
+  margin-top: 0.55rem;
+  color: var(--pc-text-muted);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.list :global(.text--truncate) {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow: hidden;
+}
+
+.list :global(.card:hover) {
+  border-color: var(--pc-accent);
+  border-inline-start-color: var(--pc-accent);
+  background: var(--pc-surface);
+  box-shadow: 0 8px 20px rgb(28 35 51 / 10%);
+  transform: translateY(-2px);
+}
+
+.list :global(.card:focus-visible) {
+  outline: 3px solid var(--pc-accent);
+  outline-offset: 3px;
+  border-color: var(--pc-accent);
+}
+
+@media (max-width: 36rem) {
+  .list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+    margin-block: 1.25rem 1.75rem;
+  }
+
+  .list :global(.card) {
+    padding: 1.1rem 1.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .list :global(.card) {
+    transition: none;
+  }
+
+  .list :global(.card:hover) {
+    transform: none;
+  }
+}

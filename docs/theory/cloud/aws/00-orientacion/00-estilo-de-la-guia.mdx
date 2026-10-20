@@ -1,0 +1,51 @@
+﻿---
+title: "Estilo y convenciones de la guía AWS"
+description: "Definición breve y concreta."
+---
+
+<AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="básico" type="concepto" />
+
+# Estilo y convenciones de la guía AWS
+
+> **Propósito:** mantener una guía legible, práctica y orientada a certificación sin sustituir la documentación oficial.
+
+## Etiquetas obligatorias
+
+Cada documento comienza con etiquetas en una sola línea:
+
+
+Se pueden combinar certificaciones. `CLF-C02` cubre fundamentos y gobierno; `DVA-C02`, desarrollo y operación de aplicaciones; `SAA-C03`, diseño y trade-offs arquitectónicos.
+
+## Bloque de orientación
+
+Después del título y las etiquetas, cada documento incluye este callout visible:
+
+> **🧭 En una mirada**
+> - **Qué es:** definición breve y concreta.
+> - **Por qué importa:** riesgo, decisión o beneficio que explica su relevancia.
+> - **Cómo funciona:** flujo mental o componentes principales.
+> - **Para qué se usa:** casos de uso y límites.
+
+## Estructura recomendada
+
+1. Título y etiquetas.
+2. Bloque **Qué / Por qué / Cómo / Para qué**.
+3. Conceptos y ejemplos seguros (sin credenciales ni datos reales).
+4. **Tabla de decisiones** con alternativas y trade-offs.
+5. **Errores frecuentes** y cómo detectarlos.
+6. Laboratorio o preguntas de repaso, cuando aplique.
+7. Referencias oficiales.
+
+## Legibilidad y seguridad
+
+- Usar emojis solo como señales: 🧭 orientación, ⚠️ riesgo, ✅ verificación, 🧪 práctica.
+- Preferir tablas para comparar servicios y listas cortas para procedimientos.
+- Usar callouts Markdown (`> **⚠️ Atención**`) para riesgos, costes y límites.
+- Usar nombres ficticios como `NOMBRE_DEL_BUCKET`, `${AWS_REGION}` y `paideia-lab`; nunca incluir tokens, access keys, cuentas, correos reales o salidas completas de identidad.
+- Indicar siempre la limpieza de recursos de laboratorio y la revisión de costes.
+- Enlaces externos deben apuntar a fuentes oficiales o estar justificados.
+
+## Profundidad esperada
+
+Explicar el modelo mental, una decisión habitual, un fallo frecuente y una comprobación práctica. Evitar catálogos exhaustivos de opciones o parámetros que cambian con frecuencia; enlazar a AWS cuando se necesite detalle operativo.
+

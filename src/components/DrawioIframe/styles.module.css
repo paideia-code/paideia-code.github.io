@@ -1,0 +1,7 @@
+.wrapper { margin: 0 0 var(--ifm-spacing-vertical); }
+.container { position: relative; width: 100%; overflow: hidden; border: 1px solid var(--pc-border); border-radius: var(--ifm-global-radius); background: var(--pc-surface); box-shadow: var(--ifm-global-shadow-lw); }
+.iframe { display: block; width: 100%; max-width: 100%; border: 0; }
+.caption { margin-top: 0.4rem; font-size: 0.85rem; text-align: right; }
+.caption a { color: var(--pc-primary); font-weight: 500; }
+.caption a:hover { color: var(--pc-accent); }
+@media (max-width: 600px) { .iframe { height: min(600px, 70vh); } }

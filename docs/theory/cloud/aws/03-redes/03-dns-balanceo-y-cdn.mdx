@@ -1,0 +1,45 @@
+﻿---
+title: "DNS, balanceo y CDN"
+description: "Servicios para resolver nombres, distribuir peticiones y acercar contenido al usuario."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# DNS, balanceo y CDN
+
+
+> **🧭 En una mirada**
+> - **Qué es:** servicios para resolver nombres, distribuir peticiones y acercar contenido al usuario.
+> - **Por qué importa:** mejoran disponibilidad, latencia, TLS y capacidad de evolución.
+> - **Cómo funciona:** Route 53 dirige, ELB distribuye y CloudFront cachea en ubicaciones edge.
+> - **Para qué se usa:** publicar APIs y sitios sin acoplar clientes a instancias concretas.
+
+## Route 53
+
+Servicio DNS gestionado. Puede registrar dominios, resolver nombres, realizar health checks y aplicar políticas de routing como simple, weighted, latency-based o failover.
+
+## Elastic Load Balancing
+
+- **Application Load Balancer**: HTTP/HTTPS, routing por host o path, ideal para APIs y microservicios.
+- **Network Load Balancer**: TCP/UDP y alto rendimiento.
+- **Gateway Load Balancer**: appliances de red.
+
+## CloudFront
+
+CDN que cachea y entrega contenido desde edge locations. Se usa con S3, ALB, API Gateway u orígenes personalizados.
+
+Aspectos a decidir:
+
+- TTL y cache keys.
+- Invalidaciones.
+- HTTPS y certificados ACM.
+- Restricción de acceso al origen.
+- Headers y cookies reenviados.
+
+Patrón habitual:
+
+```text
+Route 53 → CloudFront → S3 (frontend)
+                    └→ ALB (API)
+```
+

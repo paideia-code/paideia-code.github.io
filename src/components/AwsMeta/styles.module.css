@@ -1,0 +1,31 @@
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.chip {
+  border: 1px solid var(--pc-border);
+  border-radius: 999px;
+  color: var(--pc-text);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.45rem 0.7rem;
+}
+
+.cert { background: var(--pc-surface); }
+.level { background: var(--pc-code-bg); }
+.type { background: var(--pc-primary); color: var(--pc-bg); }
+.service { border-color: var(--pc-accent); }
+
+.srOnly {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

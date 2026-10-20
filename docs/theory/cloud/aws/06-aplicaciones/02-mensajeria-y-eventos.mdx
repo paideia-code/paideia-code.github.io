@@ -1,0 +1,45 @@
+﻿---
+title: "SQS, SNS y EventBridge"
+description: "Servicios para colas, publicación fan-out y enrutamiento de eventos."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# SQS, SNS y EventBridge
+
+
+> **🧭 En una mirada**
+> - **Qué es:** servicios para colas, publicación fan-out y enrutamiento de eventos.
+> - **Por qué importa:** desacoplan productores y consumidores y absorben picos de carga.
+> - **Cómo funciona:** SQS conserva mensajes, SNS los distribuye y EventBridge enruta eventos por reglas.
+> - **Para qué se usa:** procesamiento asíncrono, notificaciones y arquitecturas orientadas a eventos.
+
+## SQS
+
+Cola que desacopla productores y consumidores. El consumidor debe procesar mensajes de forma idempotente porque la entrega puede ser al menos una vez.
+
+Conceptos:
+
+- Visibility timeout.
+- Long polling.
+- Dead-letter queue.
+- Retention.
+- Standard queue.
+- FIFO queue y deduplicación.
+
+## SNS
+
+Topic pub/sub que distribuye notificaciones a múltiples suscriptores, como SQS, Lambda, HTTP o email.
+
+## EventBridge
+
+Bus de eventos con reglas y targets. Es útil para integrar servicios mediante eventos de dominio o eventos de infraestructura sin acoplar directamente productor y consumidor.
+
+## Kafka/MSK
+
+Kafka es apropiado cuando necesitas streaming, particiones, replay, orden por partición y consumidores duraderos. No es automáticamente mejor que SQS/SNS.
+
+## Paideia
+
+Un flujo de inscripción puede publicar `EnrollmentCreated` y permitir que pagos y notificaciones consuman el evento de forma independiente. Diseña reintentos, DLQ, idempotencia y observabilidad antes de desplegar el broker.
+

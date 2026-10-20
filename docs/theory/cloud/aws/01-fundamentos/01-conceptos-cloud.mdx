@@ -1,0 +1,55 @@
+﻿---
+title: "Conceptos de cloud"
+description: "Los modelos y propiedades que explican la computación en la nube."
+---
+
+<AwsMeta certs={['CLF-C02', 'SAA-C03']} level="básico" type="concepto" />
+
+# Conceptos de cloud
+
+
+> **🧭 En una mirada**
+> - **Qué es:** los modelos y propiedades que explican la computación en la nube.
+> - **Por qué importa:** condicionan coste, control, disponibilidad y responsabilidad.
+> - **Cómo funciona:** se combinan modelos de servicio, elasticidad y principios de diseño.
+> - **Para qué se usa:** comparar soluciones y justificar elecciones arquitectónicas.
+
+## Modelos de servicio
+
+| Modelo | El cliente gestiona | AWS gestiona | Ejemplo |
+|---|---|---|---|
+| IaaS | Sistema operativo y aplicación | Hardware y virtualización | EC2 |
+| PaaS | Aplicación y datos | Servidores, sistema operativo y runtime | ECS Fargate |
+| Serverless | Código, configuración y datos | Infraestructura y escalado | Lambda |
+| SaaS | Configuración y uso | Aplicación completa | Amazon QuickSight |
+
+## Elasticidad frente a escalabilidad
+
+- **Escalabilidad vertical**: usar una máquina más grande.
+- **Escalabilidad horizontal**: añadir más instancias.
+- **Elasticidad**: ajustar automáticamente la capacidad según la demanda.
+
+## Alta disponibilidad y resiliencia
+
+- **Alta disponibilidad**: el sistema continúa operativo ante fallos esperables.
+- **Resiliencia**: puede recuperarse y mantener un comportamiento aceptable ante fallos.
+- **Durabilidad**: los datos sobreviven al paso del tiempo y a fallos.
+
+No son sinónimos. S3 puede ofrecer alta durabilidad para objetos, mientras que una arquitectura distribuida puede buscar alta disponibilidad entre Availability Zones.
+
+## CapEx y OpEx
+
+- **CapEx**: comprar servidores y capacidad por adelantado.
+- **OpEx**: pagar por consumo o por capacidad contratada.
+
+El cloud no garantiza menor coste. Permite cambiar el perfil de gasto y obtener elasticidad, pero los recursos mal gestionados pueden resultar caros.
+
+## Principios de diseño
+
+1. Automatizar cambios repetibles.
+2. Diseñar para fallar.
+3. Separar responsabilidades.
+4. Aplicar mínimo privilegio.
+5. Medir antes de optimizar.
+6. Preferir servicios gestionados cuando reduzcan complejidad sin violar requisitos.
+
