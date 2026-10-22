@@ -1,0 +1,15 @@
+---
+title: Repository
+description: Patrón que abstrae el acceso a colecciones o fuentes de persistencia del dominio.
+sidebar_position: 3
+---
+
+# Repository
+
+Aborda el acoplamiento entre la lógica de negocio y los detalles de almacenamiento, ofreciendo una interfaz orientada al dominio o a sus agregados.
+
+Repository orienta el acceso a colecciones y agregados del dominio; DAO abstrae el acceso técnico a la persistencia, como consultas, filas o documentos. Pueden colaborar —por ejemplo, un Repository puede usar un DAO—, pero no son el mismo patrón.
+
+## Relaciones
+
+Se relaciona con la [inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/) y el [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/).

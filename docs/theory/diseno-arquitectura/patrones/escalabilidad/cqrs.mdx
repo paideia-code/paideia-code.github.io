@@ -1,0 +1,13 @@
+---
+title: CQRS (Command Query Responsibility Segregation)
+description: Patrón arquitectónico que separa los modelos y flujos de lectura y escritura para optimizarlos de forma independiente.
+sidebar_position: 3
+---
+
+# CQRS (Command Query Responsibility Segregation)
+
+CQRS separa las operaciones que cambian el estado (**commands**) de las que lo consultan (**queries**). Cada lado puede tener modelos, persistencia y escalado adaptados a sus necesidades, aunque la separación añade complejidad operativa y de sincronización.
+
+## Relaciones
+
+Se relaciona con [CQS](/theory/diseno-arquitectura/principios/mantenibilidad/cqs/), que separa operaciones a nivel de diseño, y con [consistencia eventual](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/) como trade-off habitual cuando los modelos de lectura se actualizan de forma asíncrona.

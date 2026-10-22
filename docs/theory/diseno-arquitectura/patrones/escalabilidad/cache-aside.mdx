@@ -1,0 +1,13 @@
+---
+title: Cache-Aside
+description: Carga datos en la caché bajo demanda y deja a la aplicación controlar su lectura, expiración e invalidación.
+sidebar_position: 4
+---
+
+# Cache-Aside
+
+Cache-Aside aborda la latencia y la carga de consultas repetidas sin convertir la caché en la fuente principal de verdad. La aplicación consulta primero la caché; ante un fallo, lee el almacén persistente, devuelve el resultado y lo guarda en la caché.
+
+## Relaciones
+
+Se relaciona con [Cache](/theory/diseno-arquitectura/patrones/escalabilidad/cache/), [evitar trabajo innecesario](/theory/diseno-arquitectura/principios/rendimiento/evitar-trabajo-innecesario/) y [escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/).

@@ -27,7 +27,10 @@ El orden acordado de los pilares es **Theory → POCs → Templates → Librarie
 paideia-code.github.io/
 ├── docs/
 │   ├── theory/                         # Fuente canónica de Theory
-│   │   └── cloud/aws/                  # Guía de AWS
+│   │   ├── diseno-arquitectura/        # Diseño y arquitectura
+│   │   ├── nube/aws/                   # Guía de AWS
+│   │   ├── libros/                     # Libros
+│   │   └── tecnologias/                # Tecnologías
 │   ├── pocs/                           # Índice de POCs
 │   ├── templates/                      # Índice de Templates
 │   ├── libraries/                      # Índice de Libraries
@@ -46,7 +49,7 @@ paideia-code.github.io/
 
 El estado que se indica a continuación corresponde a los índices actuales de cada pilar:
 
-- **Theory**: Cloud es la sección desarrollada y actualmente se centra en AWS. Fundamentals, Design & Architecture y Books describen sus áreas, pero aún no tienen subsecciones con material desarrollado. Technologies tiene índice, aunque todavía no incluye documentos de Go u otras tecnologías.
+- **Theory**: Nube es la sección desarrollada y actualmente se centra en AWS. Fundamentos, Diseño y arquitectura y Libros describen sus áreas, pero aún no tienen subsecciones con material desarrollado. Tecnologías tiene índice, aunque todavía no incluye documentos de Go u otras tecnologías.
 - **POCs**: por ahora la sección contiene únicamente su índice; todavía no hay fichas de POCs.
 - **Templates**: por ahora la sección contiene únicamente su índice; aún no hay páginas de templates individuales.
 - **Libraries**: todavía no hay páginas de librerías; la sección queda pendiente hasta que existan las primeras.

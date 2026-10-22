@@ -157,3 +157,15 @@ a.navbar-github-link svg[class*='iconExternalLink'] { display: none; }
 .aws-card small { color: var(--pc-text-muted); line-height: 1.45; }
 .aws-route { background: var(--pc-code-bg); border-left: 4px solid var(--pc-primary); border-radius: var(--ifm-global-radius); font-family: var(--ifm-font-family-monospace); line-height: 2; padding: 1rem 1.25rem; }
 .aws-route b { color: var(--pc-accent); padding: 0 0.35rem; }
+
+.pc-concept-nav { align-items: center; display: flex; flex-wrap: wrap; gap: 0.45rem 0.7rem; margin: 1.5rem 0 2rem; }
+.pc-concept-nav a { font-weight: 600; }
+.pc-concept-nav span { color: var(--pc-accent); font-weight: 600; }
+.pc-idea-callout { background: #fff8d8; border-left: 4px solid #d4a72c; border-radius: var(--ifm-global-radius); color: #3d3212; margin: 1.5rem 0 2rem; padding: 1rem 1.2rem; }
+.pc-idea-callout strong { color: #765a00; display: block; font-family: var(--ifm-heading-font-family); font-size: 1.1rem; margin-bottom: 0.25rem; }
+.pc-idea-callout p { margin: 0; }
+[data-theme='dark'] .pc-idea-callout { background: #302a16; border-left-color: #e3b94e; color: #f3e8b5; }
+[data-theme='dark'] .pc-idea-callout strong { color: #f0cc70; }
+.pc-contents-group { border: 1px solid var(--pc-border); border-radius: var(--ifm-global-radius); margin: 0.6rem 0; padding: 0 1rem; }
+.pc-contents-group summary { cursor: pointer; font-family: var(--ifm-heading-font-family); font-weight: 600; padding: 0.7rem 0; }
+.pc-contents-group > ul { margin: 0 0 0.9rem; }

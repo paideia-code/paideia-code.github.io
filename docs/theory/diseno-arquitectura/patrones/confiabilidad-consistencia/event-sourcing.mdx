@@ -1,0 +1,13 @@
+---
+title: Event Sourcing
+description: Persiste los cambios de estado como una secuencia inmutable de eventos de dominio.
+sidebar_position: 3
+---
+
+# Event Sourcing
+
+Event Sourcing aborda la necesidad de conservar el historial completo de cambios y reconstruir el estado actual sin sobrescribir los hechos anteriores. El estado se obtiene reproduciendo eventos, lo que exige gestionar evolución de esquemas, idempotencia y proyecciones.
+
+## Relaciones
+
+Se relaciona con [Event-driven](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/event-driven/), [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) y [Transactional Outbox](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/transactional-outbox/).
