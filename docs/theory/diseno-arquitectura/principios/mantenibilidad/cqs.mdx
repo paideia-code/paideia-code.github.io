@@ -1,0 +1,13 @@
+---
+title: CQS (Command-Query Separation)
+description: Principio de diseño que mantiene separadas las operaciones que modifican el estado de las que consultan información.
+sidebar_position: 8
+---
+
+# CQS (Command-Query Separation)
+
+CQS propone que una operación sea un comando que cambia el estado o una consulta que devuelve información, pero no ambas cosas a la vez. Es un principio a nivel de diseño de operaciones: [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) lleva esa separación a una escala arquitectónica, con modelos y flujos de lectura y escritura potencialmente independientes.
+
+## Relaciones
+
+Se relaciona con la mantenibilidad porque hace más explícitos los contratos, responsabilidades y efectos secundarios de cada operación.

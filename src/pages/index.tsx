@@ -105,7 +105,7 @@ export default function Home(): ReactNode {
             </div>
             <div className={styles.introContent}>
               <p>
-                Paideia Code es una organización de ingeniería de software enfocada en el desarrollo del conocimiento técnico/teórico y en la construcción de soluciones con fundamento.
+                Paideia Code es una organización de ingeniería de software enfocada en el desarrollo del conocimiento teórico-práctico y en la construcción de soluciones con fundamento.
               </p>
             </div>
           </div>

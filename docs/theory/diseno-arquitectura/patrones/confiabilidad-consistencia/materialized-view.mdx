@@ -1,0 +1,13 @@
+---
+title: Materialized View
+description: Mantiene una representación precomputada de datos para consultar lecturas complejas con menor coste.
+sidebar_position: 4
+---
+
+# Materialized View
+
+Materialized View aborda el coste de recalcular consultas agregadas o unificar datos de varias fuentes en cada lectura. Guarda una proyección preparada para consulta y la actualiza cuando cambian los datos, aceptando posibles retrasos de consistencia.
+
+## Relaciones
+
+Se relaciona con [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/), [Event Sourcing](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/event-sourcing/) y el principio de [evitar trabajo innecesario](/theory/diseno-arquitectura/principios/rendimiento/evitar-trabajo-innecesario/).

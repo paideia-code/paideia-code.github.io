@@ -8,37 +8,51 @@ import type {
   PropVersionDoc,
 } from "@docusaurus/plugin-content-docs";
 import DocCardList from "@theme/DocCardList";
+import Heading from "@theme/Heading";
 import styles from "./styles.module.css";
 
-function getLastPathSegment(href: string): string | undefined {
-  const path = href.split(/[?#]/, 1)[0].replace(/\/+$/, "");
-  const segment = path.slice(path.lastIndexOf("/") + 1);
+type SidebarCardsProps = {
+  heading?: string | null;
+};
 
-  return segment ? decodeURIComponent(segment) : undefined;
+function normalizePath(path: string): string {
+  const withoutQuery = path.split(/[?#]/, 1)[0];
+  const pathname = withoutQuery.match(/^[a-z][a-z\d+.-]*:\/\/[^/]*(\/.*)?$/i)?.[1] ?? withoutQuery;
+  const normalized = `/${pathname.replace(/^\/+|\/+$/g, "")}`;
+
+  return normalized === "/" ? normalized : normalized.replace(/\/+$/, "");
 }
 
 function getIndexDescription(
   docs: Record<string, PropVersionDoc>,
   href: string,
 ): string | undefined {
-  const segment = getLastPathSegment(href);
-  if (!segment) {
-    return undefined;
-  }
-
-  const indexId = `${segment}/index`;
+  const normalizedHref = normalizePath(href);
   const indexDoc = Object.values(docs).find(
-    (doc) => doc.id === indexId || doc.id.endsWith(`/${indexId}`),
+    (doc) => {
+      const docPath = normalizePath(doc.id.replace(/\/index$/, ""));
+
+      // The doc permalink includes the route base path and, when deployed,
+      // the site's base path. Matching the complete doc path as a suffix keeps
+      // both prefixes intact and avoids collisions such as three `resiliencia`
+      // indexes in different taxonomies.
+      return (
+        normalizedHref === docPath ||
+        normalizedHref.endsWith(docPath)
+      );
+    },
   );
 
   return indexDoc?.description;
 }
 
-export default function SidebarCards(): React.ReactElement | null {
+export default function SidebarCards({
+  heading = "Contenido",
+}: SidebarCardsProps): React.ReactElement | null {
   const { docs } = useDocsVersion();
   const items = useCurrentSidebarSiblings().filter(
     (item): item is Extract<PropSidebarItem, { type: "category" | "link" }> =>
-      (item.type === "category" && Boolean(item.href)) ||
+      (item.type === "category" && Boolean(item.href) && item.items.length > 0) ||
       (item.type === "link" && item.docId !== "index" && Boolean(item.href)),
   );
   const itemsWithDescriptions = items.map((item) => {
@@ -55,6 +69,9 @@ export default function SidebarCards(): React.ReactElement | null {
   });
 
   return itemsWithDescriptions.length > 0 ? (
-    <DocCardList items={itemsWithDescriptions} className={styles.list} />
+    <>
+      {heading !== null && <Heading as="h2">{heading}</Heading>}
+      <DocCardList items={itemsWithDescriptions} className={styles.list} />
+    </>
   ) : null;
 }
