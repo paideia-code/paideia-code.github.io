@@ -1,0 +1,80 @@
+---
+slug: /nube/aws/02-seguridad/01-iam/02-politicas-y-permisos
+title: "IAM: políticas y permisos"
+description: "La sintaxis y el proceso para conceder o denegar acciones IAM."
+---
+
+<AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# IAM: políticas y permisos
+
+
+> **🧭 En una mirada**
+> - **Qué es:** la sintaxis y el proceso para conceder o denegar acciones IAM.
+> - **Por qué importa:** un permiso incorrecto puede bloquear una aplicación o exponer recursos.
+> - **Cómo funciona:** AWS combina policies de identidad, recurso, sesión, límites y Organizations.
+> - **Para qué se usa:** aplicar mínimo privilegio y diagnosticar `AccessDenied`.
+
+## Estructura de una policy
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadCourseObjects",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::NOMBRE_DEL_BUCKET/cursos/*"
+    }
+  ]
+}
+```
+
+## Elementos
+
+- `Version`: versión del lenguaje de policy.
+- `Statement`: una o más reglas.
+- `Sid`: identificador opcional para documentar una regla.
+- `Effect`: `Allow` o `Deny`.
+- `Action`: operación o conjunto de operaciones.
+- `Resource`: ARN afectado.
+- `Principal`: identidad afectada, especialmente en resource policies y trust policies.
+- `Condition`: restricciones por MFA, IP, tags, región, hora u otros atributos.
+
+## Identity policy frente a resource policy
+
+Una identity policy se adjunta a un usuario, grupo o rol. Una resource policy se adjunta al recurso, por ejemplo un bucket S3, una cola SQS o una clave KMS.
+
+Usa resource policies cuando el servicio las soporte y necesites expresar acceso desde otra cuenta o controlar directamente el recurso. No dupliques permisos sin motivo.
+
+## Evaluación
+
+La autorización efectiva empieza con denegación implícita. Un Allow aplicable concede acceso, pero un Deny explícito aplicable siempre prevalece.
+
+También pueden limitar el acceso:
+
+- Service Control Policies de AWS Organizations.
+- Permission boundaries.
+- Session policies.
+- Policies de endpoint VPC.
+
+## Buenas prácticas
+
+- Preferir acciones y recursos concretos.
+- Separar lectura, escritura y administración.
+- Evitar `Action: "*"` y `Resource: "*"` salvo que sea imprescindible.
+- Usar tags y condiciones cuando ayuden a delimitar recursos.
+- Revisar políticas con IAM Access Analyzer.
+- Eliminar permisos no utilizados.
+
+## Diagnóstico de AccessDenied
+
+1. Identificar el principal real con `sts get-caller-identity`.
+2. Identificar la acción y el recurso exactos.
+3. Verificar la región y la cuenta.
+4. Revisar identity policy y resource policy.
+5. Buscar SCP, boundary, session policy o explicit deny.
+6. Comprobar condiciones y ARN.
+7. Usar CloudTrail para confirmar la llamada.
+

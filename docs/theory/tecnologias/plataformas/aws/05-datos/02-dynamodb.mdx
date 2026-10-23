@@ -1,0 +1,40 @@
+---
+slug: /nube/aws/05-datos/02-dynamodb
+title: "Amazon DynamoDB"
+description: "Base de datos NoSQL gestionada orientada a claves y documentos."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# Amazon DynamoDB
+
+
+> **🧭 En una mirada**
+> - **Qué es:** base de datos NoSQL gestionada orientada a claves y documentos.
+> - **Por qué importa:** ofrece baja latencia y escalado, pero exige diseñar según los accesos.
+> - **Cómo funciona:** partition key, sort key, índices y capacidad determinan distribución y consultas.
+> - **Para qué se usa:** cargas de alto volumen con patrones de acceso previsibles.
+
+## Qué es
+
+Base de datos NoSQL gestionada, orientada a acceso de baja latencia y escalabilidad. El diseño empieza por los patrones de acceso, no por normalizar entidades como en SQL.
+
+## Conceptos
+
+- Partition key.
+- Sort key.
+- Índices secundarios.
+- Capacity modes: on-demand o provisioned.
+- Consistencia eventual o fuerte según la operación.
+- TTL.
+- Streams.
+- Conditional writes.
+
+## Regla principal
+
+Antes de crear una tabla, lista las consultas que la aplicación debe responder. La elección de claves debe distribuir la carga y evitar hot partitions.
+
+## Cuándo usarlo
+
+Útil para sesiones, catálogos con patrones conocidos, estados y eventos. RDS es preferible cuando necesitas joins, transacciones relacionales complejas o consultas ad hoc frecuentes.
+
