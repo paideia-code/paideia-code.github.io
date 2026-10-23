@@ -1,0 +1,41 @@
+.notice {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin: 1.5rem 0 2rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--pc-border);
+  border-inline-start: 4px solid var(--pc-accent);
+  border-radius: var(--ifm-global-radius);
+  background: var(--pc-surface);
+  color: var(--pc-text);
+  box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.icon {
+  flex: 0 0 auto;
+  font-size: 1.35rem;
+  line-height: 1.4;
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  color: var(--pc-text);
+  font-size: 1.05rem;
+}
+
+.body > :last-child {
+  margin-bottom: 0;
+}
+
+.body {
+  color: var(--pc-text-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 36rem) {
+  .notice {
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+}

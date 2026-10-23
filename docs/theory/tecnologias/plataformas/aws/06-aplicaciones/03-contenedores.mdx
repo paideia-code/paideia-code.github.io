@@ -1,0 +1,70 @@
+---
+slug: /nube/aws/06-aplicaciones/03-contenedores
+title: "ECS, Fargate y ECR"
+description: "Registro, orquestación y ejecución gestionada de imágenes de contenedor."
+---
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# ECS, Fargate y ECR
+
+
+> **🧭 En una mirada**
+> - **Qué es:** registro, orquestación y ejecución gestionada de imágenes de contenedor.
+> - **Por qué importa:** permite empaquetar aplicaciones manteniendo un camino operativo claro.
+> - **Cómo funciona:** ECR almacena imágenes, ECS define tareas y Fargate ejecuta sin gestionar servidores.
+> - **Para qué se usa:** APIs y workers desplegables con escalado, logs y roles separados.
+
+## ECR
+
+Registro de imágenes Docker. Conviene escanear imágenes, usar tags inmutables y evitar secretos dentro de ellas.
+
+## ECS
+
+Orquestador de contenedores de AWS. Sus conceptos principales son:
+
+- Cluster.
+- Task definition.
+- Task.
+- Service.
+- Deployment.
+- Capacity provider.
+- Task role y execution role.
+
+## Fargate
+
+Ejecuta tareas ECS sin administrar instancias EC2. Es el primer destino recomendado para desplegar los servicios Spring de Paideia en AWS.
+
+## 🧩 ECS frente a EKS
+
+| Criterio | ECS/Fargate | EKS |
+|---|---|---|
+| Operación inicial | Más simple | Más compleja |
+| Portabilidad Kubernetes | Baja | Alta |
+| Control de plataforma | Menor | Mayor |
+| Mejor primer paso para Paideia | Sí | Después de Kubernetes local |
+
+Elegir EKS por familiaridad con Docker no es suficiente. La decisión debe basarse en requisitos de Kubernetes, plataforma, portabilidad y coste operativo.
+
+## Flujo
+
+```text
+Código → tests → Docker build → ECR → ECS task definition → ECS service → ALB
+```
+
+## Health checks
+
+Configura health checks de aplicación, startup y readiness. Un contenedor que está “running” no necesariamente está listo para recibir tráfico.
+
+## ⚠️ Errores frecuentes
+
+- Confundir task role con execution role.
+- Usar `latest` y no poder identificar qué versión está desplegada.
+- No reservar memoria suficiente para la JVM.
+- No enviar logs desde el contenedor.
+- Configurar un health check distinto al endpoint real de Spring.
+
+## ✅ Comprobación
+
+Un despliegue está listo cuando puedes identificar la imagen por digest, revisar logs, comprobar el health check y revertir a la versión anterior.
+

@@ -1,0 +1,45 @@
+---
+slug: /nube/aws/02-seguridad/02-seguridad-aplicada
+title: "Seguridad aplicada en AWS"
+description: "Controles de cifrado, secretos, auditoría y protección de cargas."
+---
+
+<AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# Seguridad aplicada en AWS
+
+
+> **🧭 En una mirada**
+> - **Qué es:** controles de cifrado, secretos, auditoría y protección de cargas.
+> - **Por qué importa:** la seguridad debe cubrir confidencialidad, integridad, trazabilidad y respuesta.
+> - **Cómo funciona:** KMS, Secrets Manager, CloudTrail y controles de red trabajan en capas.
+> - **Para qué se usa:** proteger datos y demostrar qué ocurrió ante un incidente.
+
+## Cifrado
+
+- **En tránsito**: TLS, certificados y HTTPS.
+- **En reposo**: cifrado del servicio mediante claves gestionadas por AWS o KMS.
+- **KMS**: creación y control de claves, policies y auditoría de uso.
+
+## Secretos y configuración
+
+- **Parameter Store**: parámetros y secretos sencillos, integrado con Systems Manager.
+- **Secrets Manager**: secretos con ciclo de vida y rotación.
+- Nunca guardar contraseñas en código, Dockerfiles, GitHub o imágenes.
+
+## Auditoría
+
+- **CloudTrail** registra llamadas a la API.
+- **AWS Config** evalúa configuración y cumplimiento.
+- **GuardDuty** detecta actividad potencialmente maliciosa.
+- **Security Hub** centraliza hallazgos de seguridad.
+
+## Principios
+
+1. Mínimo privilegio.
+2. Defensa en profundidad.
+3. Identidades temporales.
+4. Separación de cuentas y entornos cuando el riesgo lo justifique.
+5. Logs centralizados y protegidos contra manipulación.
+6. Probar recuperación, no solo prevención.
+

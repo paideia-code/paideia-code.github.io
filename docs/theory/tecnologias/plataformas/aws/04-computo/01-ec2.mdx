@@ -1,0 +1,46 @@
+---
+slug: /nube/aws/04-computo/01-ec2
+title: "Amazon EC2"
+description: "Cómputo virtual con control sobre sistema operativo, red y capacidad."
+---
+
+<AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="intermedio" type="concepto" />
+
+# Amazon EC2
+
+
+> **🧭 En una mirada**
+> - **Qué es:** cómputo virtual con control sobre sistema operativo, red y capacidad.
+> - **Por qué importa:** ofrece flexibilidad, pero transfiere mantenimiento y decisiones al equipo.
+> - **Cómo funciona:** una AMI, tipo de instancia, almacenamiento y red componen la máquina.
+> - **Para qué se usa:** cargas persistentes, software especializado o necesidades de control fino.
+
+## Qué es
+
+EC2 ofrece máquinas virtuales configurables. Tú gestionas el sistema operativo, parches, runtime, proceso de despliegue y seguridad del host.
+
+## Conceptos
+
+- AMI: imagen de la instancia.
+- Instance type: CPU, memoria, red y aceleradores.
+- EBS: disco persistente de la instancia.
+- User Data: script de inicialización.
+- Key pair: acceso SSH cuando se utiliza ese mecanismo.
+- Security Group: firewall de la instancia.
+- Auto Scaling Group: mantiene capacidad deseada.
+
+## Cuándo usarlo
+
+Úsalo cuando necesites control del sistema operativo, software especial, cargas persistentes o compatibilidad que un servicio más gestionado no ofrezca.
+
+Para una API estándar, compara primero ECS Fargate o Lambda: menos gestión puede significar menos superficie operativa.
+
+## Buenas prácticas
+
+- Parches automatizados.
+- No exponer SSH públicamente; preferir Systems Manager Session Manager.
+- Roles IAM mediante instance profiles.
+- AMIs reproducibles.
+- Auto Scaling y health checks.
+- Volúmenes y backups documentados.
+

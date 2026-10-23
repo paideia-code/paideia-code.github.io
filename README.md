@@ -27,10 +27,16 @@ El orden acordado de los pilares es **Theory → POCs → Templates → Librarie
 paideia-code.github.io/
 ├── docs/
 │   ├── theory/                         # Fuente canónica de Theory
+│   │   ├── fundamentos/                # Algoritmos, datos y sistemas
+│   │   ├── programacion-lenguajes/     # Lenguajes, paradigmas y ejecución
+│   │   ├── datos-comunicacion/         # Formatos, web, APIs y protocolos
 │   │   ├── diseno-arquitectura/        # Diseño y arquitectura
-│   │   ├── nube/aws/                   # Guía de AWS
-│   │   ├── libros/                     # Libros
-│   │   └── tecnologias/                # Tecnologías
+│   │   ├── desarrollo-software/        # Desarrollo práctico por tipo de aplicación
+│   │   ├── testing-calidad/            # Testing y QA
+│   │   ├── metodologias-practicas/     # Procesos y prácticas de trabajo
+│   │   ├── despliegue/                 # Cloud, runtime y operación
+│   │   ├── tecnologias/                # Lenguajes, frameworks, librerías, datos y AWS
+│   │   └── libros/                     # Libros
 │   ├── pocs/                           # Índice de POCs
 │   ├── templates/                      # Índice de Templates
 │   ├── libraries/                      # Índice de Libraries
@@ -45,11 +51,13 @@ paideia-code.github.io/
 └── docusaurus.config.ts
 ```
 
+Las secciones principales de Theory siguen un orden de dependencia conceptual: conceptos base → modelos de programación y comunicación → diseño → construcción → validación → forma de trabajo → ejecución → tecnologías concretas → referencias.
+
 ## Estado de las secciones
 
 El estado que se indica a continuación corresponde a los índices actuales de cada pilar:
 
-- **Theory**: Nube es la sección desarrollada y actualmente se centra en AWS. Fundamentos, Diseño y arquitectura y Libros describen sus áreas, pero aún no tienen subsecciones con material desarrollado. Tecnologías tiene índice, aunque todavía no incluye documentos de Go u otras tecnologías.
+- **Theory**: Fundamentos, Programación y lenguajes, Datos y comunicación, Diseño y arquitectura, Desarrollo, Testing, Metodologías, Despliegue, Tecnologías y Libros se presentan en ese orden conceptual. Diseño y arquitectura y la guía de AWS contienen material desarrollado; las páginas nuevas indican su estado mediante `<UnderConstruction>`.
 - **POCs**: por ahora la sección contiene únicamente su índice; todavía no hay fichas de POCs.
 - **Templates**: por ahora la sección contiene únicamente su índice; aún no hay páginas de templates individuales.
 - **Libraries**: todavía no hay páginas de librerías; la sección queda pendiente hasta que existan las primeras.
@@ -65,6 +73,7 @@ Los componentes se registran globalmente vía `src/theme/MDXComponents.tsx`, por
 - `<Quiz>`: cuestionario interactivo. Recibe `question`, `options` y, opcionalmente, `explanation`.
 - `<DrawioIframe>`: embebe un diagrama de draw.io. Recibe `src`, `title` y `height`.
 - `<AwsMeta>` y `<AwsChecklist>`: componentes auxiliares para el contenido de AWS.
+- `<UnderConstruction>`: aviso reutilizable para secciones planificadas cuyo contenido todavía está en construcción. Props opcionales: `title` y children.
 
 `src/components` también contiene `HomepageFeatures`, utilizado por la página de inicio; no es un componente global de MDX. La demo de componentes está en la ruta `/componentes-demo`.
 
