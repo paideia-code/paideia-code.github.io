@@ -8,12 +8,7 @@ import type {
   PropVersionDoc,
 } from "@docusaurus/plugin-content-docs";
 import DocCardList from "@theme/DocCardList";
-import Heading from "@theme/Heading";
 import styles from "./styles.module.css";
-
-type SidebarCardsProps = {
-  heading?: string | null;
-};
 
 function normalizePath(path: string): string {
   const withoutQuery = path.split(/[?#]/, 1)[0];
@@ -46,9 +41,7 @@ function getIndexDescription(
   return indexDoc?.description;
 }
 
-export default function SidebarCards({
-  heading = "Contenido",
-}: SidebarCardsProps): React.ReactElement | null {
+export default function SidebarCards(): React.ReactElement | null {
   const { docs } = useDocsVersion();
   const items = useCurrentSidebarSiblings().filter(
     (item): item is Extract<PropSidebarItem, { type: "category" | "link" }> =>
@@ -69,9 +62,6 @@ export default function SidebarCards({
   });
 
   return itemsWithDescriptions.length > 0 ? (
-    <>
-      {heading !== null && <Heading as="h2">{heading}</Heading>}
-      <DocCardList items={itemsWithDescriptions} className={styles.list} />
-    </>
+    <DocCardList items={itemsWithDescriptions} className={styles.list} />
   ) : null;
 }

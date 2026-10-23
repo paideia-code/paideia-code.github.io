@@ -1,23 +1,28 @@
 ---
 title: AWS
+hide_title: true
 description: Contenidos sobre cloud, seguridad, datos, aplicaciones y operación en AWS.
 sidebar_position: 1
 ---
 
 import SidebarCards from '@site/src/components/SidebarCards';
+import SectionHero from '@site/src/components/SectionHero';
 
-<div className="aws-hero">
-  <p className="aws-kicker">AWS / PAIDEIA CODE</p>
-  <h1>Construir en la nube con fundamento.</h1>
-  <p>Contenido práctico y progresivo para priorizar conceptos, seguridad, costes y decisiones de arquitectura mientras construyes soluciones reproducibles en AWS.</p>
+<SectionHero
+  eyebrow="AWS / PAIDEIA CODE"
+  title="Construir en la nube con fundamento"
+  description="Contenido práctico y progresivo para priorizar conceptos, seguridad, costes y decisiones de arquitectura mientras construyes soluciones reproducibles en AWS."
+>
   <AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="básico" type="referencia" />
-</div>
+</SectionHero>
 
 :::warning Antes de empezar
 Esta guía acompaña el aprendizaje y la práctica; no sustituye la [documentación oficial de AWS](https://docs.aws.amazon.com/). Comprueba siempre los límites, precios y recomendaciones vigentes antes de usar un servicio.
 :::
 
-<SidebarCards heading="Contenido" />
+## Contenido
+
+<SidebarCards />
 
 ## Ruta recomendada
 

@@ -6,4 +6,13 @@ sidebar_position: 7
 
 # Observer
 
-Aquí se estudiará cómo notificar cambios a múltiples dependientes manteniendo desacoplados sus receptores.
+## Intención
+Notificar a varios dependientes cuando cambia el estado de un sujeto.
+## Problema
+El productor no debe conocer clases concretas ni mantener una lista de acciones específicas para cada consumidor.
+## Solución
+Los observadores se suscriben a un contrato; el sujeto publica cambios y gestiona altas, bajas y errores de notificación.
+## Consecuencias
+Facilita extensiones, pero el orden, duplicación, ciclos y fallos de observadores requieren políticas explícitas.
+## Relaciones
+Es cercano a Pub-Sub; Mediator centraliza coordinación y Event-driven suele usar una variante distribuida.

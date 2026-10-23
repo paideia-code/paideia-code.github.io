@@ -1,22 +1,28 @@
 ---
 title: Diseño y arquitectura
+hide_title: true
 description: Índice de atributos de calidad, principios, técnicas, patrones y estilos de arquitectura.
 sidebar_position: 2
 ---
 
 import SidebarCards from '@site/src/components/SidebarCards';
+import SectionHero from '@site/src/components/SectionHero';
+import ContentIndex from '@site/src/components/ContentIndex';
 
-# Diseño y arquitectura
-
-Esta sección organiza el estudio desde los **[atributos de calidad](/theory/diseno-arquitectura/atributos-calidad)** hacia los **[principios](/theory/diseno-arquitectura/principios)**, las **[técnicas](/theory/diseno-arquitectura/tecnicas/)**, los **[patrones](/theory/diseno-arquitectura/patrones/)** y las decisiones de **[arquitectura](/theory/diseno-arquitectura/arquitectura/)**.
+<SectionHero
+  eyebrow="DISEÑO / ARQUITECTURA / PAIDEIA CODE"
+  title="Diseño y arquitectura"
+  description="Esta sección conecta atributos de calidad, principios, técnicas, patrones y decisiones arquitectónicas para orientar el diseño consciente de sistemas."
+/> 
 
 ## Cómo se relacionan los conceptos
 
 Los [atributos de calidad](/theory/diseno-arquitectura/atributos-calidad/) expresan las propiedades que queremos conseguir. Los [principios](/theory/diseno-arquitectura/principios/) son reglas de diseño; las [técnicas](/theory/diseno-arquitectura/tecnicas/) son formas concretas de aplicarlas; los [patrones](/theory/diseno-arquitectura/patrones/) ofrecen soluciones convencionales para problemas concretos; y la [arquitectura](/theory/diseno-arquitectura/arquitectura/) organiza esas decisiones a escala del sistema.
 
-<ConceptCard title="Idea clave">
-  Un patrón puede contribuir a varios atributos de calidad simultáneamente. Por ejemplo, [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) contribuye a la [escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/) y el [rendimiento](/theory/diseno-arquitectura/atributos-calidad/rendimiento/) porque separa lecturas y escrituras para optimizar y escalar cada modelo de forma independiente.
-</ConceptCard>
+<div className="pc-idea-callout">
+  <strong>Idea clave</strong>
+  <p>Esta taxonomía es una propuesta de clasificación, no una frontera estricta ni universal. Las fronteras entre atributos de calidad, principios, técnicas, patrones y arquitecturas pueden solaparse; el objetivo es facilitar las relaciones y ayudar a interiorizar cómo pensamos el diseño de software. Por ejemplo, [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) puede contribuir a la [escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/) y al [rendimiento](/theory/diseno-arquitectura/atributos-calidad/rendimiento/) porque separa lecturas y escrituras para optimizar y escalar cada modelo de forma independiente.</p>
+</div>
 
 La tabla siguiente muestra ejemplos representativos de estas relaciones. Sus filas siguen el orden común de atributos: mantenibilidad, confiabilidad, resiliencia, observabilidad, seguridad, escalabilidad y rendimiento.
 
@@ -30,148 +36,19 @@ La tabla siguiente muestra ejemplos representativos de estas relaciones. Sus fil
 | [Escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/) | [Stateless](/theory/diseno-arquitectura/principios/escalabilidad/stateless/) | [Particionamiento](/theory/diseno-arquitectura/tecnicas/escalabilidad/particionamiento/), [Escalado horizontal](/theory/diseno-arquitectura/tecnicas/escalabilidad/escalado-horizontal/) | [Cache](/theory/diseno-arquitectura/patrones/escalabilidad/cache/), [Cache-Aside](/theory/diseno-arquitectura/patrones/escalabilidad/cache-aside/), [Message Queue](/theory/diseno-arquitectura/patrones/escalabilidad/message-queue/), [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/), [Sharding](/theory/diseno-arquitectura/patrones/escalabilidad/sharding/) | [Monolito](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito/), [Monolito modular](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito-modular/), [Microservicios](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/microservicios/) |
 | [Rendimiento](/theory/diseno-arquitectura/atributos-calidad/rendimiento/) | [Medir antes de optimizar](/theory/diseno-arquitectura/principios/rendimiento/medir-antes-de-optimizar/), [Evitar trabajo innecesario](/theory/diseno-arquitectura/principios/rendimiento/evitar-trabajo-innecesario/), [Proteger el camino crítico](/theory/diseno-arquitectura/principios/rendimiento/proteger-el-camino-critico/) | [Instrumentación](/theory/diseno-arquitectura/tecnicas/observabilidad/instrumentacion/) | [Cache](/theory/diseno-arquitectura/patrones/escalabilidad/cache/), [Message Queue](/theory/diseno-arquitectura/patrones/escalabilidad/message-queue/) | [Monolito modular](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito-modular/), [Microservicios](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/microservicios/) |
 
-## Índice de contenidos
+## Secciones principales
 
-<details className="pc-contents-group" open>
-<summary>Atributos de calidad</summary>
+<ContentIndex rootId="diseno-arquitectura/index" />
 
-- [Atributos de calidad](/theory/diseno-arquitectura/atributos-calidad/)
-  - [Mantenibilidad](/theory/diseno-arquitectura/atributos-calidad/mantenibilidad/)
-  - [Confiabilidad](/theory/diseno-arquitectura/atributos-calidad/confiabilidad/)
-  - [Resiliencia](/theory/diseno-arquitectura/atributos-calidad/resiliencia/)
-  - [Observabilidad](/theory/diseno-arquitectura/atributos-calidad/observabilidad/)
-  - [Seguridad](/theory/diseno-arquitectura/atributos-calidad/seguridad/)
-  - [Escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/)
-  - [Rendimiento](/theory/diseno-arquitectura/atributos-calidad/rendimiento/)
-</details>
+La navegación principal sigue el mismo orden en todas las familias: primero el objetivo de calidad, después los principios, las técnicas, los patrones y, por último, las decisiones de arquitectura.
 
-<details className="pc-contents-group">
-<summary>Principios</summary>
+1. [Atributos de calidad](/theory/diseno-arquitectura/atributos-calidad/)
+2. [Principios](/theory/diseno-arquitectura/principios/)
+3. [Técnicas](/theory/diseno-arquitectura/tecnicas/)
+4. [Patrones](/theory/diseno-arquitectura/patrones/)
+5. [Arquitectura](/theory/diseno-arquitectura/arquitectura/)
 
-- [Principios](/theory/diseno-arquitectura/principios/)
-  - [Principios de mantenibilidad](/theory/diseno-arquitectura/principios/mantenibilidad/)
-    - [Bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/)
-    - [Alta cohesión](/theory/diseno-arquitectura/principios/mantenibilidad/alta-cohesion/)
-    - [Encapsulamiento](/theory/diseno-arquitectura/principios/mantenibilidad/encapsulamiento/)
-    - [Inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/)
-    - [Separación de responsabilidades](/theory/diseno-arquitectura/principios/mantenibilidad/separacion-responsabilidades/)
-    - [Simplicidad](/theory/diseno-arquitectura/principios/mantenibilidad/simplicidad/)
-     - [SOLID](/theory/diseno-arquitectura/principios/mantenibilidad/solid/)
-     - [CQS](/theory/diseno-arquitectura/principios/mantenibilidad/cqs/)
-     - [Composición sobre herencia](/theory/diseno-arquitectura/principios/mantenibilidad/composicion-sobre-herencia/)
-  - [Principios de confiabilidad](/theory/diseno-arquitectura/principios/confiabilidad/)
-    - [Idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/)
-   - [Principios de resiliencia](/theory/diseno-arquitectura/principios/resiliencia/)
-     - [Diseñar para el fallo](/theory/diseno-arquitectura/principios/resiliencia/disenar-para-el-fallo/)
-   - [Principios de observabilidad](/theory/diseno-arquitectura/principios/observabilidad/)
-     - [Observabilidad por diseño](/theory/diseno-arquitectura/principios/observabilidad/observabilidad-por-diseno/)
-     - [Instrumentación con propósito](/theory/diseno-arquitectura/principios/observabilidad/instrumentacion-con-proposito/)
-     - [Correlación de operaciones](/theory/diseno-arquitectura/principios/observabilidad/correlacion-de-operaciones/)
-   - [Principios de seguridad](/theory/diseno-arquitectura/principios/seguridad/)
-     - [Defensa en profundidad](/theory/diseno-arquitectura/principios/seguridad/defensa-profundidad/)
-     - [Mínimo privilegio](/theory/diseno-arquitectura/principios/seguridad/minimo-privilegio/)
-     - [Secure by default](/theory/diseno-arquitectura/principios/seguridad/secure-by-default/)
-   - [Principios de escalabilidad](/theory/diseno-arquitectura/principios/escalabilidad/)
-     - [Stateless](/theory/diseno-arquitectura/principios/escalabilidad/stateless/)
-   - [Principios de rendimiento](/theory/diseno-arquitectura/principios/rendimiento/)
-     - [Medir antes de optimizar](/theory/diseno-arquitectura/principios/rendimiento/medir-antes-de-optimizar/)
-     - [Evitar trabajo innecesario](/theory/diseno-arquitectura/principios/rendimiento/evitar-trabajo-innecesario/)
-     - [Proteger el camino crítico](/theory/diseno-arquitectura/principios/rendimiento/proteger-el-camino-critico/)
-</details>
-
-<details className="pc-contents-group">
-<summary>Técnicas</summary>
-
-- [Técnicas](/theory/diseno-arquitectura/tecnicas/)
-  - [Técnicas de mantenibilidad](/theory/diseno-arquitectura/tecnicas/mantenibilidad/)
-    - [Doble despacho](/theory/diseno-arquitectura/tecnicas/mantenibilidad/doble-despacho/)
-    - [Inyección de dependencias](/theory/diseno-arquitectura/tecnicas/mantenibilidad/inyeccion-dependencias/)
-     - [Inmutabilidad](/theory/diseno-arquitectura/tecnicas/mantenibilidad/inmutabilidad/)
-  - [Técnicas de confiabilidad](/theory/diseno-arquitectura/tecnicas/confiabilidad/)
-    - [Idempotency key](/theory/diseno-arquitectura/tecnicas/confiabilidad/idempotency-key/)
-    - [Deduplicación](/theory/diseno-arquitectura/tecnicas/confiabilidad/deduplicacion/)
-    - [Reintentos seguros](/theory/diseno-arquitectura/tecnicas/confiabilidad/reintentos-seguros/)
-  - [Técnicas de resiliencia](/theory/diseno-arquitectura/tecnicas/resiliencia/)
-    - [Aislamiento de fallos](/theory/diseno-arquitectura/tecnicas/resiliencia/aislamiento-fallos/)
-    - [Backpressure](/theory/diseno-arquitectura/tecnicas/resiliencia/backpressure/)
-    - [Degradación controlada](/theory/diseno-arquitectura/tecnicas/resiliencia/degradacion-controlada/)
-    - [Timeouts explícitos](/theory/diseno-arquitectura/tecnicas/resiliencia/timeouts-explicitos/)
-  - [Técnicas de observabilidad](/theory/diseno-arquitectura/tecnicas/observabilidad/)
-    - [Instrumentación](/theory/diseno-arquitectura/tecnicas/observabilidad/instrumentacion/)
-    - [Correlación](/theory/diseno-arquitectura/tecnicas/observabilidad/correlacion/)
-    - [Señales accionables](/theory/diseno-arquitectura/tecnicas/observabilidad/senales-accionables/)
-  - [Técnicas de seguridad](/theory/diseno-arquitectura/tecnicas/seguridad/)
-     - [Validación en límites](/theory/diseno-arquitectura/tecnicas/seguridad/validacion-en-limites/)
-  - [Técnicas de escalabilidad](/theory/diseno-arquitectura/tecnicas/escalabilidad/)
-    - [Escalado horizontal](/theory/diseno-arquitectura/tecnicas/escalabilidad/escalado-horizontal/)
-    - [Particionamiento](/theory/diseno-arquitectura/tecnicas/escalabilidad/particionamiento/)
-  - [Técnicas de rendimiento](/theory/diseno-arquitectura/tecnicas/rendimiento/)
-</details>
-
-<details className="pc-contents-group">
-<summary>Patrones</summary>
-
-- [Patrones](/theory/diseno-arquitectura/patrones/)
-  - [Patrones de mantenibilidad](/theory/diseno-arquitectura/patrones/mantenibilidad/)
-    - [Patrones GoF](/theory/diseno-arquitectura/patrones/mantenibilidad/gof/)
-    - [Null Object](/theory/diseno-arquitectura/patrones/mantenibilidad/null-object/)
-    - [Repository](/theory/diseno-arquitectura/patrones/mantenibilidad/repository/)
-    - [Service Layer](/theory/diseno-arquitectura/patrones/mantenibilidad/service-layer/)
-    - [Specification](/theory/diseno-arquitectura/patrones/mantenibilidad/specification/)
-    - [DTO](/theory/diseno-arquitectura/patrones/mantenibilidad/dto/)
-    - [DAO](/theory/diseno-arquitectura/patrones/mantenibilidad/dao/)
-  - [Patrones de confiabilidad y consistencia](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/)
-    - [Transactional Outbox](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/transactional-outbox/)
-    - [Saga](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/saga/)
-    - [Event Sourcing](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/event-sourcing/)
-    - [Materialized View](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/materialized-view/)
-  - [Patrones de resiliencia y tolerancia a fallos](/theory/diseno-arquitectura/patrones/resiliencia/)
-    - [Circuit Breaker](/theory/diseno-arquitectura/patrones/resiliencia/circuit-breaker/)
-    - [Bulkhead](/theory/diseno-arquitectura/patrones/resiliencia/bulkhead/)
-    - [Retry](/theory/diseno-arquitectura/patrones/resiliencia/retry/)
-  - [Patrones de observabilidad](/theory/diseno-arquitectura/patrones/observabilidad/)
-    - [Correlation Identifier](/theory/diseno-arquitectura/patrones/observabilidad/correlation-identifier/)
-    - [Health Check](/theory/diseno-arquitectura/patrones/observabilidad/health-check/)
-  - [Patrones de seguridad](/theory/diseno-arquitectura/patrones/seguridad/)
-    - [Phantom Token](/theory/diseno-arquitectura/patrones/seguridad/phantom-token/)
-   - [Patrones de escalabilidad](/theory/diseno-arquitectura/patrones/escalabilidad/)
-    - [Cache](/theory/diseno-arquitectura/patrones/escalabilidad/cache/)
-    - [Message Queue](/theory/diseno-arquitectura/patrones/escalabilidad/message-queue/)
-    - [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/)
-    - [Cache-Aside](/theory/diseno-arquitectura/patrones/escalabilidad/cache-aside/)
-    - [Sharding](/theory/diseno-arquitectura/patrones/escalabilidad/sharding/)
-  - [Patrones de integración y mensajería](/theory/diseno-arquitectura/patrones/integracion-mensajeria/)
-    - [Idempotent Receiver](/theory/diseno-arquitectura/patrones/integracion-mensajeria/idempotent-receiver/)
-    - [Pipes and Filters](/theory/diseno-arquitectura/patrones/integracion-mensajeria/pipes-and-filters/)
-</details>
-
-<details className="pc-contents-group">
-<summary>Arquitectura</summary>
-
-- [Arquitectura](/theory/diseno-arquitectura/arquitectura/)
-  - [Arquitectura del sistema](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/)
-    - [Monolito](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito/)
-    - [Monolito modular](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito-modular/)
-    - [Microservicios](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/microservicios/)
-  - [Comunicación e integración](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/)
-    - [Request-response](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/request-response/)
-    - [Message queues](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/message-queues/)
-    - [Pub-sub](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/pub-sub/)
-    - [Event-driven](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/event-driven/)
-  - [Arquitectura interna](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/)
-    - [Clean](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/clean/)
-    - [Hexagonal](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/hexagonal/)
-    - [Layered](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/layered/)
-    - [Onion](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/onion/)
-  - [Modularización y packages](/theory/diseno-arquitectura/arquitectura/modularizacion-packages/)
-    - [Organización horizontal](/theory/diseno-arquitectura/arquitectura/modularizacion-packages/horizontal-slicing/)
-    - [Vertical slicing](/theory/diseno-arquitectura/arquitectura/modularizacion-packages/vertical-slicing/)
-  - [Modelado de dominio](/theory/diseno-arquitectura/arquitectura/modelado-dominio/)
-    - [Bounded contexts](/theory/diseno-arquitectura/arquitectura/modelado-dominio/bounded-contexts/)
-    - [DDD](/theory/diseno-arquitectura/arquitectura/modelado-dominio/ddd/)
-  - [Arquitectura de presentación](/theory/diseno-arquitectura/arquitectura/arquitectura-presentacion/)
-    - [MVC](/theory/diseno-arquitectura/arquitectura/arquitectura-presentacion/mvc/)
-</details>
+## Contenido
 
 <SidebarCards />
 

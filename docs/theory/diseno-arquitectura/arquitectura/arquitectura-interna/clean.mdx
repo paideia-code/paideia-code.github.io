@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Clean
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Separa entidades, casos de uso, adaptadores y marcos o infraestructura, haciendo que las dependencias apunten hacia las reglas de negocio.
+
+## Problema
+
+Cuando el framework o el transporte gobiernan el diseño, cambiar un detalle externo obliga a reescribir políticas y pruebas.
+
+## Aplicación
+
+Mantén casos de uso independientes de interfaces y persistencia; convierte entradas y salidas mediante adaptadores y concentra la composición en el borde.
+
+## Beneficios y trade-offs
+
+Protege el núcleo y facilita evolucionar mecanismos. Añade estructura, interfaces y transformaciones; capas nominales sin límites reales solo aumentan la complejidad.
+
+## Relaciones
+
+Es cercana a [Hexagonal](./hexagonal) y [Onion](./onion), y aplica [inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/).

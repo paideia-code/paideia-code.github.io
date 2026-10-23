@@ -6,7 +6,21 @@ sidebar_position: 3
 
 # Retry
 
-Placeholder breve: los reintentos deben tener límite, espera creciente y clasificación de errores para no amplificar la sobrecarga.
+## Intención
+
+Repetir una operación que puede recuperarse de un fallo transitorio.
+
+## Problema
+
+Una pérdida temporal de red puede convertir una operación válida en error, pero reintentar indiscriminadamente amplifica la carga y duplica efectos.
+
+## Solución
+
+Clasifica errores, limita intentos y usa espera creciente con jitter. Reintenta solo operaciones idempotentes o protegidas por una clave de idempotencia; respeta el timeout y el presupuesto global.
+
+## Consecuencias
+
+Mejora la tasa de éxito ante fallos breves, a cambio de más latencia y carga. Debe combinarse con Circuit Breaker y backpressure, no con esperas ilimitadas.
 
 ## Relaciones
 

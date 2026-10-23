@@ -6,7 +6,21 @@ sidebar_position: 7
 
 # DAO (Data Access Object)
 
-Placeholder para el patrón que encapsula consultas y operaciones técnicas contra una base de datos u otra fuente de persistencia.
+## Intención
+
+Encapsular consultas y operaciones técnicas contra una base de datos u otra fuente de persistencia.
+
+## Problema
+
+Si los casos de uso conocen consultas, filas o detalles del proveedor, la lógica de negocio queda acoplada al mecanismo de almacenamiento.
+
+## Solución
+
+Concentra mapeos, consultas y errores técnicos en un DAO con una interfaz adecuada al mecanismo. Traduce sus resultados antes de entregarlos a la política de negocio.
+
+## Consecuencias
+
+Facilita sustituir o probar la persistencia, pero puede convertirse en una capa anémica de consultas genéricas. [Repository](/theory/diseno-arquitectura/patrones/mantenibilidad/repository/) expresa una colección desde el dominio; DAO expresa el acceso técnico.
 
 ## Relaciones
 

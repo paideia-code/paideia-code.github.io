@@ -6,4 +6,22 @@ sidebar_position: 2
 
 # Monolito modular
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Un único despliegue contiene módulos con límites, responsabilidades, contratos y datos encapsulados.
+
+## Problema
+
+El monolito sin fronteras convierte cualquier cambio en una modificación global y hace imposible saber qué depende de qué.
+
+## Aplicación
+
+Organiza por capacidades, restringe accesos entre módulos y publica contratos internos explícitos. Evita compartir tablas o tipos mutables sin una razón documentada.
+
+## Beneficios y trade-offs
+
+Conserva la simplicidad operativa y permite separar servicios más adelante. Todos los módulos comparten ciclo y recursos de despliegue; los límites requieren enforcement y pruebas.
+
+## Relaciones
+
+Se beneficia de [vertical slicing](/theory/diseno-arquitectura/arquitectura/modularizacion-packages/vertical-slicing/), [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/) y arquitectura hexagonal.

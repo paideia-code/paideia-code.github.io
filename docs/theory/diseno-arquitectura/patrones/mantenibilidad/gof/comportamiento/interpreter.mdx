@@ -6,4 +6,13 @@ sidebar_position: 3
 
 # Interpreter
 
-Aquí se estudiará cómo modelar y evaluar expresiones de un lenguaje sencillo.
+## Intención
+Representar la gramática de un lenguaje sencillo y evaluar sus expresiones.
+## Problema
+Las reglas de interpretación repartidas en condicionales son difíciles de extender y componer.
+## Solución
+Modela expresiones como un árbol con una operación común de interpretación y un contexto explícito.
+## Consecuencias
+Facilita añadir expresiones pequeñas y composición, pero una gramática grande exige otro parser o una representación más especializada.
+## Relaciones
+Se combina con Composite para el árbol, Visitor para operaciones y Flyweight para compartir símbolos.

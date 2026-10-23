@@ -6,4 +6,13 @@ sidebar_position: 3
 
 # Factory Method
 
-Aquí se estudiará cómo delegar la creación de productos a subclases o implementaciones especializadas.
+## Intención
+Definir una operación de creación y permitir que una implementación decida qué producto concreto entregar.
+## Problema
+El código que usa un producto no debería conocer todas sus clases concretas ni cambiar al añadir variantes.
+## Solución
+El cliente trabaja con el producto abstracto y una implementación de la fábrica crea el producto adecuado.
+## Consecuencias
+Reduce acoplamiento y centraliza creación, pero añade subclases o composición y puede ocultar el coste de construir.
+## Relaciones
+Abstract Factory coordina familias; Builder separa pasos de construcción y Prototype evita conocer clases al clonar.

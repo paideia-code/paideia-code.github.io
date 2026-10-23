@@ -6,8 +6,16 @@ sidebar_position: 2
 
 # Confiabilidad
 
-Se estudiarán corrección, durabilidad, consistencia y recuperación ante errores de procesamiento.
+La confiabilidad es la capacidad de entregar resultados correctos y previsibles durante el tiempo esperado, incluso ante errores de procesamiento. Incluye preservar invariantes, durabilidad y una recuperación que no duplique ni pierda efectos.
+
+## Aplicación
+
+Se definen invariantes y contratos, se delimitan transacciones y se hace explícita la semántica de reintentos, duplicados y orden. La persistencia duradera, la idempotencia y las compensaciones deben combinarse con pruebas de fallo y verificaciones de consistencia.
+
+## Trade-offs y consecuencias
+
+Más garantías de consistencia suelen exigir coordinación, latencia o disponibilidad sacrificada. Reintentar mejora la probabilidad de éxito, pero puede duplicar efectos si no hay idempotencia; compensar permite avanzar sin una transacción global, aunque deja estados intermedios y lógica adicional. La confiabilidad se logra con límites claros, no con promesas absolutas.
 
 ## Relaciones
 
-Se relacionará con idempotencia, Transactional Outbox, deduplicación y transacciones compensatorias.
+Se relaciona con idempotencia, Transactional Outbox, deduplicación y transacciones compensatorias: estas técnicas hacen recuperables los fallos entre operaciones y sistemas que no comparten una transacción.

@@ -6,4 +6,13 @@ sidebar_position: 6
 
 # Flyweight
 
-Aquí se estudiará cómo compartir estado intrínseco y separar el estado contextual de los objetos.
+## Intención
+Compartir estado inmutable común para reducir el coste de muchas instancias similares.
+## Problema
+Crear objetos con gran estado repetido consume memoria cuando solo cambia el contexto de uso.
+## Solución
+Separa estado intrínseco compartible de estado extrínseco, y entrega flyweights mediante una fábrica o caché.
+## Consecuencias
+Reduce memoria, pero añade indirección y exige que el estado compartido sea seguro y que el contexto se gestione aparte.
+## Relaciones
+Puede usar Factory y Cache; Composite puede contener flyweights.

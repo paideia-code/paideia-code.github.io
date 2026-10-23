@@ -6,8 +6,16 @@ sidebar_position: 7
 
 # Rendimiento
 
-Se estudiarán latencia, throughput, consumo de recursos y comportamiento bajo distintos niveles de carga.
+El rendimiento describe cómo responde el sistema bajo una carga concreta: latencia, throughput, consumo de recursos y capacidad. Debe expresarse con escenarios y percentiles, porque una media puede ocultar colas y experiencias muy lentas.
+
+## Aplicación
+
+Se establecen objetivos medibles, se identifican los cuellos de botella y se comprueba el comportamiento con cargas representativas. Cachés, procesamiento asíncrono, colas y particionamiento pueden mejorar una ruta, pero solo después de medir dónde se concentra el coste.
+
+## Trade-offs y consecuencias
+
+Optimizar latencia puede aumentar consumo, complejidad o inconsistencias de caché; maximizar throughput puede elevar la latencia de cada petición. Reservar capacidad mejora los picos, pero encarece la operación. El objetivo no es la velocidad aislada, sino cumplir los objetivos de servicio dentro de un presupuesto de recursos.
 
 ## Relaciones
 
-Se relacionará con backpressure, timeouts, colas y estrategias de escalabilidad.
+Se relaciona con backpressure, timeouts, colas y estrategias de escalabilidad: las colas absorben variación, backpressure limita la sobrecarga y el escalado aporta capacidad con costes y límites propios.

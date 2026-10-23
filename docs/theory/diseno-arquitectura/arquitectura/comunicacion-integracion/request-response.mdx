@@ -6,4 +6,22 @@ sidebar_position: 4
 
 # Request-response
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Un consumidor envía una solicitud y espera una respuesta asociada antes de continuar o decidir un resultado.
+
+## Problema
+
+Dos componentes necesitan coordinar una operación y conocer su éxito sin introducir un flujo asíncrono.
+
+## Aplicación
+
+Define contrato, timeout, errores y límites de tamaño. Mantén la operación idempotente cuando sea posible y propaga un identificador de correlación.
+
+## Beneficios y trade-offs
+
+Es fácil de entender y ofrece respuesta inmediata. Acopla disponibilidad y latencia de ambas partes; requiere timeouts, límites y estrategias ante fallos.
+
+## Relaciones
+
+Contrasta con [pub-sub](./pub-sub) y [message queues](./message-queues); se apoya en idempotencia, observabilidad y Circuit Breaker.

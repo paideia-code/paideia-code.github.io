@@ -6,4 +6,22 @@ sidebar_position: 4
 
 # Separación de responsabilidades
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Asignar a cada componente un conjunto de responsabilidades relacionadas y límites claros, de modo que cada motivo de cambio tenga un lugar comprensible.
+
+## Problema
+
+Los componentes que validan, transforman, persisten y presentan a la vez acumulan reglas incompatibles y son difíciles de probar.
+
+## Aplicación
+
+Separa políticas de negocio de mecanismos, y coordinación de detalles técnicos. Divide por responsabilidad y no solo por tipo de archivo.
+
+## Beneficios y trade-offs
+
+Facilita localizar cambios y reemplazar mecanismos. Demasiada fragmentación introduce saltos y coordinación; el límite debe justificarse por una responsabilidad o una frontera de cambio.
+
+## Relaciones
+
+Se expresa mediante [alta cohesión](./alta-cohesion), [bajo acoplamiento](./bajo-acoplamiento) y [composición sobre herencia](./composicion-sobre-herencia).

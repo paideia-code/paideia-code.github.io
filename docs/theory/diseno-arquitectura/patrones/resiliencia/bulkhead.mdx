@@ -6,7 +6,21 @@ sidebar_position: 2
 
 # Bulkhead
 
-Placeholder breve: separar pools, límites de concurrencia o cuotas evita que un consumidor agotado bloquee a los demás.
+## Intención
+
+Aislar recursos para que la saturación de una dependencia o ruta no derribe las demás.
+
+## Problema
+
+Un pool o límite global permite que una sola clase de trabajo consuma conexiones, hilos o memoria disponibles.
+
+## Solución
+
+Divide pools, cuotas o límites de concurrencia por dependencia, tenant o prioridad. Rechaza o degrada trabajo cuando una partición alcanza su límite.
+
+## Consecuencias
+
+Reduce el radio de fallo y hace controlable la capacidad, pero exige dimensionar particiones y puede dejar recursos libres en una partición mientras otra se satura.
 
 ## Relaciones
 

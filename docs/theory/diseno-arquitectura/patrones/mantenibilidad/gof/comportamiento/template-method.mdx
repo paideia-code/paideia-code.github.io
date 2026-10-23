@@ -6,4 +6,13 @@ sidebar_position: 10
 
 # Template Method
 
-Aquí se estudiará cómo fijar el flujo de un algoritmo permitiendo especializar pasos concretos.
+## Intención
+Definir el esqueleto de un algoritmo y permitir que implementaciones especialicen pasos concretos.
+## Problema
+Varios algoritmos comparten orden y coordinación, pero difieren en algunos pasos.
+## Solución
+Una plantilla fija el flujo y delega pasos variables en operaciones redefinibles o hooks.
+## Consecuencias
+Evita duplicación y controla invariantes, pero usa herencia y puede crear acoplamiento entre plantilla y subclases.
+## Relaciones
+Strategy ofrece variación por composición; Factory Method suele ser un paso variable dentro de una plantilla.

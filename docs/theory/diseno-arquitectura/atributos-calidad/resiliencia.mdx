@@ -6,8 +6,16 @@ sidebar_position: 3
 
 # Resiliencia
 
-Se estudiarán los límites de fallo, la degradación controlada y la recuperación del servicio.
+La resiliencia es la capacidad de mantener una respuesta aceptable ante fallos parciales y recuperar el servicio después de ellos. No significa ocultar cualquier error: define qué puede degradarse, durante cuánto tiempo y con qué límites.
+
+## Aplicación
+
+Se explicitan timeouts, límites de concurrencia y presupuestos de reintentos; se aíslan dependencias y se ofrece una degradación útil cuando una capacidad no está disponible. La recuperación se valida con métricas, pruebas de fallo y procedimientos operativos repetibles.
+
+## Trade-offs y consecuencias
+
+Los controles de resiliencia consumen recursos y pueden ocultar problemas si reintentan sin límite o sirven datos obsoletos. Degradar mantiene disponibilidad a costa de funcionalidad o frescura; aislar fallos protege al sistema, pero puede rechazar trabajo válido. Cada mecanismo necesita límites y señales para no convertir un fallo local en carga adicional.
 
 ## Relaciones
 
-Se relacionará con aislamiento de fallos, timeouts, retries y Circuit Breaker.
+Se relaciona con aislamiento de fallos, timeouts, retries y Circuit Breaker: los límites evitan esperas indefinidas, y los mecanismos de protección coordinan degradación y recuperación.

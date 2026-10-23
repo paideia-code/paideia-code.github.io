@@ -6,4 +6,22 @@ sidebar_position: 4
 
 # Onion
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Dispone el dominio en el centro y rodea sus reglas con anillos de aplicación, adaptadores e infraestructura. Las dependencias apuntan hacia el centro.
+
+## Problema
+
+Los detalles técnicos tienden a convertirse en el punto de partida del diseño y contaminan las reglas que deberían durar más.
+
+## Aplicación
+
+Coloca entidades y políticas en el núcleo, casos de uso en el anillo siguiente y traducciones o mecanismos en el exterior. Las interfaces necesarias para salir pertenecen al núcleo o aplicación.
+
+## Beneficios y trade-offs
+
+Hace visible la dirección de dependencias y favorece testabilidad. Puede producir demasiados anillos y mapeos si se aplica mecánicamente.
+
+## Relaciones
+
+Comparte la inversión de dependencias con [Hexagonal](./hexagonal) y [Clean](./clean); puede combinarse con DDD y un monolito modular.

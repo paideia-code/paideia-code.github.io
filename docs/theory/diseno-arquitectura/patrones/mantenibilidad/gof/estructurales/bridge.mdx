@@ -6,4 +6,13 @@ sidebar_position: 2
 
 # Bridge
 
-Aquí se estudiará cómo desacoplar abstracciones e implementaciones mediante una composición explícita.
+## Intención
+Separar una abstracción de su implementación para que ambas evolucionen de forma independiente.
+## Problema
+Una jerarquía que combina cada abstracción con cada plataforma crece combinatoriamente.
+## Solución
+La abstracción mantiene una referencia a una implementación mediante un contrato y delega en ella.
+## Consecuencias
+Reduce subclases y facilita variar dimensiones, pero añade composición y contratos que deben diseñarse con cuidado.
+## Relaciones
+Se parece a Adapter en la colaboración, pero Bridge se decide para separar variaciones desde el diseño; puede usar Strategy.

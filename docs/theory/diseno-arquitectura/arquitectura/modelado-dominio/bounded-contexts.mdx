@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Bounded contexts
 
-TODO: añadir una definición breve y su relación con el modelado del dominio.
+## Definición e intención
+
+Un bounded context es un límite dentro del cual un modelo y sus términos tienen un significado coherente y reglas explícitas.
+
+## Problema
+
+La misma palabra puede representar conceptos distintos según el proceso; compartir un modelo global introduce dependencias y excepciones difíciles de mantener.
+
+## Aplicación
+
+Identifica lenguaje y propiedad de cada contexto, define contratos de integración y traduce conceptos en la frontera. Comparte datos o tipos solo cuando el significado sea realmente común.
+
+## Beneficios y trade-offs
+
+Reduce ambigüedad y permite evolucionar modelos con autonomía. Añade mapeos, coordinación y consistencia entre contextos; un límite mal elegido solo distribuye confusión.
+
+## Relaciones
+
+Es una herramienta de [DDD](./ddd), informa módulos o servicios y se combina con eventos, Anti-Corruption Layer y contratos explícitos.

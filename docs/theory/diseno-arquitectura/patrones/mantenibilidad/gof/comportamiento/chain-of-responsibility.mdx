@@ -6,4 +6,13 @@ sidebar_position: 1
 
 # Chain of Responsibility
 
-Aquí se estudiará cómo desacoplar el emisor de una solicitud de los objetos que pueden atenderla.
+## Intención
+Pasar una solicitud por una cadena de posibles manejadores hasta que uno la atienda.
+## Problema
+Un emisor conoce demasiadas condiciones o debe cambiar cada vez que aparece un nuevo manejador.
+## Solución
+Cada manejador decide atender, transformar o delegar al siguiente; la cadena se configura fuera del emisor.
+## Consecuencias
+Reduce acoplamiento y permite reordenar políticas, pero una cadena mal configurada puede no atender, duplicar o alargar una solicitud.
+## Relaciones
+Se combina con Middleware, Command y Chain of Responsibility; requiere observabilidad del recorrido.

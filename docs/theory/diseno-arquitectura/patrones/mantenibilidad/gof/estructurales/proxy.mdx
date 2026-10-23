@@ -6,4 +6,13 @@ sidebar_position: 7
 
 # Proxy
 
-Aquí se estudiará cómo controlar, diferir o proteger el acceso a un objeto real mediante un sustituto.
+## Intención
+Controlar el acceso a un objeto real mediante otro objeto con la misma interfaz.
+## Problema
+El acceso puede requerir autorización, carga diferida, caché, registro o comunicación remota.
+## Solución
+El proxy implementa el contrato, aplica la política transversal y delega en el objeto real cuando corresponde.
+## Consecuencias
+Centraliza control y puede ahorrar trabajo, pero añade latencia, estados intermedios y riesgo de ocultar costes remotos.
+## Relaciones
+Se relaciona con Decorator; Proxy controla acceso y Decorator añade responsabilidades acumulables.

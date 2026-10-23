@@ -6,4 +6,13 @@ sidebar_position: 9
 
 # Strategy
 
-Aquí se estudiará cómo intercambiar algoritmos mediante una interfaz común y composición.
+## Intención
+Encapsular algoritmos intercambiables y permitir elegir uno mediante una interfaz común.
+## Problema
+Una política con muchos condicionales mezcla variantes y obliga a modificar el contexto para añadir algoritmos.
+## Solución
+Cada estrategia implementa el algoritmo; el contexto recibe o selecciona una estrategia y delega.
+## Consecuencias
+Facilita pruebas y extensión, pero añade objetos y puede trasladar al cliente la elección o configuración.
+## Relaciones
+Es similar a State en la delegación; Decorator añade comportamiento alrededor, Strategy sustituye el algoritmo.

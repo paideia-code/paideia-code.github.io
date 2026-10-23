@@ -6,8 +6,16 @@ sidebar_position: 5
 
 # Seguridad
 
-Se estudiarán confidencialidad, integridad, autenticación, autorización y trazabilidad.
+La seguridad protege la confidencialidad, integridad y disponibilidad de los datos y operaciones frente a usos no autorizados. Incluye autenticar quién actúa, autorizar qué puede hacer y conservar evidencias suficientes para auditarlo.
+
+## Aplicación
+
+Se diseña desde las fronteras: validar entradas, cifrar datos sensibles, aplicar mínimo privilegio y separar autenticación de autorización. Los controles deben fallar de forma segura y probarse con amenazas y permisos reales, no solo con el flujo feliz.
+
+## Trade-offs y consecuencias
+
+Los controles reducen riesgo, pero añaden latencia, complejidad operativa y fricción para usuarios y equipos. Centralizar políticas facilita la consistencia; distribuirlas puede reducir acoplamiento, pero aumenta el riesgo de configuraciones divergentes. La trazabilidad también exige proteger logs y limitar los datos que contienen.
 
 ## Relaciones
 
-Se relacionará con mínimo privilegio, defensa en profundidad y separación de responsabilidades.
+Se relaciona con mínimo privilegio, defensa en profundidad y separación de responsabilidades: juntos reducen la superficie de ataque sin confiar en una única barrera.

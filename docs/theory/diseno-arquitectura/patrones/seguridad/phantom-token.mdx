@@ -6,7 +6,21 @@ sidebar_position: 1
 
 # Phantom Token
 
-Placeholder breve: un gateway valida el token externo y entrega al backend un token interno con los claims necesarios, reduciendo la exposición de datos y credenciales.
+## Intención
+
+Separar el token presentado por un cliente del token interno que consumen los servicios.
+
+## Problema
+
+Propagar tokens externos con claims, audiencias o permisos innecesarios amplía la superficie de exposición y acopla servicios al proveedor de identidad.
+
+## Solución
+
+Un componente de confianza valida el token externo y emite un token interno de corta duración, con audiencia, identidad y permisos mínimos. Los servicios validan ese contrato y no aceptan afirmaciones no verificadas del cliente.
+
+## Consecuencias
+
+Centraliza validación y reduce exposición, pero crea dependencia del emisor interno y exige proteger claves, rotación, auditoría y disponibilidad del gateway.
 
 ## Relaciones
 

@@ -6,7 +6,21 @@ sidebar_position: 1
 
 # Correlation Identifier
 
-Placeholder breve: propagar un identificador estable entre límites permite reconstruir una solicitud distribuida y relacionar logs, métricas y trazas.
+## Intención
+
+Propagar un identificador estable para relacionar los pasos de una misma operación entre componentes.
+
+## Problema
+
+Los logs aislados no permiten reconstruir una solicitud que cruza procesos, colas o reintentos.
+
+## Solución
+
+Genera o valida el identificador en el primer límite, propágalo en mensajes y llamadas, y añádelo a logs y eventos sin incluir datos sensibles. Diferéncialo de una identidad de usuario.
+
+## Consecuencias
+
+Facilita diagnóstico y auditoría; no sustituye trazas ni debe usarse como secreto. Requiere límites de formato y cuidado para no confiar en identificadores suministrados por un actor no autenticado.
 
 ## Relaciones
 

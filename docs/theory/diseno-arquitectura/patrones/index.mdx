@@ -1,15 +1,31 @@
 ---
 title: Patrones
-description: Índice de patrones de mantenibilidad, escalabilidad, integración, resiliencia, observabilidad, seguridad y confiabilidad.
+description: Índice de patrones organizados por mantenibilidad, confiabilidad, resiliencia, observabilidad, seguridad, escalabilidad e integración.
 sidebar_position: 4
 ---
 
+import SidebarCards from '@site/src/components/SidebarCards';
+
 # Patrones
 
-import SidebarCards from '@site/src/components/SidebarCards';
+Los patrones son soluciones recurrentes para problemas de diseño en un contexto determinado. Hacen explícitas las fuerzas, la estructura y las consecuencias de una decisión; no son plantillas obligatorias ni reemplazan la evaluación de los atributos de calidad.
+
+Relacionan principios y técnicas con decisiones reutilizables. Varios patrones pueden combinarse dentro de una arquitectura, y un patrón puede contribuir a distintos atributos según cómo se aplique.
+
+## Contenido
 
 <SidebarCards />
 
-Los [patrones de mantenibilidad](/theory/diseno-arquitectura/patrones/mantenibilidad/) incluyen la familia [GoF](/theory/diseno-arquitectura/patrones/mantenibilidad/gof/) y otros patrones. Conviven aquí con familias específicas de confiabilidad y consistencia, resiliencia, observabilidad, seguridad, escalabilidad e integración y mensajería.
+Las familias siguen un orden estable: primero la evolución del código, después la corrección y la respuesta ante fallos, la visibilidad operativa, la protección y la capacidad de crecimiento. Integración y mensajería queda al final porque es una preocupación transversal de comunicación, no un atributo de calidad independiente.
 
-Los patrones de confiabilidad y consistencia incluyen [Saga](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/saga/), [Event Sourcing](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/event-sourcing/) y [Materialized View](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/materialized-view/). Los patrones de escalabilidad incluyen [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/), [Cache-Aside](/theory/diseno-arquitectura/patrones/escalabilidad/cache-aside/) y [Sharding](/theory/diseno-arquitectura/patrones/escalabilidad/sharding/).
+1. [Patrones de mantenibilidad](./mantenibilidad/)
+2. [Patrones de confiabilidad y consistencia](./confiabilidad-consistencia/)
+3. [Patrones de resiliencia](./resiliencia/)
+4. [Patrones de observabilidad](./observabilidad/)
+5. [Patrones de seguridad](./seguridad/)
+6. [Patrones de escalabilidad](./escalabilidad/)
+7. [Patrones de integración y mensajería](./integracion-mensajeria/)
+
+Los [patrones de mantenibilidad](./mantenibilidad/) incluyen la familia [GoF](./mantenibilidad/gof/) y otros patrones de diseño y aplicación.
+
+Cada patrón puede contribuir a más de un atributo y debe evaluarse junto con sus trade-offs. Por ejemplo, [Saga](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/saga/), [Event Sourcing](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/event-sourcing/) y [Materialized View](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/materialized-view/) afectan la confiabilidad y la consistencia; [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/), [Cache-Aside](/theory/diseno-arquitectura/patrones/escalabilidad/cache-aside/) y [Sharding](/theory/diseno-arquitectura/patrones/escalabilidad/sharding/) afectan la escalabilidad y el rendimiento.

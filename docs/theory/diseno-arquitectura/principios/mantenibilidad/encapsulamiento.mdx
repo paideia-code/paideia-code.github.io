@@ -6,4 +6,22 @@ sidebar_position: 3
 
 # Encapsulamiento
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Ocultar la representación y las reglas internas de un componente, exponiendo solo operaciones y datos que formen parte de su contrato.
+
+## Problema
+
+Si cualquier consumidor modifica el estado interno, las invariantes quedan repartidas por el sistema y cada cambio rompe más código.
+
+## Aplicación
+
+Protege invariantes detrás de operaciones significativas, valida entradas en el límite y evita exponer colecciones mutables o detalles de almacenamiento.
+
+## Beneficios y trade-offs
+
+Concentra reglas y permite cambiar la implementación sin cambiar consumidores. Puede requerir métodos de consulta o mapeos adicionales; encapsular no debe ocultar comportamiento necesario ni crear objetos anémicos artificiales.
+
+## Relaciones
+
+Es base del [bajo acoplamiento](./bajo-acoplamiento), la [inversión de dependencias](./inversion-dependencias) y los límites de un agregado.

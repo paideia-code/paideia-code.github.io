@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Transactional Outbox
 
-TODO: añadir una definición breve y relaciones con consistencia e integración.
+## Intención
+
+Garantizar que un cambio de estado y el mensaje que lo anuncia no se separen por un fallo entre dos sistemas.
+
+## Problema
+
+Una transacción que actualiza datos y luego publica puede perder el mensaje; publicar primero puede anunciar un cambio que no se confirmó.
+
+## Solución
+
+Guarda el cambio y un registro de salida en la misma transacción local. Un proceso posterior publica registros pendientes, marca el resultado y permite reintentos idempotentes.
+
+## Consecuencias
+
+Evita la pérdida silenciosa de eventos, pero introduce retraso, duplicados potenciales y operación de limpieza y reintento. No proporciona una transacción distribuida ni orden global.
+
+## Relaciones
+
+Se relaciona con [idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/), Idempotent Receiver y [event-driven](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/event-driven/).

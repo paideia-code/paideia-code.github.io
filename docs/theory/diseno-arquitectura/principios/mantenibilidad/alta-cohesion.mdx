@@ -6,4 +6,28 @@ sidebar_position: 2
 
 # Alta cohesión
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Mantener juntas las responsabilidades que cambian por la misma razón y separadas las que tienen motivos de cambio distintos.
+
+## Problema
+
+Un módulo que mezcla reglas de negocio, persistencia, presentación y configuración se vuelve difícil de entender y reutilizar.
+
+## Aplicación
+
+Agrupa operaciones alrededor de una capacidad del dominio y formula nombres que describan esa capacidad. Extrae una responsabilidad cuando su ciclo de cambio o sus invariantes son diferentes.
+
+## Beneficios y trade-offs
+
+Mejora la legibilidad, la localización de cambios y la testabilidad. Una cohesión excesiva puede producir módulos diminutos y aumentar la coordinación entre ellos.
+
+## Relaciones
+
+Trabaja junto con [bajo acoplamiento](./bajo-acoplamiento), [separación de responsabilidades](./separacion-responsabilidades) y vertical slicing.
+
+## Checklist
+
+- ¿Las funciones del módulo colaboran para una capacidad reconocible?
+- ¿Cambian por razones relacionadas?
+- ¿El nombre describe el conjunto sin usar “y” para unir responsabilidades ajenas?

@@ -6,4 +6,30 @@ sidebar_position: 1
 
 # Bajo acoplamiento
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Limitar cuánto necesita conocer un módulo de otros módulos. Una decisión interna debería afectar al menor número posible de consumidores.
+
+## Problema
+
+Las dependencias directas y los contratos demasiado amplios hacen que un cambio local provoque cambios en cadena y dificultan las pruebas aisladas.
+
+## Aplicación
+
+- Depender de interfaces pequeñas y estables, no de detalles de infraestructura.
+- Pasar datos o capacidades explícitas en lugar de consultar estado global.
+- Encapsular formatos externos en adaptadores en los límites.
+
+## Beneficios y trade-offs
+
+Reduce el impacto de los cambios y facilita sustituir colaboraciones, pero añade interfaces, mapeos o indirection. No conviene abstraer dependencias que aún son estables y simples.
+
+## Relaciones
+
+Se complementa con [alta cohesión](./alta-cohesion), [encapsulamiento](./encapsulamiento) e [inversión de dependencias](./inversion-dependencias); se materializa con Repository, Adapter o inyección de dependencias.
+
+## Checklist
+
+- ¿Puede probarse el módulo sin levantar sus dependencias externas?
+- ¿El contrato expone solo lo necesario?
+- ¿Un cambio en un detalle obliga a recompilar o modificar muchos consumidores?

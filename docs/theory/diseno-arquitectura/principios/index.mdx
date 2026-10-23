@@ -1,15 +1,27 @@
 ---
 title: Principios
-description: Índice de principios de diseño organizados por atributo de calidad.
+description: Reglas de diseño organizadas por atributo de calidad para orientar decisiones arquitectónicas.
 sidebar_position: 2
 ---
 
-# Principios
-
-Los principios son reglas e ideas de diseño que orientan decisiones y pueden contribuir a varios atributos de calidad; aquí se organizan por el atributo donde tienen su aplicación principal.
-
-El orden común de las categorías es: mantenibilidad, confiabilidad, resiliencia, observabilidad, seguridad, escalabilidad y rendimiento.
-
 import SidebarCards from '@site/src/components/SidebarCards';
 
+# Principios
+
+Los principios son reglas de diseño que orientan decisiones y pueden contribuir a varios atributos de calidad. Funcionan como criterios de razonamiento, no como sustitutos del análisis del contexto; aquí se agrupan por el atributo donde tienen su aplicación principal.
+
+Dentro de [Diseño y arquitectura](/theory/diseno-arquitectura/), conectan los objetivos expresados por los [atributos de calidad](/theory/diseno-arquitectura/atributos-calidad/) con técnicas aplicables y ayudan a evaluar patrones o estilos de arquitectura. Una decisión puede aplicar varios principios y producir trade-offs.
+
+## Contenido
+
 <SidebarCards />
+
+Las familias siguen este orden conceptual estable: primero la evolución del código, después la corrección y la respuesta ante fallos, la visibilidad operativa, la protección, la capacidad de crecimiento y, por último, la eficiencia.
+
+1. [Principios de mantenibilidad](./mantenibilidad/)
+2. [Principios de confiabilidad](./confiabilidad/)
+3. [Principios de resiliencia](./resiliencia/)
+4. [Principios de observabilidad](./observabilidad/)
+5. [Principios de seguridad](./seguridad/)
+6. [Principios de escalabilidad](./escalabilidad/)
+7. [Principios de rendimiento](./rendimiento/)

@@ -6,8 +6,16 @@ sidebar_position: 4
 
 # Observabilidad
 
-Se estudiarán logs, métricas, trazas y las señales necesarias para diagnosticar el comportamiento.
+La observabilidad es la capacidad de inferir el estado interno de un sistema a partir de sus salidas. Logs estructurados, métricas y trazas deben aportar contexto suficiente para distinguir síntomas, causas y alcance de un problema.
+
+## Aplicación
+
+Se instrumentan las rutas críticas con nombres estables, identificadores de correlación y señales orientadas a preguntas operativas: qué falla, para quién, desde cuándo y con qué impacto. Los paneles y alertas deben enlazar la señal con una acción o una investigación concreta.
+
+## Trade-offs y consecuencias
+
+Instrumentar mejora el diagnóstico, pero consume almacenamiento, CPU y atención; demasiadas señales producen ruido y costes sin conocimiento. La cardinalidad alta facilita analizar dimensiones específicas, pero puede hacer inviables las métricas. Los datos de telemetría también pueden contener información sensible y requieren retención y acceso controlados.
 
 ## Relaciones
 
-Se relacionará con confiabilidad, disponibilidad, correlación de mensajes y respuesta ante fallos.
+Se relaciona con confiabilidad, disponibilidad, correlación de mensajes y respuesta ante fallos: permite detectar desviaciones, seguir una operación entre componentes y verificar si una recuperación funcionó.

@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # MVC
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Separa el modelo de estado y reglas, la vista que presenta información y el controlador que coordina entradas y cambios.
+
+## Problema
+
+Mezclar representación, interacción y acceso a datos hace difícil cambiar la interfaz o probar la lógica sin un entorno completo.
+
+## Aplicación
+
+Mantén la vista enfocada en presentación, el controlador delgado y el modelo independiente del mecanismo de entrada. Define cómo se propagan cambios y quién posee la validación.
+
+## Beneficios y trade-offs
+
+Clarifica responsabilidades y permite variar presentación. En implementaciones descuidadas el controlador o el modelo se convierten en objetos gigantes; la separación no implica tres procesos.
+
+## Relaciones
+
+Es un estilo de presentación que puede convivir con [Layered](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/layered/) y arquitecturas hexagonal o Clean.

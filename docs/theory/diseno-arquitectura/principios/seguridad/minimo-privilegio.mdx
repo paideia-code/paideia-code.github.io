@@ -6,4 +6,18 @@ sidebar_position: 2
 
 # Mínimo privilegio
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Conceder a cada identidad solo las acciones, datos y duración necesarios para su tarea.
+
+## Aplicación
+
+Separa permisos de lectura y escritura, limita el alcance por recurso, usa credenciales distintas por componente y revisa accesos temporales. Deniega por defecto lo que no esté autorizado.
+
+## Beneficios y trade-offs
+
+Reduce el impacto de credenciales comprometidas y errores de código. Requiere modelar roles, operar revisiones y resolver excepciones sin convertir cuentas técnicas en permisos globales.
+
+## Relaciones
+
+Complementa [defensa en profundidad](./defensa-profundidad), [secure by default](./secure-by-default) y la validación en límites.

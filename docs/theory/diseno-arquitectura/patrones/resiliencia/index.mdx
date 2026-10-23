@@ -1,6 +1,6 @@
 ---
 title: Patrones de resiliencia y tolerancia a fallos
-description: Soluciones para absorber, aislar y recuperar fallos.
+description: Patrones para absorber fallos, aislar impactos y recuperar el servicio.
 sidebar_position: 3
 ---
 
@@ -8,10 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Patrones de resiliencia y tolerancia a fallos
 
-Agrupa patrones para aislar fallos, limitar carga y definir respuestas alternativas ante errores.
+Agrupa patrones para aislar fallos, limitar carga y definir respuestas alternativas ante errores o dependencias degradadas.
+
+## Contenido
 
 <SidebarCards />
 
 ## Relaciones
 
-Se relaciona con los [principios de resiliencia](/theory/diseno-arquitectura/principios/resiliencia/), las [técnicas de resiliencia](/theory/diseno-arquitectura/tecnicas/resiliencia/) y los atributos de [resiliencia](/theory/diseno-arquitectura/atributos-calidad/resiliencia/) y disponibilidad.
+Contribuye a los atributos de [resiliencia](/theory/diseno-arquitectura/atributos-calidad/resiliencia/) y disponibilidad. [Circuit Breaker](./circuit-breaker/), [Bulkhead](./bulkhead/) y [Retry](./retry/) se combinan, con límites explícitos, para aislar fallos y recuperar operaciones. También se relaciona con los [principios de resiliencia](/theory/diseno-arquitectura/principios/resiliencia/) y sus [técnicas](/theory/diseno-arquitectura/tecnicas/resiliencia/).

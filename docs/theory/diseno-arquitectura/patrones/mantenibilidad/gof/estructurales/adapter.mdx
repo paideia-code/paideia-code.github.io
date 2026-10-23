@@ -6,4 +6,13 @@ sidebar_position: 1
 
 # Adapter
 
-Aquí se estudiará cómo integrar una colaboración existente mediante una interfaz compatible.
+## Intención
+Convertir la interfaz de un colaborador en la que espera el cliente.
+## Problema
+Una clase útil no puede conectarse porque sus nombres, formas o convenciones no coinciden con el contrato requerido.
+## Solución
+Un adaptador implementa el contrato esperado y traduce llamadas y datos hacia el objeto adaptado.
+## Consecuencias
+Desacopla integración y permite sustituir el adaptado, a cambio de una capa de traducción y posibles pérdidas semánticas.
+## Relaciones
+Se combina con [inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/) y Facade; Decorator mantiene la interfaz en lugar de traducirla.

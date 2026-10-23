@@ -1,6 +1,6 @@
 ---
 title: Patrones de integración y mensajería
-description: Soluciones para comunicación, transporte, enrutamiento y entrega de mensajes.
+description: Patrones transversales para transportar, enrutar, transformar y entregar mensajes.
 sidebar_position: 7
 ---
 
@@ -8,12 +8,14 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Patrones de integración y mensajería
 
-Presenta patrones para transportar, enrutar, transformar y procesar mensajes entre componentes.
+Presenta patrones para transportar, enrutar, transformar y procesar mensajes entre componentes sin imponer un modelo de consistencia único.
+
+## Contenido
 
 <SidebarCards />
 
 ## Relaciones
 
-Estos patrones aplican principios de [confiabilidad](/theory/diseno-arquitectura/principios/confiabilidad/) y [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/) para integrar componentes.
+Estos patrones aplican [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/) y contribuyen a la [confiabilidad](/theory/diseno-arquitectura/atributos-calidad/confiabilidad/), la [escalabilidad](/theory/diseno-arquitectura/atributos-calidad/escalabilidad/) y la observabilidad según el transporte y las garantías elegidas.
 
-Incluye [Pipes and Filters](./pipes-and-filters/), un patrón de *Enterprise Integration Patterns* para desacoplar etapas de procesamiento de mensajes.
+Incluye [Idempotent Receiver](./idempotent-receiver/) y [Pipes and Filters](./pipes-and-filters/), patrones de *Enterprise Integration Patterns* para procesar entregas repetidas y desacoplar etapas de procesamiento.

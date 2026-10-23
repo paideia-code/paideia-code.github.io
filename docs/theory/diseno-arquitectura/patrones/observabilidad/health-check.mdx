@@ -6,7 +6,21 @@ sidebar_position: 2
 
 # Health Check
 
-Placeholder breve: separar comprobaciones de vivacidad y disponibilidad ayuda a decidir si reiniciar, retirar o enrutar tráfico a una instancia.
+## Intención
+
+Exponer señales operativas que indiquen si un proceso vive y si puede atender tráfico.
+
+## Problema
+
+Reiniciar una instancia sana por una dependencia lenta, o enviar tráfico a una instancia incapaz, empeora la recuperación.
+
+## Solución
+
+Separa vivacidad —el proceso puede continuar— de disponibilidad —puede atender una operación—. Comprueba dependencias críticas con límites y evita que el chequeo genere una carga significativa.
+
+## Consecuencias
+
+Ayuda a retirar o recuperar instancias, pero una señal mal definida puede crear bucles de reinicio o retirar todo el sistema durante una dependencia degradada.
 
 ## Relaciones
 

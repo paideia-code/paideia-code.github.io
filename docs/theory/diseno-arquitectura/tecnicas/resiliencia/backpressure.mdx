@@ -6,4 +6,22 @@ sidebar_position: 3
 
 # Backpressure
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Regular la producción de trabajo según la capacidad real de los consumidores.
+
+## Problema
+
+Si productores rápidos inundan a consumidores lentos, crecen las colas, la latencia y el consumo de memoria hasta provocar rechazo o caída.
+
+## Aplicación
+
+Usa límites de cola, ventanas de concurrencia, créditos o rechazo explícito; ralentiza al productor y comunica capacidad. Define qué trabajo se descarta o prioriza cuando se alcanza el límite.
+
+## Beneficios y trade-offs
+
+Evita saturación y mantiene latencias controlables. Puede reducir throughput aparente y obliga a diseñar políticas de pérdida, prioridad o reintento.
+
+## Relaciones
+
+Se combina con [aislamiento de fallos](./aislamiento-fallos), colas, timeouts y degradación controlada.

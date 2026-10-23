@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Organización horizontal
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Organiza el código por capas técnicas o tipos de componente: controladores, servicios, dominio, repositorios e infraestructura.
+
+## Problema
+
+Un equipo necesita convenciones simples y reutilizar mecanismos compartidos, pero debe evitar que la estructura oculte el flujo de una capacidad.
+
+## Aplicación
+
+Mantén contratos y dirección de dependencias explícitos; usa esta organización cuando los componentes transversales sean una unidad de cambio real.
+
+## Beneficios y trade-offs
+
+Es familiar y facilita localizar implementaciones del mismo tipo. Dispersa casos de uso, puede aumentar acoplamiento entre capas y favorece servicios genéricos con demasiadas responsabilidades.
+
+## Relaciones
+
+Contrasta con [vertical slicing](./vertical-slicing) y puede combinarse con el estilo [Layered](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/layered/).

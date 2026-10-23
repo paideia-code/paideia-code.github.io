@@ -1,6 +1,6 @@
 ---
 title: Arquitectura de presentación
-description: Índice de estilos para organizar vistas, coordinación de acciones y estado de presentación.
+description: Índice de estilos para organizar vistas, entradas, coordinación de acciones y estado de presentación.
 sidebar_position: 6
 ---
 
@@ -8,6 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Arquitectura de presentación
 
-Reúne estilos para separar la interfaz, la coordinación de acciones y el estado de presentación.
+Reúne estilos para separar la interfaz, la coordinación de acciones y el estado de presentación del resto del sistema.
+
+## Relaciones
+
+Estos estilos contribuyen a la mantenibilidad y deben respetar límites de seguridad y observabilidad en la entrada del sistema. Se apoyan en [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/) y [validación en límites](/theory/diseno-arquitectura/tecnicas/seguridad/validacion-en-limites/), y pueden convivir con [Layered](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/layered/), [Hexagonal](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/hexagonal/) y [Clean](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/clean/).
+
+## Contenido
 
 <SidebarCards />

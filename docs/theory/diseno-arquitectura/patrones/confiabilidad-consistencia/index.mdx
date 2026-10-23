@@ -1,6 +1,6 @@
 ---
 title: Patrones de confiabilidad y consistencia
-description: Soluciones para entrega confiable, deduplicación, consistencia y recuperación.
+description: Patrones para entregar efectos confiables y coordinar consistencia y recuperación.
 sidebar_position: 2
 ---
 
@@ -8,10 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Patrones de confiabilidad y consistencia
 
-Reúne patrones para entregar mensajes de forma confiable y mantener la consistencia entre procesos.
+Reúne patrones para entregar mensajes y efectos de forma confiable, coordinar procesos y mantener la consistencia entre modelos o servicios.
+
+## Contenido
 
 <SidebarCards />
 
 ## Relaciones
 
-Se relaciona con el principio de [idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/) y el atributo de [confiabilidad](/theory/diseno-arquitectura/atributos-calidad/confiabilidad/). [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) queda fuera de esta categoría, pero suele implicar considerar la consistencia eventual al sincronizar modelos de lectura y escritura.
+Contribuye al atributo de [confiabilidad](/theory/diseno-arquitectura/atributos-calidad/confiabilidad/) y se relaciona con el principio de [idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/). [Saga](./saga/), [Event Sourcing](./event-sourcing/) y [Materialized View](./materialized-view/) resuelven problemas complementarios de coordinación, historial y lectura; [CQRS](/theory/diseno-arquitectura/patrones/escalabilidad/cqrs/) queda fuera de esta familia, aunque suele implicar consistencia eventual.

@@ -6,8 +6,16 @@ sidebar_position: 1
 
 # Mantenibilidad
 
-Se estudiarán la legibilidad, la modularidad, la testabilidad y el coste de evolución.
+La mantenibilidad es la facilidad para comprender, cambiar, probar y operar un sistema sin introducir regresiones. Depende tanto del código como de sus límites, contratos, documentación ejecutable y capacidad de observar el efecto de un cambio.
+
+## Aplicación
+
+Se mantienen responsabilidades cohesionadas, dependencias explícitas y módulos con interfaces pequeñas. Las pruebas automatizadas protegen comportamiento relevante; la legibilidad, las convenciones y el diseño para el cambio reducen el tiempo entre descubrir una necesidad y desplegarla con confianza.
+
+## Trade-offs y consecuencias
+
+Más abstracciones y capas pueden aislar cambios, pero también aumentar indirección y coste cognitivo. La modularidad facilita pruebas y evolución independiente, aunque exige definir contratos y coordinar versiones. La mantenibilidad no consiste en evitar toda deuda, sino en hacer visible su coste y pagarla donde limita el cambio.
 
 ## Relaciones
 
-Se relacionará con bajo acoplamiento, alta cohesión, encapsulamiento y arquitectura interna.
+Se relaciona con bajo acoplamiento, alta cohesión, encapsulamiento y arquitectura interna: estos principios reducen el radio de cambio y hacen explícitas las decisiones que sostienen la evolución.

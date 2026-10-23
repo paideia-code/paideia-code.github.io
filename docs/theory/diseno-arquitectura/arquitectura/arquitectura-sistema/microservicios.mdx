@@ -6,4 +6,22 @@ sidebar_position: 3
 
 # Microservicios
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Divide el sistema en servicios desplegables de forma independiente, cada uno dueño de una capacidad y de sus decisiones operativas.
+
+## Problema
+
+Un único proceso puede impedir escalar, desplegar o aislar capacidades que tienen ritmos y riesgos diferentes.
+
+## Aplicación
+
+Define límites por dominio, contratos versionables, propiedad clara de datos y tolerancia a fallos de red. Automatiza observabilidad, despliegue y operación antes de multiplicar servicios.
+
+## Beneficios y trade-offs
+
+Permite autonomía y escalado selectivo, pero introduce latencia, consistencia eventual, fallos parciales, duplicación y coste operativo. No es una solución automática a un monolito mal modularizado.
+
+## Relaciones
+
+Se combina con [event-driven](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/event-driven/), colas, Saga, Circuit Breaker y bounded contexts.

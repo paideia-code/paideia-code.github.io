@@ -6,7 +6,21 @@ sidebar_position: 6
 
 # DTO (Data Transfer Object)
 
-Placeholder para el patrón que define estructuras de datos destinadas a cruzar límites de una aplicación, API o proceso.
+## Intención
+
+Definir una representación de datos específica para cruzar un límite de aplicación, API o proceso.
+
+## Problema
+
+Exponer entidades internas acopla consumidores a invariantes, nombres y cambios de persistencia.
+
+## Solución
+
+Modela un DTO con el contrato mínimo para la interacción y tradúcelo en el límite. Valida versión, ausencia y sensibilidad de campos; no le asignes reglas de dominio por defecto.
+
+## Consecuencias
+
+Protege el modelo y estabiliza contratos, pero añade tipos y mapeos que deben mantenerse. No es automáticamente mejor que reutilizar un tipo interno dentro de un límite controlado.
 
 ## Relaciones
 
