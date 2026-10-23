@@ -1,6 +1,6 @@
 ---
 title: Patrones de observabilidad
-description: Soluciones para identificar solicitudes y comprobar el estado operativo de un sistema.
+description: Patrones para hacer visible el comportamiento, el estado y el recorrido de las operaciones.
 sidebar_position: 4
 ---
 
@@ -8,10 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Patrones de observabilidad
 
-Reúne patrones para hacer trazable el comportamiento de componentes y dependencias.
+Reúne patrones para hacer trazable el comportamiento de componentes y dependencias y para exponer señales operativas accionables.
+
+## Contenido
 
 <SidebarCards />
 
 ## Relaciones
 
-Se relaciona con las técnicas de [observabilidad](/theory/diseno-arquitectura/tecnicas/observabilidad/).
+Contribuye al atributo de [observabilidad](/theory/diseno-arquitectura/atributos-calidad/observabilidad/). [Correlation Identifier](./correlation-identifier/) relaciona una operación entre componentes y [Health Check](./health-check/) expone su estado operativo; ambos se apoyan en las técnicas de [observabilidad](/theory/diseno-arquitectura/tecnicas/observabilidad/).

@@ -6,4 +6,22 @@ sidebar_position: 2
 
 # Message queues
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Una cola almacena trabajo hasta que un consumidor disponible lo procesa, normalmente con uno de varios consumidores compitiendo por cada mensaje.
+
+## Problema
+
+El productor y el consumidor tienen ritmos o disponibilidad diferentes y una llamada directa no debe bloquear al productor.
+
+## Aplicación
+
+Define capacidad, visibilidad, reentrega, orden, prioridad, mensajes no procesables y deduplicación. Diseña consumidores idempotentes y observa profundidad y edad de la cola.
+
+## Beneficios y trade-offs
+
+Absorbe picos y desacopla tiempos de despliegue. Añade latencia, operación, reintentos y consistencia eventual; una cola ilimitada solo oculta saturación.
+
+## Relaciones
+
+Se relaciona con [backpressure](/theory/diseno-arquitectura/tecnicas/resiliencia/backpressure/), Message Queue, Retry y [event-driven](./event-driven).

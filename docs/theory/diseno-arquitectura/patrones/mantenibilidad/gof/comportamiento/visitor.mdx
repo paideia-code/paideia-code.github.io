@@ -6,7 +6,16 @@ sidebar_position: 11
 
 # Visitor
 
-Aquí se estudiará cómo añadir operaciones a una estructura mediante doble despacho y visitantes especializados.
+## Intención
+Añadir operaciones a una estructura de elementos sin modificar cada elemento para cada operación.
+## Problema
+Muchas operaciones sobre una jerarquía hacen crecer sus clases y mezclan algoritmos con representación.
+## Solución
+Un visitante ofrece una operación por tipo y los elementos aceptan al visitante mediante doble despacho.
+## Consecuencias
+Facilita añadir operaciones, pero añadir un nuevo tipo de elemento obliga a cambiar visitantes; el acoplamiento a la estructura es explícito.
+## Relaciones
+Se combina con Composite e Iterator y aplica doble despacho; frente a Strategy, Visitor varía la operación sobre tipos existentes.
 
 ## Relaciones
 

@@ -6,4 +6,13 @@ sidebar_position: 4
 
 # Iterator
 
-Aquí se estudiará cómo recorrer colecciones mediante una interfaz de navegación uniforme.
+## Intención
+Recorrer una colección sin exponer su representación interna.
+## Problema
+Los clientes dependen de listas, árboles o índices concretos y duplican lógica de recorrido.
+## Solución
+Un iterador encapsula posición y navegación mediante operaciones uniformes; la colección lo crea o entrega.
+## Consecuencias
+Simplifica recorridos y permite varias estrategias, pero añade estado y decisiones sobre modificaciones concurrentes.
+## Relaciones
+Se combina con Composite, Visitor y Command para recorrer estructuras, aplicar operaciones o ejecutar secuencias.

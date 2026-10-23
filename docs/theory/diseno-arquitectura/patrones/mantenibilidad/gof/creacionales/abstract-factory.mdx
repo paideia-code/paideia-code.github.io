@@ -6,4 +6,13 @@ sidebar_position: 1
 
 # Abstract Factory
 
-Aquí se estudiará cómo crear familias de objetos relacionados manteniendo independiente el código cliente de sus clases concretas.
+## Intención
+Crear familias coherentes de productos relacionados sin acoplar el cliente a clases concretas.
+## Problema
+Mezclar productos de variantes incompatibles o instanciarlos directamente dispersa decisiones de configuración.
+## Solución
+Una fábrica abstracta declara operaciones para la familia y cada fábrica concreta crea una variante compatible.
+## Consecuencias
+Garantiza consistencia y sustituye familias completas, pero añadir un nuevo tipo de producto obliga a cambiar las fábricas.
+## Relaciones
+Agrupa varios Factory Method y suele apoyarse en Prototype o Builder.

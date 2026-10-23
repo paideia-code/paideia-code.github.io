@@ -1,6 +1,6 @@
 ---
 title: Arquitectura del sistema
-description: Índice de topologías y estilos de comunicación entre partes de un sistema.
+description: Índice de topologías y estilos para desplegar y escalar las partes de un sistema.
 sidebar_position: 1
 ---
 
@@ -8,10 +8,14 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Arquitectura del sistema
 
-Reúne topologías de despliegue entre componentes.
+Reúne estilos que definen cuántas unidades se despliegan, cómo se aíslan y qué autonomía tienen sus capacidades.
 
 ## Relaciones
 
-Se relaciona con [Comunicación e integración](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/) y con los atributos de escalabilidad y disponibilidad.
+Se relaciona con [Comunicación e integración](/theory/diseno-arquitectura/arquitectura/comunicacion-integracion/) y con los atributos de escalabilidad, resiliencia y confiabilidad.
+
+También aplica principios como [stateless](/theory/diseno-arquitectura/principios/escalabilidad/stateless/) y [diseñar para el fallo](/theory/diseno-arquitectura/principios/resiliencia/disenar-para-el-fallo/), y se combina con patrones como [Circuit Breaker](/theory/diseno-arquitectura/patrones/resiliencia/circuit-breaker/) y [Saga](/theory/diseno-arquitectura/patrones/confiabilidad-consistencia/saga/).
+
+## Contenido
 
 <SidebarCards />

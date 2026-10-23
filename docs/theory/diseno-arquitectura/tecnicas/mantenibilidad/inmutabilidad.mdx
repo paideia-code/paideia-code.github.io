@@ -6,7 +6,15 @@ sidebar_position: 4
 
 # Inmutabilidad
 
-Aquí se estudiará cómo diseñar valores y objetos inmutables para hacer más predecibles sus colaboraciones y pruebas.
+La inmutabilidad significa que el estado observable de un valor u objeto no cambia después de su creación. Una operación que necesita otro estado produce una nueva instancia, de modo que las referencias existentes conservan el significado que tenían.
+
+## Aplicación
+
+Se usa especialmente para valores de dominio, mensajes y datos compartidos entre tareas. Los constructores validan invariantes, las colecciones internas no se exponen para mutación y las actualizaciones devuelven copias o nuevas versiones. La frontera con recursos mutables debe ser explícita.
+
+## Trade-offs y consecuencias
+
+Reduce aliasing, efectos temporales y condiciones de carrera, por lo que simplifica pruebas y concurrencia. A cambio puede aumentar asignaciones, copias y presión de memoria; la inmutabilidad superficial tampoco protege objetos anidados mutables. Congelar todo puede complicar APIs de alto rendimiento, así que conviene aplicarla donde aporta claridad y seguridad.
 
 ## Relaciones
 

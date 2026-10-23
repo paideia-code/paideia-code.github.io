@@ -1,6 +1,6 @@
 ---
 title: Comunicación e integración
-description: Índice de estilos para comunicar componentes mediante solicitudes, eventos, publicaciones y colas.
+description: Índice de estilos para coordinar componentes mediante solicitudes, eventos, publicaciones y colas.
 sidebar_position: 2
 ---
 
@@ -8,6 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Comunicación e integración
 
-Reúne estilos de comunicación e integración entre componentes mediante solicitudes, eventos, publicaciones y colas.
+Reúne estilos de comunicación e integración entre componentes. Ordena primero la coordinación directa y después los mecanismos asíncronos basados en eventos y mensajes.
+
+## Relaciones
+
+Estos estilos afectan confiabilidad, resiliencia y observabilidad. Se apoyan en [idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/), [diseñar para el fallo](/theory/diseno-arquitectura/principios/resiliencia/disenar-para-el-fallo/) y [correlación de operaciones](/theory/diseno-arquitectura/principios/observabilidad/correlacion-de-operaciones/), y se concretan con [patrones de integración y mensajería](/theory/diseno-arquitectura/patrones/integracion-mensajeria/), [Retry](/theory/diseno-arquitectura/patrones/resiliencia/retry/) y [Correlation Identifier](/theory/diseno-arquitectura/patrones/observabilidad/correlation-identifier/).
+
+## Contenido
 
 <SidebarCards />

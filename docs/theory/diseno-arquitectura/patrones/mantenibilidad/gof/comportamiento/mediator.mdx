@@ -6,4 +6,13 @@ sidebar_position: 5
 
 # Mediator
 
-Aquí se estudiará cómo centralizar la coordinación entre objetos colaboradores.
+## Intención
+Encapsular la coordinación entre colaboradores en un objeto mediador.
+## Problema
+Las referencias directas entre muchos objetos forman una red difícil de cambiar y probar.
+## Solución
+Los colegas notifican al mediador y este decide qué colaboración ejecutar; los colegas no se conocen entre sí.
+## Consecuencias
+Reduce acoplamiento entre colegas, pero puede convertir al mediador en un objeto gigante con demasiadas reglas.
+## Relaciones
+Se parece a Facade, pero Mediator coordina interacciones; puede usar Observer para notificaciones.

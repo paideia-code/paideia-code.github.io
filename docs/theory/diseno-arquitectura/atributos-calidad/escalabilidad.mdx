@@ -6,8 +6,16 @@ sidebar_position: 6
 
 # Escalabilidad
 
-Se estudiará cómo evaluar el crecimiento vertical y horizontal, además de sus costes y límites.
+La escalabilidad es la capacidad de aumentar carga, datos o usuarios manteniendo objetivos de servicio aceptables. No equivale a añadir máquinas: exige identificar qué recurso se satura y cómo se distribuye el trabajo sin perder corrección.
+
+## Aplicación
+
+Se mide el crecimiento con escenarios de carga y se decide entre escalar verticalmente, repartir instancias horizontalmente o particionar datos y trabajo. Un diseño stateless, colas y límites explícitos suelen facilitar la distribución; el almacenamiento y las dependencias compartidas deben evaluarse por separado.
+
+## Trade-offs y consecuencias
+
+El escalado horizontal mejora capacidad y disponibilidad, pero introduce coordinación, consistencia eventual y operación distribuida. El escalado vertical es más simple hasta alcanzar límites físicos o económicos. Cachés y particiones reducen carga, aunque añaden invalidación, reequilibrado y posibles hotspots; toda estrategia tiene un techo y un coste.
 
 ## Relaciones
 
-Se relacionará con stateless, modularización, microservicios y event-driven.
+Se relaciona con stateless, modularización, microservicios y event-driven: estas opciones pueden repartir carga y aislar capacidad, pero no eliminan los límites de datos, coordinación o coste.

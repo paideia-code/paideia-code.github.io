@@ -1,6 +1,6 @@
 ---
 title: Patrones creacionales
-description: Creación y configuración de objetos.
+description: Patrones para encapsular la creación y configuración de objetos.
 sidebar_position: 1
 ---
 
@@ -8,10 +8,12 @@ import SidebarCards from '@site/src/components/SidebarCards';
 
 # Patrones creacionales
 
-Agrupa Abstract Factory, Builder, Factory Method, Prototype y Singleton.
+Agrupa, en orden conceptual, [Abstract Factory](./abstract-factory/), [Builder](./builder/), [Factory Method](./factory-method/), [Prototype](./prototype/) y [Singleton](./singleton/): familias, construcción, selección, copia y unicidad controlada.
+
+## Contenido
 
 <SidebarCards />
 
 ## Relaciones
 
-Estos patrones se relacionan con [encapsulamiento](/theory/diseno-arquitectura/principios/mantenibilidad/encapsulamiento/) y [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/) al separar la creación del uso de objetos.
+Contribuyen al atributo de [mantenibilidad](/theory/diseno-arquitectura/atributos-calidad/mantenibilidad/) al separar la creación del uso de objetos. Se relacionan con [encapsulamiento](/theory/diseno-arquitectura/principios/mantenibilidad/encapsulamiento/) y [bajo acoplamiento](/theory/diseno-arquitectura/principios/mantenibilidad/bajo-acoplamiento/); sus trade-offs afectan especialmente la extensibilidad, la complejidad y la prueba.

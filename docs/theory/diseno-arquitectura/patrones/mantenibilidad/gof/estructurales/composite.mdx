@@ -6,4 +6,13 @@ sidebar_position: 3
 
 # Composite
 
-Aquí se estudiará cómo representar jerarquías parte-todo con una interfaz común.
+## Intención
+Tratar objetos individuales y composiciones de objetos de manera uniforme.
+## Problema
+El cliente necesita recorrer o ejecutar operaciones sobre una estructura jerárquica sin distinguir hoja de contenedor.
+## Solución
+Hojas y compuestos comparten un componente; el compuesto delega la operación en sus hijos y combina resultados.
+## Consecuencias
+Simplifica clientes y representa árboles naturalmente, pero algunas operaciones no encajan igual en hojas y compuestos.
+## Relaciones
+Se combina con Iterator, Visitor y Flyweight para recorrer, operar o compartir elementos.

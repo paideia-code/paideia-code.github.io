@@ -6,4 +6,22 @@ sidebar_position: 6
 
 # Inversión de dependencias
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Las políticas estables no deben depender de mecanismos volátiles; ambos dependen de contratos, y los detalles implementan esos contratos.
+
+## Problema
+
+Cuando el dominio conoce una base de datos, un transporte o un proveedor concreto, cambiar ese detalle obliga a modificar y probar la lógica central.
+
+## Aplicación
+
+Define puertos junto a la política que los necesita y conecta adaptadores en el borde de la aplicación. La dirección de las dependencias debe apuntar hacia las reglas estables.
+
+## Beneficios y trade-offs
+
+Permite probar políticas con dobles y sustituir infraestructura. Añade composición y contratos que deben mantenerse coherentes; no justifica interfaces para cada clase.
+
+## Relaciones
+
+Se apoya en [bajo acoplamiento](./bajo-acoplamiento) y aparece en arquitecturas [hexagonal](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/hexagonal/) y [Clean](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/clean/).

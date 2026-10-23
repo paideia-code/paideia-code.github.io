@@ -1,13 +1,30 @@
 ---
 title: Arquitectura
-description: Índice de arquitecturas del sistema, comunicación e integración, organización interna, modularización, dominio y presentación.
+description: Índice de decisiones arquitectónicas sobre el sistema, la comunicación, la organización interna, la modularización, el dominio y la presentación.
 sidebar_position: 5
 ---
 
 # Arquitectura
 
-Índice de estilos y perspectivas para estructurar la topología del sistema, la comunicación e integración, sus límites internos, el dominio y la presentación.
+La arquitectura organiza límites, responsabilidades, datos, comunicación y despliegue lógico a escala del sistema. Es el resultado de coordinar decisiones guiadas por [atributos de calidad](/theory/diseno-arquitectura/atributos-calidad/), [principios](/theory/diseno-arquitectura/principios/), técnicas y [patrones](/theory/diseno-arquitectura/patrones/); no es solo un diagrama ni una elección de tecnología.
+
+Las subsecciones presentan perspectivas complementarias. El orden va de la forma global a los límites de comunicación, la organización interna, la modularización, el dominio y la presentación. Úsalas para comparar alternativas y documentar consecuencias, no como una secuencia obligatoria.
 
 import SidebarCards from '@site/src/components/SidebarCards';
 
+## Contenido
+
 <SidebarCards />
+
+## Relaciones
+
+Las arquitecturas concretan principios y patrones para alcanzar atributos de calidad. La topología del sistema afecta sobre todo a escalabilidad, resiliencia y confiabilidad; los límites internos y del dominio favorecen mantenibilidad; y la comunicación y la presentación condicionan resiliencia, observabilidad y seguridad.
+
+La navegación parte de la forma del sistema y avanza hacia sus límites, organización interna, dominio y presentación:
+
+1. [Arquitectura del sistema](./arquitectura-sistema/)
+2. [Comunicación e integración](./comunicacion-integracion/)
+3. [Arquitectura interna](./arquitectura-interna/)
+4. [Modularización y packages](./modularizacion-packages/)
+5. [Modelado del dominio](./modelado-dominio/)
+6. [Arquitectura de presentación](./arquitectura-presentacion/)

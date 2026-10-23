@@ -6,4 +6,13 @@ sidebar_position: 8
 
 # State
 
-Aquí se estudiará cómo representar estados como objetos para evitar condicionales rígidos en el contexto.
+## Intención
+Permitir que un objeto cambie su comportamiento cuando cambia su estado interno.
+## Problema
+Condicionales crecientes mezclan transiciones y comportamiento de todos los estados y se vuelven frágiles.
+## Solución
+Cada estado encapsula las operaciones y transiciones válidas; el contexto delega en el estado actual.
+## Consecuencias
+Añade estados sin condicionales centrales, pero aumenta clases y exige controlar ciclos y transiciones inválidas.
+## Relaciones
+Se combina con Strategy; State cambia por transición interna, mientras Strategy suele elegirse desde fuera.

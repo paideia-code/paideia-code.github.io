@@ -6,4 +6,18 @@ sidebar_position: 1
 
 # Defensa en profundidad
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Combinar controles independientes para que el fallo de una barrera no implique automáticamente el compromiso del sistema.
+
+## Aplicación
+
+Valida autenticación y autorización, limita red y recursos, valida entradas, cifra los canales apropiados, registra decisiones relevantes y prepara detección y respuesta. Cada capa debe aportar una protección distinta.
+
+## Beneficios y trade-offs
+
+Contiene fallos y reduce puntos únicos de compromiso. Aumenta latencia, complejidad operativa y riesgo de controles inconsistentes; prioriza barreras según amenazas reales.
+
+## Relaciones
+
+Se combina con [mínimo privilegio](./minimo-privilegio), [secure by default](./secure-by-default) y validación en límites.

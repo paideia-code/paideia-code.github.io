@@ -6,4 +6,24 @@ sidebar_position: 2
 
 # Timeouts explícitos
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Establecer un límite de tiempo para cada espera externa y decidir qué hacer cuando se alcanza.
+
+## Problema
+
+Una dependencia lenta consume hilos, conexiones y memoria; las esperas ilimitadas acumulan trabajo y convierten una degradación en una caída.
+
+## Aplicación
+
+Propaga un presupuesto de tiempo, define límites por operación y cancela o abandona el trabajo cuando expira. Diferencia timeout de fallo permanente y registra la dependencia afectada.
+
+## Beneficios y trade-offs
+
+Limita la ocupación y hace predecible la latencia. Un límite demasiado corto genera fallos evitables; uno demasiado largo retrasa la recuperación. Debe coordinarse con reintentos y circuit breakers.
+
+## Checklist
+
+- ¿Cada llamada externa tiene límite?
+- ¿El límite respeta el presupuesto de la solicitud?
+- ¿La operación es segura al cancelarse o reintentarse?

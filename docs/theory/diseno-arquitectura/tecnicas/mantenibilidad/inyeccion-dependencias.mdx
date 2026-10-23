@@ -6,7 +6,15 @@ sidebar_position: 2
 
 # Inyección de dependencias
 
-Aquí se estudiará cómo proporcionar las dependencias de un componente desde el exterior para facilitar su sustitución y prueba.
+La inyección de dependencias proporciona a un componente sus colaboraciones desde el exterior, en lugar de construirlas dentro de su lógica. El componente depende de un contrato y el ensamblado decide qué implementación concreta utilizar.
+
+## Aplicación
+
+Se reciben dependencias por constructor cuando son obligatorias, o por un mecanismo equivalente cuando su ciclo de vida lo requiere. En producción se inyectan adaptadores reales; en pruebas, dobles controlados. El contenedor, si existe, debe limitarse a componer y no esconder dependencias necesarias.
+
+## Trade-offs y consecuencias
+
+Reduce acoplamiento y facilita pruebas, pero añade configuración, interfaces y un grafo de objetos que hay que entender. Inyectar todo indiscriminadamente puede producir abstracciones artificiales o constructores enormes; la técnica aporta valor cuando una colaboración varía, tiene efectos externos o debe aislarse.
 
 ## Relaciones
 

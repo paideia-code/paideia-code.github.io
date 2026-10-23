@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Idempotencia
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Una operación es idempotente cuando repetirla con la misma intención produce el mismo efecto observable que ejecutarla una vez.
+
+## Problema
+
+Las respuestas perdidas, reintentos y entregas duplicadas son normales en sistemas distribuidos; sin idempotencia pueden crear cargos o recursos repetidos.
+
+## Aplicación
+
+Usa una clave de idempotencia o una identidad natural, registra el resultado asociado y aplica la deduplicación junto con una política de expiración. Distingue operaciones seguras de operaciones que realmente mutan estado.
+
+## Beneficios y trade-offs
+
+Permite reintentos seguros y simplifica la recuperación. Requiere almacenamiento y decidir qué significa “misma intención”; no corrige operaciones no deterministas ni sustituye transacciones.
+
+## Relaciones
+
+Se complementa con [reintentos seguros](/theory/diseno-arquitectura/tecnicas/confiabilidad/reintentos-seguros/), Idempotent Receiver y Transactional Outbox.

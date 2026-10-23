@@ -6,4 +6,13 @@ sidebar_position: 4
 
 # Prototype
 
-Aquí se estudiará cómo clonar objetos para crear variantes sin acoplarse a sus clases concretas.
+## Intención
+Crear objetos nuevos copiando una instancia prototípica en lugar de construirlos desde cero.
+## Problema
+La creación es costosa o el cliente no debe conocer la clase concreta ni todos sus parámetros.
+## Solución
+El prototipo expone una operación de copia que define la profundidad y reglas para estado compartido.
+## Consecuencias
+Facilita variantes configuradas, pero copiar referencias, identidad y recursos externos requiere una semántica explícita.
+## Relaciones
+Puede gestionarse con una fábrica y combinarse con Builder para completar la copia.

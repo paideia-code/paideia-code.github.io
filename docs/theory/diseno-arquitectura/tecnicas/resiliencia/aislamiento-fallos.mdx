@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Aislamiento de fallos
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Limitar el alcance de un fallo para que una dependencia o función agotada no consuma los recursos de todo el sistema.
+
+## Problema
+
+Pools, colas o límites compartidos permiten que una ruta problemática bloquee rutas sanas y amplifique la degradación.
+
+## Aplicación
+
+Separa pools de conexiones o concurrencia, limita colas por consumidor y asigna cuotas. Devuelve fallos controlados y conserva recursos para operaciones prioritarias.
+
+## Beneficios y trade-offs
+
+Mejora la disponibilidad parcial y hace visibles las capacidades. Introduce límites que pueden dejar recursos ociosos y requiere dimensionar y observar cada partición.
+
+## Relaciones
+
+Es la base del patrón [Bulkhead](/theory/diseno-arquitectura/patrones/resiliencia/bulkhead/), y se complementa con backpressure y Circuit Breaker.

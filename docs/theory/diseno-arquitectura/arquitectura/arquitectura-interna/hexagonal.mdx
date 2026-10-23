@@ -6,4 +6,22 @@ sidebar_position: 2
 
 # Hexagonal
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Sitúa la aplicación y sus reglas en el centro, define puertos para sus necesidades y conecta adaptadores para entradas y salidas externas.
+
+## Problema
+
+El dominio queda atado a bases de datos, interfaces o proveedores, lo que dificulta probarlo y sustituir infraestructura.
+
+## Aplicación
+
+Modela casos de uso como entradas y repositorios, mensajería o relojes como salidas. Implementa adaptadores en los bordes y compónlos fuera del núcleo.
+
+## Beneficios y trade-offs
+
+Protege las políticas y facilita pruebas con dobles. Exige disciplina para mantener puertos útiles y puede añadir mapeos; no elimina la necesidad de decidir límites de dominio.
+
+## Relaciones
+
+Materializa la [inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/), se parece a [Onion](./onion) y [Clean](./clean), y puede vivir dentro de un monolito modular.

@@ -6,4 +6,22 @@ sidebar_position: 3
 
 # Layered
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Organiza el sistema en capas con responsabilidades distintas, por ejemplo presentación, aplicación, dominio e infraestructura. Cada capa usa contratos de la capa inferior y evita conocer sus detalles internos.
+
+## Problema
+
+Sin límites explícitos, la interfaz termina ejecutando consultas, el dominio conoce transportes y los cambios atraviesan todo el código.
+
+## Aplicación
+
+Define la dirección de dependencias y las reglas de acceso entre capas. Mantén la lógica de negocio en dominio o aplicación y traduce formatos en los bordes.
+
+## Beneficios y trade-offs
+
+Es fácil de explicar y adecuado para equipos que necesitan convenciones claras. Las capas pueden introducir saltos, acoplamiento vertical y una falsa separación si se permiten atajos indiscriminados.
+
+## Relaciones
+
+Puede combinarse con [monolito modular](/theory/diseno-arquitectura/arquitectura/arquitectura-sistema/monolito-modular/) y contrasta con [hexagonal](./hexagonal), [Onion](./onion) y [Clean](./clean).

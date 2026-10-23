@@ -6,7 +6,21 @@ sidebar_position: 2
 
 # Message Queue
 
-Placeholder breve: una cola permite absorber picos, procesar de forma asíncrona y escalar consumidores independientemente del productor.
+## Intención
+
+Desacoplar la producción y el procesamiento de trabajo mediante una cola durable o limitada.
+
+## Problema
+
+Los picos o diferencias de ritmo hacen que una llamada síncrona bloquee al productor o sature al consumidor.
+
+## Solución
+
+Publica mensajes con contrato versionable; procesa con consumidores escalables, reentrega controlada, deduplicación y una política para mensajes fallidos. Mide profundidad y edad.
+
+## Consecuencias
+
+Absorbe picos y permite escalar por separado, pero añade latencia, operación y consistencia eventual. El backlog debe tener límites y una respuesta ante saturación.
 
 ## Relaciones
 

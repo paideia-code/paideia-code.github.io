@@ -6,4 +6,13 @@ sidebar_position: 4
 
 # Decorator
 
-Aquí se estudiará cómo extender comportamiento mediante composición sin modificar la clase original.
+## Intención
+Añadir responsabilidades a un objeto dinámicamente sin modificar su implementación.
+## Problema
+La herencia produce muchas subclases para combinar capacidades opcionales.
+## Solución
+Decoradores implementan la misma interfaz, contienen otro componente y envuelven su operación con comportamiento adicional.
+## Consecuencias
+Favorece composición y combinaciones flexibles, pero el orden de capas importa y puede dificultar depuración.
+## Relaciones
+Se apoya en composición y contrasta con Proxy; Strategy cambia un algoritmo, Decorator conserva la operación y la envuelve.

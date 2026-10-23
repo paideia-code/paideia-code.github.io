@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Idempotent Receiver
 
-TODO: añadir una definición breve y relaciones con idempotencia y confiabilidad.
+## Intención
+
+Procesar un mensaje repetido sin producir efectos adicionales.
+
+## Problema
+
+Las entregas al menos una vez y los reintentos pueden ejecutar dos veces una misma orden o evento.
+
+## Solución
+
+Identifica cada mensaje, registra las identidades procesadas junto con el efecto —o usa una operación naturalmente idempotente— y define expiración, concurrencia y recuperación de ese registro.
+
+## Consecuencias
+
+Permite reentregas seguras, a cambio de almacenamiento, coordinación y decisiones sobre duplicados antiguos. El registro y el efecto deben tener una relación transaccional o una estrategia explícita ante fallos.
+
+## Relaciones
+
+Aplica el principio de [idempotencia](/theory/diseno-arquitectura/principios/confiabilidad/idempotencia/) y se combina con Message Queue, Retry y Transactional Outbox.

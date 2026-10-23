@@ -6,7 +6,21 @@ sidebar_position: 1
 
 # Circuit Breaker
 
-TODO: añadir una definición breve, estados y relaciones.
+## Intención
+
+Evitar llamadas repetidas a una dependencia que está fallando y permitir que se recupere.
+
+## Problema
+
+Los fallos o timeouts persistentes ocupan recursos del cliente y multiplican la carga sobre el dependiente.
+
+## Solución
+
+El circuito pasa de **cerrado** a **abierto** al superar un umbral de fallos; en abierto rechaza llamadas durante una ventana. Después pasa a **semiabierto**, permite pruebas limitadas y vuelve a cerrado si tienen éxito o a abierto si fallan.
+
+## Consecuencias
+
+Protege recursos y hace explícita la degradación, pero puede ocultar recuperación o rechazar trabajo válido si los umbrales son malos. Requiere fallback, métricas y límites temporales.
 
 ## Relaciones
 

@@ -6,4 +6,13 @@ sidebar_position: 2
 
 # Command
 
-Aquí se estudiará cómo representar acciones como objetos independientes del invocador.
+## Intención
+Representar una solicitud como objeto para parametrizarla, encolarla o deshacerla.
+## Problema
+El invocador conoce la operación concreta y no puede registrar, retrasar o repetir acciones de forma uniforme.
+## Solución
+Un comando encapsula receptor, datos y ejecución detrás de un contrato; el invocador solo solicita ejecutar.
+## Consecuencias
+Facilita colas, auditoría y undo, pero añade objetos y exige definir identidad, errores y reversibilidad.
+## Relaciones
+Se combina con Memento para undo, Iterator para colas y Chain of Responsibility para despacho.

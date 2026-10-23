@@ -6,4 +6,13 @@ sidebar_position: 5
 
 # Singleton
 
-Aquí se estudiará cómo controlar la unicidad de una instancia y las consecuencias de compartir su acceso.
+## Intención
+Garantizar una única instancia controlada y un punto de acceso a ella.
+## Problema
+Varios objetos representan un recurso que debe ser único, pero crear instancias libremente rompe esa restricción.
+## Solución
+Restringe la creación y expone una instancia gestionada, definiendo concurrencia, ciclo de vida y configuración.
+## Consecuencias
+Controla unicidad, pero introduce estado global, acoplamiento oculto y dificultades de prueba; preferir dependencias explícitas cuando sea posible.
+## Relaciones
+Puede reemplazarse por inyección de dependencias o una fábrica; no confundir unicidad de un recurso con una variable global conveniente.

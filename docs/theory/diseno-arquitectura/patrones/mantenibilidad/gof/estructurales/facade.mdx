@@ -6,4 +6,13 @@ sidebar_position: 5
 
 # Facade
 
-Aquí se estudiará cómo ocultar la complejidad de un subsistema detrás de un punto de entrada estable.
+## Intención
+Ofrecer una interfaz sencilla y estable sobre un subsistema complejo.
+## Problema
+Los clientes conocen demasiadas clases, orden de llamadas y detalles para completar una operación.
+## Solución
+Una fachada coordina el flujo habitual y delega en componentes del subsistema; no necesita ocultar todas sus capacidades.
+## Consecuencias
+Reduce acoplamiento y mejora descubrimiento, pero puede convertirse en un punto demasiado grande si acumula lógica de dominio.
+## Relaciones
+Puede combinarse con Adapter y Mediator; a diferencia de Proxy, simplifica una interfaz y no representa necesariamente al objeto real.

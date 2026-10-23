@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Monolito
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Desplegar la aplicación como una unidad ejecutable y operable, aunque internamente pueda tener módulos y límites.
+
+## Problema
+
+Separar procesos demasiado pronto añade coordinación, latencia y operación distribuida antes de que exista una necesidad real.
+
+## Aplicación
+
+Define módulos, contratos internos y propiedad de datos; automatiza pruebas y despliegue de la unidad completa. Extrae un componente solo ante una frontera de escala, aislamiento o autonomía clara.
+
+## Beneficios y trade-offs
+
+Simplifica desarrollo, depuración y despliegue. Un monolito muy acoplado limita escalado independiente y amplía el radio de despliegue; la estructura interna determina buena parte del coste.
+
+## Relaciones
+
+Puede organizarse como [monolito modular](./monolito-modular), usar [Layered](/theory/diseno-arquitectura/arquitectura/arquitectura-interna/layered/) o evolucionar hacia microservicios.

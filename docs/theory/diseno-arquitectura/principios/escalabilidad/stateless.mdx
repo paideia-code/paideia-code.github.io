@@ -6,4 +6,22 @@ sidebar_position: 1
 
 # Stateless
 
-TODO: añadir una definición breve y ejemplos mínimos.
+## Definición e intención
+
+Un proceso atiende cada operación con la información necesaria en la solicitud o en un almacenamiento compartido, sin depender de memoria local entre solicitudes.
+
+## Problema
+
+El estado de sesión pegado a una instancia impide repartir tráfico libremente y complica reemplazos, reinicios y escalado horizontal.
+
+## Aplicación
+
+Mantén instancias intercambiables; externaliza sesiones o usa afinidad solo cuando sea una decisión explícita. Define cómo se comparte el estado y sus requisitos de consistencia.
+
+## Beneficios y trade-offs
+
+Facilita añadir o retirar instancias y recuperarse de fallos. El almacenamiento compartido añade latencia, coste y otro punto de dependencia; stateless no elimina el estado del sistema, solo cambia dónde vive.
+
+## Relaciones
+
+Se relaciona con [escalado horizontal](/theory/diseno-arquitectura/tecnicas/escalabilidad/escalado-horizontal/), cachés y colas.

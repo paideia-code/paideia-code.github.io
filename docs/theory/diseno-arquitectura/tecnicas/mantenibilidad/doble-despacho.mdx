@@ -6,7 +6,15 @@ sidebar_position: 1
 
 # Doble despacho
 
-El doble despacho es una técnica de polimorfismo que permite seleccionar una operación considerando los tipos dinámicos de dos objetos, en lugar de depender de una sola llamada virtual. Se estudiará cómo usarlo para mantener extensible la colaboración entre objetos.
+El doble despacho selecciona una operación considerando los tipos dinámicos de dos objetos. La primera llamada delega en uno de ellos y este vuelve a invocar al otro; así se resuelve la combinación de tipos sin comprobar manualmente todas las parejas con condicionales.
+
+## Aplicación
+
+Es útil cuando una operación depende de dos jerarquías, por ejemplo una colisión entre formas o una interacción entre elementos de dominio. Cada tipo participa en la decisión mediante métodos polimórficos y el código de combinación queda localizado, con pruebas para las combinaciones válidas.
+
+## Trade-offs y consecuencias
+
+Evita `if` o `switch` crecientes y hace explícitas las combinaciones, pero añade métodos y puede obligar a modificar varios tipos cuando aparece una nueva variante. Con muchas dimensiones la matriz de combinaciones crece rápidamente; en ese caso Visitor, una tabla de despacho o una estrategia distinta puede ser más clara.
 
 ## Relaciones
 

@@ -6,7 +6,21 @@ sidebar_position: 1
 
 # Cache
 
-Placeholder breve: almacenar temporalmente datos de lectura frecuente evita repetir trabajo costoso. Requiere definir expiración, invalidación y tolerancia a datos obsoletos.
+## Intención
+
+Servir datos frecuentes desde almacenamiento rápido para evitar trabajo o lecturas repetidas.
+
+## Problema
+
+Una fuente lenta o costosa no soporta la frecuencia de lectura requerida.
+
+## Solución
+
+Define clave, política de expiración, invalidación, tamaño y tolerancia a datos obsoletos. Protege la fuente ante expiraciones simultáneas y no guardes datos sensibles sin controles adecuados.
+
+## Consecuencias
+
+Reduce latencia y carga, pero añade coherencia eventual, consumo de memoria y complejidad de invalidación. El caché debe ser prescindible o tener una estrategia clara de reconstrucción.
 
 ## Relaciones
 

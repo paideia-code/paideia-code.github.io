@@ -6,4 +6,13 @@ sidebar_position: 6
 
 # Memento
 
-Aquí se estudiará cómo guardar y restaurar estados sin romper el encapsulamiento del objeto.
+## Intención
+Guardar y restaurar el estado de un objeto sin exponer su representación interna.
+## Problema
+Una operación de undo necesita una instantánea, pero permitir que otro objeto manipule internals rompe invariantes.
+## Solución
+El originador crea un memento opaco y un cuidador lo almacena y devuelve cuando hace falta.
+## Consecuencias
+Permite undo y checkpoints, a cambio de memoria, coste de copia y decisiones sobre versiones o datos sensibles.
+## Relaciones
+Se combina con Command para operaciones reversibles y Prototype cuando copiar el estado es apropiado.

@@ -6,4 +6,13 @@ sidebar_position: 2
 
 # Builder
 
-Aquí se estudiará cómo construir objetos complejos paso a paso con distintas representaciones.
+## Intención
+Separar la construcción paso a paso de un objeto complejo de su representación final.
+## Problema
+Constructores con muchos parámetros permiten combinaciones inválidas y mezclan orden de construcción con el producto.
+## Solución
+Un builder expone pasos controlados y produce el resultado; opcionalmente un director fija una secuencia reutilizable.
+## Consecuencias
+Mejora legibilidad y validación, a cambio de más tipos y posible duplicación de pasos.
+## Relaciones
+Se combina con Factory para seleccionar productos y con Prototype cuando clonar una configuración es más simple.

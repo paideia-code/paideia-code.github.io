@@ -6,4 +6,22 @@ sidebar_position: 3
 
 # Pub-sub
 
-TODO: describir brevemente el estilo y sus relaciones.
+## Definición e intención
+
+Un productor publica un evento o mensaje en un canal y varios consumidores suscritos lo reciben sin que el productor los conozca individualmente.
+
+## Problema
+
+Hay que añadir consumidores y reacciones independientes sin convertir al productor en coordinador de todos ellos.
+
+## Aplicación
+
+Define nombres y versiones de eventos, semántica de entrega, retención y manejo de duplicados. Cada suscriptor debe poder fallar y recuperarse de forma independiente.
+
+## Beneficios y trade-offs
+
+Reduce acoplamiento temporal y facilita extensiones. Hace más difícil rastrear flujos, ordenar mensajes y coordinar transacciones; suele implicar consistencia eventual.
+
+## Relaciones
+
+Es una forma de [event-driven](./event-driven) y se combina con Outbox, Idempotent Receiver y correlation identifier.
