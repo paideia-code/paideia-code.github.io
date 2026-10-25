@@ -3,6 +3,8 @@ title: Hexagonal
 description: Arquitectura que protege el núcleo de negocio mediante puertos y adaptadores para entradas y salidas.
 sidebar_position: 2
 ---
+<UnderConstruction />
+
 
 # Hexagonal
 
@@ -25,3 +27,7 @@ Protege las políticas y facilita pruebas con dobles. Exige disciplina para mant
 ## Relaciones
 
 Materializa la [inversión de dependencias](/theory/diseno-arquitectura/principios/mantenibilidad/inversion-dependencias/), se parece a [Onion](./onion) y [Clean](./clean), y puede vivir dentro de un monolito modular.
+
+## Proyectos en Paideia
+
+La [POC de arquitectura hexagonal con NestJS](/pocs/hexagonal-nest/) lleva estos conceptos a un caso concreto: una solicitud de inscripción pasa por un adaptador HTTP, un caso de uso y un puerto de persistencia implementado inicialmente en memoria.

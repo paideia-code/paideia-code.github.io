@@ -1,0 +1,62 @@
+.container {
+  margin: 1.75rem 0 2.5rem;
+}
+
+.link {
+  align-items: center;
+  background: var(--pc-primary);
+  border: 1px solid var(--pc-primary);
+  border-radius: var(--ifm-global-radius);
+  box-shadow: 0 0.35rem 0.9rem rgb(38 79 140 / 16%);
+  color: var(--pc-surface);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.65rem;
+  max-width: 100%;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  transition: background-color 160ms ease, border-color 160ms ease,
+    box-shadow 160ms ease, transform 160ms ease;
+}
+
+.link:hover {
+  background: var(--pc-accent);
+  border-color: var(--pc-accent);
+  box-shadow: 0 0.45rem 1rem rgb(184 134 25 / 22%);
+  color: var(--pc-text);
+  transform: translateY(-2px);
+}
+
+.link:focus-visible {
+  color: var(--pc-surface);
+}
+
+.link img {
+  display: block;
+  filter: brightness(0) invert(1);
+  flex: 0 0 1.15rem;
+  height: 1.15rem;
+  width: 1.15rem;
+}
+
+.link:hover img {
+  filter: none;
+}
+
+.arrow {
+  color: var(--pc-accent);
+  font-size: 1.1rem;
+  line-height: 1;
+  margin-left: 0.15rem;
+}
+
+.link:hover .arrow {
+  color: var(--pc-text);
+}
+
+@media (max-width: 480px) {
+  .link {
+    justify-content: center;
+    width: 100%;
+  }
+}

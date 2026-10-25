@@ -180,6 +180,10 @@ const config: Config = {
               label: "Template Nest REST",
               href: "https://github.com/paideia-code/paideia-template-nest-rest",
             },
+            {
+              label: "POC Hexagonal Nest",
+              href: "https://github.com/paideia-code/paideia-poc-hexagonal-nest",
+            },
           ],
         },
         {

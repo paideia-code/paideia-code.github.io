@@ -58,7 +58,7 @@ Las secciones principales de Theory siguen un orden de dependencia conceptual: c
 El estado que se indica a continuación corresponde a los índices actuales de cada pilar:
 
 - **Theory**: Fundamentos, Programación y lenguajes, Datos y comunicación, Diseño y arquitectura, Desarrollo, Testing, Metodologías, Despliegue, Tecnologías y Libros se presentan en ese orden conceptual. Diseño y arquitectura y la guía de AWS contienen material desarrollado; las páginas nuevas indican su estado mediante `<UnderConstruction>`.
-- **POCs**: por ahora la sección contiene únicamente su índice; todavía no hay fichas de POCs.
+- **POCs**: incluye las fichas de Microservices Spring y Hexagonal Nest.
 - **Templates**: por ahora la sección contiene únicamente su índice; aún no hay páginas de templates individuales.
 - **Libraries**: todavía no hay páginas de librerías; la sección queda pendiente hasta que existan las primeras.
 - **Projects**: actualmente incluye la documentación de Paideia Code Site en `docs/projects/paideia-code-site`.
@@ -74,6 +74,7 @@ Los componentes se registran globalmente vía `src/theme/MDXComponents.tsx`, por
 - `<DrawioIframe>`: embebe un diagrama de draw.io. Recibe `src`, `title` y `height`.
 - `<AwsMeta>` y `<AwsChecklist>`: componentes auxiliares para el contenido de AWS.
 - `<UnderConstruction>`: aviso reutilizable para secciones planificadas cuyo contenido todavía está en construcción. Props opcionales: `title` y children.
+- `<RepositoryLink>`: enlace destacado y responsive a un repositorio de GitHub. Recibe `href` y, opcionalmente, children para personalizar la etiqueta.
 
 `src/components` también contiene `HomepageFeatures`, utilizado por la página de inicio; no es un componente global de MDX. La demo de componentes está en la ruta `/componentes-demo`.
 
@@ -81,6 +82,7 @@ Los componentes se registran globalmente vía `src/theme/MDXComponents.tsx`, por
 
 - `/theory`
 - `/pocs`
+- `/pocs/hexagonal-nest`
 - `/templates`
 - `/libraries`
 - `/projects`

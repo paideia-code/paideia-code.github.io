@@ -55,6 +55,14 @@ const featuredRepositories = [
     documentationLabel: "Documentación",
     githubUrl: "https://github.com/paideia-code/paideia-template-nest-rest",
   },
+  {
+    category: "POCs",
+    name: "paideia-poc-hexagonal-nest",
+    description: "Arquitectura hexagonal aplicada a NestJS.",
+    documentationPath: "/pocs/hexagonal-nest",
+    documentationLabel: "Documentación",
+    githubUrl: "https://github.com/paideia-code/paideia-poc-hexagonal-nest",
+  },
 ] as const;
 
 function HomepageHeader(): ReactNode {

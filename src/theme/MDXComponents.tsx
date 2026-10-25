@@ -6,6 +6,7 @@ import DrawioIframe from '@site/src/components/DrawioIframe';
 import AwsMeta from '@site/src/components/AwsMeta';
 import AwsChecklist from '@site/src/components/AwsChecklist';
 import UnderConstruction from '@site/src/components/UnderConstruction';
+import RepositoryLink from '@site/src/components/RepositoryLink';
 
 export default {
   ...MDXComponents,
@@ -15,4 +16,5 @@ export default {
   AwsMeta,
   AwsChecklist,
   UnderConstruction,
+  RepositoryLink,
 };
