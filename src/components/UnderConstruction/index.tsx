@@ -20,7 +20,7 @@ export default function UnderConstruction({
         <div className={styles.body}>
           {children ?? (
             <p>
-              Esta sección está planificada y se encuentra en construcción. Su contenido todavía no está completo.
+              Esta sección está en construcción. Su contenido todavía no está completo.
             </p>
           )}
         </div>

@@ -1,0 +1,55 @@
+---
+slug: /nube/aws/08-practica/02-paideia-en-aws
+title: "Arquitectura progresiva de Paideia en AWS"
+sidebar_position: 2
+description: "Una evolución propuesta para desplegar Paideia por capacidades."
+unlisted: true
+---
+<UnderConstruction />
+
+
+<AwsMeta certs={['DVA-C02', 'SAA-C03']} level="avanzado" type="laboratorio" />
+
+# Arquitectura progresiva de Paideia en AWS
+
+
+> **🧭 En una mirada**
+> - **Qué es:** una evolución propuesta para desplegar Paideia por capacidades.
+> - **Por qué importa:** evita introducir contenedores, datos y Kubernetes sin una base operable.
+> - **Cómo funciona:** avanza desde ECS y datos gestionados hacia eventos, observabilidad y EKS.
+> - **Para qué se usa:** practicar decisiones reales manteniendo el alcance controlado.
+
+## Fase 1 — ECS y RDS
+
+```text
+Route 53
+   ↓
+ALB público
+   ↓
+ECS Fargate: user-service / course-service
+   ↓
+RDS PostgreSQL privado
+```
+
+Usar CloudWatch Logs, IAM task roles, ECR y Secrets Manager.
+
+## Fase 2 — S3
+
+Reemplazar MinIO para archivos de `content-service`. Mantener metadata en la base de datos y entregar URLs prefirmadas.
+
+## Fase 3 — eventos
+
+Empezar con SQS/SNS para inscripción, pago y notificación. Migrar a MSK solo si el objetivo del laboratorio requiere Kafka gestionado.
+
+## Fase 4 — seguridad y observabilidad
+
+Añadir Cognito o mantener Keycloak en ECS con una decisión documentada, CloudTrail, alarmas, trazas y secretos gestionados.
+
+## Fase 5 — Kubernetes
+
+Comparar ECS/Fargate con EKS. Llevar primero un servicio a EKS, no la plataforma completa.
+
+## Decisión de aprendizaje
+
+No convertir toda la POC en producción antes de aprender. Construir vertical slices permite relacionar cada servicio AWS con un problema real y controlar el coste.
+

@@ -1,0 +1,70 @@
+---
+title: Formato común de Theory
+description: Contrato editorial y organización reutilizable para el conocimiento de Paideia Code.
+sidebar_position: 5
+---
+
+# Formato común de Theory
+
+Theory reúne conocimiento de software e informática como biblioteca conectada y como base para recorridos de aprendizaje. AWS es el primer recorrido que utiliza la base común; las convenciones y componentes están disponibles para todas las áreas.
+
+## Contenido canónico y recorridos
+
+Mantén una página principal por tema. Los recorridos ordenan referencias a esas páginas y sus prácticas; una página puede formar parte de varios recorridos sin duplicar su explicación. Separa la identidad del contenido de su posición visible.
+
+Las relaciones deben indicar qué significan: prerrequisito, ampliación, aplicación o comparación. Un enlace relacionado no es automáticamente un requisito de lectura. Documenta las relaciones pertinentes en el contenido; el mapa puede crecer a partir de ellas sin imponer un grafo global a cada lector.
+
+## Plantillas
+
+| Tipo | Secciones que suelen aportar valor |
+|---|---|
+| Concepto, principio, patrón o técnica | Definición o intención, problema, modelo, ejemplo, límites y relaciones |
+| Lección | Objetivo, conocimientos previos, explicación, caso aplicado, práctica, quizzes y criterio para continuar |
+| Laboratorio | Objetivo, requisitos, entorno, pasos, resultado esperado, comprobación, diagnóstico y limpieza cuando aplique |
+| Referencia | Consulta rápida, contratos, sintaxis o comparaciones |
+| Portada | Alcance, mapa, contenidos disponibles y recorridos |
+
+La estructura facilita escribir; no obliga a rellenar apartados que no aportan información.
+
+## Identidad y metadatos
+
+El front matter conserva título, descripción, slug cuando sea necesario y posición de navegación. Para contenido integrado en una ruta, añade `learning_id` estable y `learning_type`. El catálogo de la ruta contiene la identidad, el enlace y el contexto que utilizan sus componentes; las comprobaciones deben mantener consistente título y dirección con el documento.
+
+```yaml
+title: Una lección
+description: Objetivo breve y concreto.
+learning_id: area-tema-estable
+learning_type: lección
+```
+
+En el primer recorrido, los datos están en `src/data/learning/aws.ts`, los tipos comunes en `src/lib/learning/types.ts` y los bancos en archivos separados. La página consume esos datos para etiquetas, objetivo y quizzes. Mantén los datos de navegación en ese lugar compartido, evitando repetir listas de etapas en la portada y Orientación.
+
+Al crear otras áreas, añade sus propios datos con los tipos y componentes comunes. Las etiquetas, requisitos y relaciones se adaptan al tema. Documenta versión o fecha de revisión cuando afecten a la validez de una explicación tecnológica. Si cambia una URL publicada, conserva compatibilidad o prepara una redirección.
+
+## Preguntas y progreso
+
+Cada pregunta requiere identificador, revisión, tema, subtema, nivel, razonamiento, alternativas, solución, explicaciones y fuente. El nivel depende del razonamiento y del contenido enseñado, sin introducir conocimientos ausentes para aumentar artificialmente la dificultad.
+
+Los quizzes preparados referencian identificadores del banco. Los bloques de práctica deben cubrirlo sin repeticiones involuntarias; identifica los repasos que reutilicen preguntas. El personalizado filtra el banco y luego sortea sin duplicados dentro del intento.
+
+Al cambiar enunciados o respuestas de forma sustantiva, incrementa las revisiones. El progreso corresponde al lector y al navegador; el estado editorial pertenece a los contenidos. Una puntuación no reemplaza la práctica ni una aprobación editorial.
+
+## Fuentes y calidad
+
+Utiliza documentación oficial de tecnologías, especificaciones, trabajos originales y bibliografía pertinente. Define términos al introducirlos, explicita supuestos y justifica comparaciones. En ejemplos usa datos ficticios. Los laboratorios que crean recursos deben explicar su retirada y verificación.
+
+Antes de entregar: verifica tipos, bancos, enlaces y construcción del sitio; revisa móvil, temas claro y oscuro, teclado, diagramas y funcionamiento de quizzes. No modifiques `build/` ni `.docusaurus/` como fuente.
+
+Para AWS, `npm run check:aws` verifica que el programa y la barra lateral tengan
+el mismo orden, que cada título coincida con el frontmatter, que los enlaces y
+la continuidad resuelvan y que los bancos correspondan a la lección. Los bloques
+preparados deben cubrir todas las preguntas; solo el repaso puede reutilizarlas.
+Esta validación editorial se ejecuta también antes de `npm run build`.
+
+El título del frontmatter es el nombre público de la lección; el archivo usa
+su equivalente semántico con guiones y sin número de orden. Mantén las URLs
+publicadas con `slug` cuando renombres archivos. Los bancos están junto al MDX y
+contienen preguntas propias con distractores plausibles; los componentes comunes
+comparten la interacción, no enunciados genéricos entre materias.
+
+Consulta la [galería de componentes](./componentes), la [guía pública de lectura](/theory/guia-de-lectura) y la [guía de práctica](/theory/practica-y-quizzes).

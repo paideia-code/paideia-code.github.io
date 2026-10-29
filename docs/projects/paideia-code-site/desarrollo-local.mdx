@@ -42,3 +42,10 @@ npm run serve
 Ante un error, lee primero la ruta y la línea indicadas por Docusaurus. Comprueba el front matter, la sintaxis MDX, los corchetes de los arrays y las props de los componentes. Después ejecuta `npm run clear` y vuelve a probar. Si el error es de TypeScript, ejecuta `npm run typecheck` para aislarlo.
 
 `.docusaurus/` y `build/` son carpetas generadas. No edites su contenido ni lo uses como fuente: se regeneran con `clear`, `start` o `build`.
+
+## Criterio de verificación
+
+Este proyecto no utiliza pruebas unitarias. No se deben crear, ampliar ni ejecutar,
+ni añadir scripts, dependencias o pasos de CI para ellas. Las comprobaciones se
+centran en tipos, construcción, enlaces y revisión funcional o visual del cambio.
+La instrucción permanente para los agentes está en el AGENTS.md del repositorio.

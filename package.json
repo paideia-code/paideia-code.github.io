@@ -3,6 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
+    "check:aws": "node scripts/check-aws-docs.cjs",
+    "prebuild": "npm run check:aws",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",

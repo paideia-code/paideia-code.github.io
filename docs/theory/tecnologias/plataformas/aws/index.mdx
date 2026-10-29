@@ -2,61 +2,40 @@
 slug: /nube/aws/
 title: AWS
 hide_title: true
-description: Contenidos sobre cloud, seguridad, datos, aplicaciones y operación en AWS.
+description: Aprende AWS desde los fundamentos hasta la operación de aplicaciones, con un programa progresivo por capítulos.
 sidebar_position: 1
+pagination_next: null
 ---
-<UnderConstruction />
 
-
-import SidebarCards from '@site/src/components/SidebarCards';
 import SectionHero from '@site/src/components/SectionHero';
+import Link from '@docusaurus/Link';
+import {awsIntro, awsBlocks} from '@site/src/data/learning/aws';
 
 <SectionHero
   eyebrow="AWS / PAIDEIA CODE"
-  title="Construir en la nube con fundamento"
-  description="Contenido práctico y progresivo para priorizar conceptos, seguridad, costes y decisiones de arquitectura mientras construyes soluciones reproducibles en AWS."
+  title="Aprender AWS con fundamento"
+  description="Comprende los conceptos, conecta los servicios y practica las decisiones que permiten construir y operar aplicaciones en la nube."
 >
-  <AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="básico" type="referencia" />
+  <div className="learning-actions">
+    <Link className="button button--primary" to={awsIntro.href}>
+      {'Empezar desde cero →'}
+    </Link>
+  </div>
 </SectionHero>
 
-:::warning Antes de empezar
-Esta guía acompaña el aprendizaje y la práctica; no sustituye la [documentación oficial de AWS](https://docs.aws.amazon.com/). Comprueba siempre los límites, precios y recomendaciones vigentes antes de usar un servicio.
-:::
+## Programa de estudio {#programa}
 
-## Contenido
+Cada lección desarrolla un tema mediante explicaciones, ejemplos y preguntas.
+El recorrido avanza desde las bases hacia redes, cómputo, datos, integración,
+seguridad, observabilidad e infraestructura. El Glosario de Bases sirve como
+referencia durante todo el recorrido.
 
-<SidebarCards />
+<CourseProgram chapters={awsBlocks} label="Programa de AWS" />
 
-## Ruta recomendada
+Las prácticas se plantean como laboratorios y POC acotadas, para comprobar
+decisiones concretas sin convertir el recorrido en un único proyecto obligatorio.
 
-<div className="aws-route">
-  Fundamentos <b>→</b> IAM + costes <b>→</b> VPC + EC2 + S3 <b>→</b> RDS + DynamoDB <b>→</b> Lambda + SQS/SNS <b>→</b> ECS/Fargate <b>→</b> Observabilidad + IaC + CI/CD <b>→</b> EKS
-</div>
+## Fuentes para profundizar
 
-<AwsChecklist
-  title="Preparación segura"
-  items={[
-    'Activar MFA.',
-    'Crear presupuesto y alertas de coste.',
-    'Configurar acceso sin claves permanentes.',
-    'Elegir región de trabajo.',
-    'Definir limpieza de recursos.',
-  ]}
-/>
-
-<Quiz
-  question="¿Qué deberías priorizar al crear una cuenta AWS de aprendizaje?"
-  options={[
-    {text: 'MFA, control de costes y acceso con roles', correct: true},
-    {text: 'Crear claves permanentes para cada aplicación'},
-    {text: 'Desplegar primero todos los servicios posibles'},
-  ]}
-  explanation="La seguridad y el control de costes deben estar preparados antes de experimentar. Los roles evitan distribuir credenciales permanentes."
-/>
-
-## Fuentes oficiales
-
-- [AWS Documentation](https://docs.aws.amazon.com/)
-- [AWS Skill Builder](https://skillbuilder.aws/)
-- [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
-- [AWS Architecture Center](https://aws.amazon.com/architecture/)
+- [Documentación oficial de AWS](https://docs.aws.amazon.com/): comportamiento y configuración de los servicios.
+- [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html): criterios para examinar decisiones de arquitectura.

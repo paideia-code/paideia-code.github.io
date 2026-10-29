@@ -1,120 +1,130 @@
 ---
-title: Componentes propios
+title: Componentes y galería didáctica
 sidebar_position: 4
 ---
-<UnderConstruction />
 
+# Componentes y galería didáctica
 
-# Componentes propios
+Los componentes comunes están registrados en `src/theme/MDXComponents.tsx` y se pueden utilizar en los documentos MDX de Theory y de los demás pilares. La apariencia se define centralmente para conservar legibilidad y significado en móvil y en temas claro y oscuro.
 
-Un componente React es una pieza reutilizable de interfaz definida como una función que recibe datos y devuelve elementos para renderizar. Esos datos se llaman **props**. En este portal, los componentes propios están registrados desde `src/theme/MDXComponents.tsx`, por lo que son globales: pueden usarse en cualquier archivo MDX sin escribir imports.
+## KnowledgeBlock
 
-No es necesario ni recomendable modificar componentes internos de Docusaurus para crear componentes propios. Añade el componente en `src/components/` y regístralo en el mapa global cuando deba estar disponible desde MDX.
-
-## `ConceptCard`
-
-### Propósito
-
-Presenta un concepto destacado dentro de una tarjeta con etiqueta visual.
-
-### Props principales
-
-| Prop | Tipo | Descripción |
-| --- | --- | --- |
-| `title` | `string` | Título requerido de la tarjeta. |
-| `type` | `definicion \| principio \| patron \| advertencia` | Tipo visual; por defecto `definicion`. |
-| contenido hijo | `ReactNode` | Explicación que aparece en el cuerpo. |
-
-### Ejemplo MDX
+Un bloque expresa su intención mediante `kind`, un título y contenido. Las variantes son `concept`, `model`, `example`, `decision`, `caution`, `error` y `check`. El color comunica intención; no identifica tecnologías.
 
 ```mdx
-<ConceptCard title="Idempotencia" type="principio">
-  Repetir una operación produce el mismo efecto que ejecutarla una sola vez.
-</ConceptCard>
+<KnowledgeBlock kind="concept" title="Una idea fundamental">
+  Explicación del concepto y sus límites.
+</KnowledgeBlock>
 ```
 
-Úsalo para definiciones, principios, patrones o advertencias que deban destacarse del texto corriente.
+<KnowledgeBlock kind="concept" title="Concepto">Definiciones, principios e ideas fundamentales.</KnowledgeBlock>
+<KnowledgeBlock kind="model" title="Modelo y relaciones">Conexiones, estructuras y modelos mentales.</KnowledgeBlock>
+<KnowledgeBlock kind="example" title="Ejemplo">Un caso concreto que permite seguir la explicación.</KnowledgeBlock>
+<KnowledgeBlock kind="decision" title="Decisión">Alternativas, criterios y consecuencias.</KnowledgeBlock>
+<KnowledgeBlock kind="caution" title="Precaución">Una condición, riesgo o límite que afecta al uso.</KnowledgeBlock>
+<KnowledgeBlock kind="error" title="Error o contraejemplo">Algo incorrecto se identifica y se analiza.</KnowledgeBlock>
+<KnowledgeBlock kind="check" title="Comprobación">Describe qué verificar; no afirma que el lector ya lo haya hecho.</KnowledgeBlock>
 
-## `Quiz`
+No conviertas cada párrafo en un bloque. Reserva el énfasis para lo que ayude a comprender o decidir.
 
-### Propósito
+## ContentMeta
 
-Renderiza una pregunta interactiva con opciones, validación de la respuesta y explicación opcional.
+Etiquetas genéricas para área, nivel, tipo y subtemas. Los campos son opcionales; una referencia breve no necesita tener un nivel ni una certificación.
 
-### Props principales
-
-| Prop | Tipo | Descripción |
-| --- | --- | --- |
-| `question` | `string` | Pregunta que se muestra al lector. |
-| `options` | `{text: string; correct?: boolean}[]` | Opciones disponibles; marca la correcta con `correct: true`. |
-| `explanation` | `string` opcional | Explicación que aparece después de comprobar. |
-
-### Ejemplo MDX
+<ContentMeta area="Informática" level="intermedio" type="referencia" topics={['Interfaces', 'Diseño']} />
 
 ```mdx
-<Quiz
-  question="¿Qué formato admite componentes React?"
-  options={[
-    {text: 'MDX', correct: true},
-    {text: 'Solo texto plano'},
-  ]}
-  explanation="MDX combina Markdown con JSX y permite usar componentes."
-/>
+<ContentMeta area="Redes" level="básico" type="lección" topics={['Conectividad']} />
 ```
 
-Úsalo para comprobar comprensión después de una explicación breve, no como sustituto de una evaluación completa.
+El rol proviene de la propiedad: `area` usa azul desaturado y `type`
+violeta. `level`, `topics`, `extra` y `responseCount` usan tonos neutros.
+El nivel y el tipo muestran su nombre de campo; ningún color depende del índice
+de la etiqueta. `responseCount` identifica las alternativas que se deben
+seleccionar y se mantiene separado de los subtemas. Se conserva la API anterior.
 
-## `DrawioIframe`
+Sin área, la primera etiqueta conserva su propio rol:
 
-### Propósito
+<ContentMeta type="referencia" topics={['Interfaces']} />
 
-Inserta un diagrama publicado por draw.io dentro de un iframe y ofrece un enlace para abrirlo aparte.
+## Checklist
 
-### Props principales
+Recibe `title`, elementos `{id, text}` y una clave `storageKey` opcional. Los identificadores deben permanecer estables al reordenar elementos. Con clave, las marcas se conservan en el navegador; sin ella, pertenecen a la sesión.
 
-| Prop | Tipo | Descripción |
-| --- | --- | --- |
-| `src` | `string` | URL requerida del visor o diagrama. |
-| `title` | `string` opcional | Título accesible del iframe; por defecto `Diagrama`. |
-| `height` | `number` opcional | Alto del iframe en píxeles; por defecto `600`. |
+<Checklist title="Revisar una explicación" storageKey="theory-gallery-review-v1" items={[{id:'objective',text:'La explicación tiene un objetivo claro.'},{id:'example',text:'El ejemplo muestra el comportamiento esperado.'},{id:'sources',text:'Las referencias permiten profundizar.'}]} />
 
-### Ejemplo MDX
+## QuizWorkbench
+
+Recibe un banco tipado y versionado. Las preguntas y sus explicaciones permanecen en los datos del tema; el componente gestiona recorrido, filtros, corrección, revisión e intentos locales.
 
 ```mdx
-<DrawioIframe
-  src="https://viewer.diagrams.net/?url=URL_CODIFICADA_DEL_DIAGRAMA"
-  title="Flujo de despliegue"
-  height={500}
-/>
+import {awsCloudBank} from '@site/src/data/learning/aws-cloud-questions';
+
+<QuizWorkbench bank={awsCloudBank} />
 ```
 
-Úsalo cuando un diagrama sea más claro que una lista o un párrafo. Verifica siempre que el recurso sea accesible para los lectores y evita poner secretos en la URL.
+El banco define preguntas y quizzes predefinidos por identificadores. `correctIds` admite una o varias respuestas. Cada alternativa tiene explicación; cada pregunta, una referencia. Al modificar la solución o el sentido, incrementa la revisión de la pregunta y la del banco para no presentar resultados antiguos como actuales.
 
-## `AwsMeta`
+Los intentos se conservan en el navegador bajo una clave propia de cada banco.
+La personalización no modifica los quizzes preparados.
 
-### Propósito
+El catálogo «Recorrido recomendado y resultados» comienza replegado y puede
+abrirse con teclado. Las lecciones insertan el componente directamente, sin un
+encabezado ni una explicación repetida sobre cuántos bloques recorren el banco.
+Para conservar un enlace existente, se puede envolver en un elemento con
+`id="practica-y-quizzes"`. La guía común de Theory explica los modos de práctica.
 
-Muestra etiquetas visuales para certificar, nivel, tipo de contenido y servicio en documentos de la ruta AWS. Úsalo justo después del front matter y antes del título o del contenido principal.
+## Navegación y relaciones
 
-### Ejemplo MDX
+`ContentCards` presenta grupos de contenidos y enlaces. `LearningPath` recibe etapas con identidad, objetivo, temas y enlace opcional. Una etapa sin enlace se presenta como planificada, sin crear una página vacía. `SectionHero` proporciona la cabecera de un área. `SidebarCards` recibe `root` cuando el índice debe mostrar las áreas de la biblioteca desde un grupo propio del menú, excluyendo su enlace actual.
+
+Los diagramas Mermaid se escriben en bloques de código `mermaid`. `DrawioIframe` sigue disponible para diagramas publicados: recibe `src`, `title` y `height`. Complementa los diagramas con una explicación legible.
+
+## Programa de estudio
+
+`CourseProgram` presenta capítulos desplegables y mantiene como máximo uno abierto.
+Recibe `chapters: LearningChapter[]` y un `label` accesible opcional. Cada capítulo
+define `id`, `title`, `description`, `topics` y, cuando se concreta su contenido,
+`lessons`. Cada lección tiene `id`, `title` y un `href` opcional: únicamente
+las que tienen enlace permiten acceder al contenido, sin una etiqueta «Disponible». Los títulos planificados no
+crean enlaces a borradores ni indican progreso personal.
+
+`LessonList` recibe la misma lista de lecciones y permite reutilizarla en el
+índice de un capítulo. Mantén los datos en el registro del área y reutilízalos
+desde ambas páginas, sin copiar títulos o disponibilidad. Los capítulos futuros
+pueden mostrar solo sus temas previstos hasta que se definan sus lecciones.
 
 ```mdx
-<AwsMeta certs={['CLF-C02', 'SAA-C03']} level="básico" type="concepto" service="Amazon S3" />
+import {awsPath} from '@site/src/data/learning/aws';
+
+<CourseProgram chapters={awsPath} />
 ```
 
-## `AwsChecklist`
+El objetivo tiene un rótulo y un estilo secundario diferenciados de la lista de lecciones, incluidas las planificadas. El programa comienza directamente con los capítulos, sin instrucciones repetidas en su cabecera.
 
-### Propósito
+El número de capítulo depende de su posición; su identidad permanece en `id`.
+No uses disponibilidad editorial como evidencia de estudio o comprensión.
 
-Presenta una lista de preparación o práctica con casillas accesibles y progreso. El estado se mantiene mientras la página está abierta y no se persiste todavía.
+## UnderConstruction y estado editorial
 
-### Ejemplo MDX
+Usa `UnderConstruction` al inicio de una página cuyo contenido está incompleto.
+El componente muestra un aviso; no publica páginas, no alimenta los índices
+automáticamente ni representa el progreso de quien estudia.
 
-```mdx
-<AwsChecklist
-  title="Preparación segura"
-  items={['Activar MFA.', 'Crear alertas de coste.', 'Definir limpieza de recursos.']}
-/>
-```
+En los recorridos, un tema planificado puede aparecer como título sin enlace.
+No crees una página vacía solo para anunciarlo. Un enlace normal basta para
+acceder a un contenido; evita añadir «Disponible» a cada entrada. Si se enlaza
+un borrador deliberadamente, debe conservar su aviso de construcción.
 
-Usa `AwsMeta` en todos los documentos AWS y reserva `AwsChecklist` para pasos que el lector pueda completar de forma verificable.
+La guía de lectura y la guía de práctica se agrupan en `docs/theory/guia`.
+Se muestran dentro del grupo «Theory», enlazado a su portada; conservan sus URLs públicas mediante `slug` explícitos.
+
+## Compatibilidad
+
+- `ConceptCard` conserva `title`, `type` y contenido. Definición y principio usan el bloque conceptual; patrón usa modelo; advertencia usa precaución.
+- `AwsMeta` conserva sus propiedades y utiliza las etiquetas comunes; certificación y servicio son datos de contexto.
+- `AwsChecklist` conserva la lista de textos y utiliza la checklist genérica sin persistencia predeterminada.
+- `Quiz` conserva su pregunta individual para documentos existentes. Usa `QuizWorkbench` cuando haya banco, recorrido o personalización.
+- `UnderConstruction` y `RepositoryLink` siguen disponibles.
+
+Consulta el [formato común de Theory](./formato-theory) y [cómo crear contenido](./crear-contenido).

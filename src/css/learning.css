@@ -1,0 +1,98 @@
+:root {
+  --learning-blue: #2259a8;
+  --learning-blue-bg: #edf4ff;
+  --learning-purple: #7440ac;
+  --learning-purple-bg: #f5efff;
+  --learning-amber: #805500;
+  --learning-amber-bg: #fff6dc;
+  --learning-green: #246542;
+  --learning-green-bg: #edf8f0;
+  --learning-red: #a62f3d;
+  --learning-red-bg: #fff0f0;
+}
+
+[data-theme='dark'] {
+  --learning-blue: #9bc5ff;
+  --learning-blue-bg: #172b44;
+  --learning-purple: #d0b0ff;
+  --learning-purple-bg: #2c2143;
+  --learning-amber: #f2cc78;
+  --learning-amber-bg: #342b18;
+  --learning-green: #9bd5b0;
+  --learning-green-bg: #183329;
+  --learning-red: #ffa8b2;
+  --learning-red-bg: #3d202b;
+}
+
+.learning-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.learning-actions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.95rem;
+  min-height: 2.5rem;
+  max-width: 100%;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.learning-actions .button p {
+  margin: 0;
+}
+
+.learning-actions .button--primary {
+  color: var(--pc-surface);
+}
+
+[data-theme='dark'] .learning-actions .button--primary {
+  color: var(--pc-bg);
+}
+
+.learning-diagram {
+  margin-block: 1.5rem;
+}
+
+.learning-diagram figcaption {
+  color: var(--pc-text-muted);
+  font-size: 0.9rem;
+}
+
+.learning-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: steps;
+}
+
+.learning-steps li {
+  counter-increment: steps;
+  padding: 0.6rem 0.8rem;
+  background: var(--pc-code-bg);
+  border-radius: 0.4rem;
+}
+
+.learning-steps li::before {
+  content: counter(steps) ' · ';
+  color: var(--learning-purple);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .learning-actions {
+    flex-direction: column;
+  }
+
+  .learning-actions .button {
+    min-height: 2.75rem;
+  }
+}

@@ -1,0 +1,149 @@
+---
+slug: /aws/iam/evaluacion-de-permisos-y-diagnostico
+title: "Evaluación de permisos y diagnóstico"
+description: "Reconstruir una solicitud AWS y localizar la capa que limita su autorización."
+learning_id: aws-iam-evaluation
+learning_type: lección
+sidebar_position: 4
+pagination_prev: tecnologias/plataformas/aws/bases/cuenta-identidad/iam-roles-y-credenciales
+pagination_next: tecnologias/plataformas/aws/redes-conectividad/redes/vpc-y-subredes
+---
+
+import {awsIamEvaluationBank} from './evaluacion-de-permisos-y-diagnostico-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Cuenta e IAM', 'Diagnóstico']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Reconstruir principal, acción, recurso y contexto de una solicitud, y comprobar
+por qué una policy permite o deniega la operación sin ampliar permisos a ciegas.
+</KnowledgeBlock>
+
+## 1. El problema: una identidad válida recibe AccessDenied
+
+[Políticas y permisos](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos)
+explica las piezas de autorización; [roles y credenciales](/theory/nube/aws/02-seguridad/01-iam/03-roles-y-credenciales)
+explica cómo se obtiene una sesión. Aquí se sigue una solicitud concreta y se
+evalúan hipótesis en orden.
+
+Antes de editar una policy, registra la operación, cuenta, región, recurso,
+instante e identificador de solicitud. Un nombre de perfil local no demuestra
+qué identidad terminó usando un SDK.
+
+## 2. Principal, acción, recurso y contexto
+
+~~~powershell
+aws sts get-caller-identity
+~~~
+
+La respuesta identifica el principal efectivo de esa llamada. Ejecútala en el
+mismo contexto de credenciales que el proceso investigado; un resultado obtenido
+en otro terminal o cuenta puede inducir a error.
+
+| Campo | Ejemplo de revisión |
+|---|---|
+| Principal | Rol asumido y cuenta reales |
+| Acción | GetObject frente a ListBucket |
+| Recurso | ARN del objeto frente a ARN del bucket |
+| Contexto | Tags, red, sesión, MFA o condición aplicable |
+| Dependencias | KMS u otra operación requerida por el servicio |
+
+Un error de autenticación por token vencido y una denegación de autorización no
+se corrigen de la misma forma. El cuerpo del error orienta; puede nombrar solo
+una de varias políticas que impiden la solicitud.
+[Diagnosticar AccessDenied](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_access-denied.html).
+
+## 3. Determinar qué políticas participan
+
+~~~mermaid
+flowchart TB
+    Q["Solicitud concreta"] --> I["Principal y credenciales"]
+    I --> P["Policies de identidad y recurso"]
+    P --> C["Controles de organización, boundary y sesión"]
+    C --> D["Denegación, falta de concesión o condición"]
+    D --> V["Cambio mínimo y verificación"]
+~~~
+
+| Capa | Pregunta |
+|---|---|
+| Identity policy | ¿La identidad tiene una concesión aplicable? |
+| Resource policy | ¿Qué principales admite o deniega el recurso? |
+| SCP / RCP aplicable | ¿La organización limita esta identidad o recurso? |
+| Permission boundary | ¿Se limita el alcance de permisos de la identidad? |
+| Session policy | ¿La sesión asumida tiene restricciones adicionales? |
+| Endpoint policy | ¿El camino privado admite esa operación? |
+| Key policy | ¿La clave permite la operación criptográfica necesaria? |
+
+Las SCPs, boundaries y session policies no conceden por sí solas todas las
+operaciones descritas en ellas. Una denegación explícita aplicable prevalece.
+
+## 4. Misma cuenta y entre cuentas
+
+No hay una única fórmula de intersección válida para todo tipo de principal y
+policy. Dentro de una cuenta, políticas de identidad y recurso pueden combinar
+concesiones; permisos dirigidos a usuarios, roles o sesiones tienen matices frente
+a límites implícitos. Entre cuentas suele requerirse concesión tanto en la cuenta
+del principal como en el recurso destino, según servicio y mecanismo.
+
+<KnowledgeBlock kind="caution" title="Comprobar el principal exacto">
+Una policy que referencia el ARN del rol no es idéntica a una concesión dirigida
+al ARN de una sesión asumida. Revisa el modelo de evaluación correspondiente
+antes de deducir que un boundary limita cualquier concesión de la misma manera.
+</KnowledgeBlock>
+
+[Lógica de evaluación](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html),
+[evaluación de acceso entre cuentas](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic-cross-account.html).
+
+## 5. Tres casos que requieren hipótesis distintas
+
+<KnowledgeBlock kind="example" title="GetObject funciona, ListBucket falla">
+La policy permite leer los objetos de un prefijo, pero no listar el bucket.
+Comprueba si listar es realmente necesario. Si lo es, añade ListBucket sobre
+el ARN del bucket con condiciones apropiadas, conservando el alcance del prefijo.
+</KnowledgeBlock>
+
+<KnowledgeBlock kind="example" title="S3 permite, KMS deniega">
+La policy de objetos es correcta, pero el objeto utiliza una clave que el rol no
+puede usar. Revisa key policy, IAM y contexto. Publicar el bucket o conceder
+s3:* no resuelve la falta de autorización criptográfica.
+</KnowledgeBlock>
+
+<KnowledgeBlock kind="example" title="Cambiaste el rol, pero el proceso usa otro">
+Un SDK obtiene credenciales de una fuente diferente a la esperada. Identifica
+el principal dentro del proceso y revisa su cadena de credenciales. No amplíes
+el rol previsto si la aplicación nunca lo asumió.
+</KnowledgeBlock>
+
+## 6. Herramientas y evidencia
+
+Access Analyzer valida gramática y prácticas de políticas, y puede aportar
+hallazgos sobre acceso según sus analizadores. Un hallazgo limpio no demuestra
+que una operación de negocio funcione de extremo a extremo.
+[Validación de políticas](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-validation.html).
+
+CloudTrail ayuda a investigar llamadas cubiertas por su configuración. Para
+operaciones de datos, revisa si esos eventos se habilitaron; ausencia de un evento
+no demuestra ausencia de actividad. Un simulador es apoyo al razonamiento y
+debe interpretarse según contexto y limitaciones.
+
+## 7. Corregir y comprobar
+
+1. Formula una hipótesis sobre una capa concreta.
+2. Revisa principal, acción, ARN y condiciones.
+3. Propón el cambio mínimo justificado.
+4. Verifica la operación prevista.
+5. Verifica también una operación que deba seguir denegada.
+6. Registra la razón y retira permisos temporales que ya no correspondan.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Explica por qué un rol puede leer un objeto pero no listarlo ni descifrar otro.
+Identifica evidencias, políticas y pruebas de acceso permitido y denegado que
+usarías antes de cerrar el diagnóstico.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsIamEvaluationBank} />
+</div>
+
+## Para continuar
+
+[VPC y subredes](/theory/nube/aws/03-redes/01-vpc-y-subredes).

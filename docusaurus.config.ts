@@ -12,10 +12,12 @@ const config: Config = {
   projectName: "paideia-code.github.io",
   deploymentBranch: "gh-pages",
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
   markdown: {
     format: "detect",
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
   },
   i18n: {
     defaultLocale: "es",
@@ -30,6 +32,21 @@ const config: Config = {
           routeBasePath: "theory",
           sidebarPath: "./sidebarsTheory.ts",
           numberPrefixParser: false,
+          sidebarItemsGenerator: async (args) => {
+            const items = await args.defaultSidebarItemsGenerator({
+              ...args,
+              docs: args.docs.filter((doc) =>
+                !doc.frontMatter.unlisted,
+              ),
+            });
+            return items
+              .filter((item) => !(item.type === "doc" && item.id === "index"))
+              .map((item) =>
+                item.type === "category" && item.label === "Theory"
+                  ? { ...item, link: { type: "doc" as const, id: "index" } }
+                  : item,
+              );
+          },
         },
         blog: false,
         theme: {

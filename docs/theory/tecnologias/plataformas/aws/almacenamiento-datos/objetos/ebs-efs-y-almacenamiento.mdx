@@ -1,0 +1,153 @@
+---
+slug: /nube/aws/04-almacenamiento/02-almacenamiento-de-bloques-y-archivos
+title: "EBS, EFS y selección de almacenamiento"
+description: "Elegir entre bloques, archivos y objetos según acceso, concurrencia, dominio de fallo y restauración."
+learning_id: aws-block-file-storage
+learning_type: lección
+sidebar_position: 2
+pagination_prev: tecnologias/plataformas/aws/almacenamiento-datos/objetos/s3
+pagination_next: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/rds
+---
+
+import {awsStorageBank} from './ebs-efs-y-almacenamiento-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Almacenamiento']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Elegir entre bloques, archivos y objetos según acceso, concurrencia, dominio de fallo y restauración.
+</KnowledgeBlock>
+
+## 1. El problema: elegir una semántica de almacenamiento
+
+Un disco de sistema, un directorio compartido y un archivo descargable no requieren
+la misma interfaz. Elegir por el tamaño del dato sin considerar operaciones,
+concurrencia y recuperación conduce a soluciones difíciles de operar.
+
+Esta lección compara almacenamiento de bloques, archivos y objetos. Como base,
+conviene comprender [EC2](/theory/nube/aws/04-computo/01-ec2) y
+[S3](/theory/nube/aws/04-almacenamiento/01-s3).
+
+| Modelo | Interfaz que recibe la aplicación | Servicio a evaluar |
+|---|---|---|
+| Bloques | Dispositivo donde crear un filesystem o motor | EBS |
+| Archivos | Árbol de archivos compartido por protocolo NFS | EFS |
+| Objetos | Operaciones API sobre claves y contenido | S3 |
+
+## 2. EBS: volumen y zona
+
+Un volumen EBS es un dispositivo de bloques asociado a una AZ. La instancia y el
+volumen adjunto deben estar en la misma AZ. El volumen puede conservarse al detener
+una instancia; al terminarla hay que revisar DeleteOnTermination.
+[Volúmenes EBS](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes.html).
+
+~~~mermaid
+flowchart LR
+    EC2["EC2 en AZ a"] --> V["EBS en AZ a"]
+    V --> SNAP["Snapshot"]
+    SNAP --> NEW["Nuevo volumen en AZ b"]
+    EC2B["EC2 en AZ b"] --> NEW
+~~~
+
+Para cambiar de AZ puedes crear otro volumen a partir de un snapshot, no adjuntar
+directamente el volumen zonal al servidor de otra AZ. La aplicación debe considerar
+el tiempo de restauración y la consistencia de los datos.
+
+## 3. Rendimiento: IOPS, throughput y latencia
+
+| Medida | Qué observa | Ejemplo de problema |
+|---|---|---|
+| IOPS | Operaciones de entrada/salida por segundo | Muchas lecturas pequeñas |
+| Throughput | Cantidad de datos por segundo | Transferencias secuenciales grandes |
+| Latencia | Tiempo de una operación | Consulta que espera al disco |
+| Cola | Trabajo esperando al dispositivo | Saturación o patrón ineficiente |
+
+El rendimiento final combina volumen, tipo de instancia, límites de EBS de la
+instancia y patrón del software. Aumentar el tamaño del volumen no siempre cambia
+la capacidad que realmente limita la operación.
+[Tipos de volumen](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html).
+
+<KnowledgeBlock kind="example" title="Disco saturado con CPU libre">
+Una base instalada en EC2 hace muchas lecturas pequeñas y acumula espera de I/O.
+Antes de duplicar CPU, el equipo revisa índices, caché del motor, latencia, IOPS
+aprovisionadas y límite de almacenamiento de la instancia.
+</KnowledgeBlock>
+
+## 4. EFS: sistema de archivos compartido
+
+EFS ofrece acceso NFS desde clientes compatibles. El filesystem se alcanza mediante
+mount targets dentro de la VPC; DNS, rutas y SG deben permitir ese tráfico. Varios
+clientes pueden compartir archivos sin que estos dependan de una única instancia.
+
+| Pieza | Decisión |
+|---|---|
+| Filesystem Regional o One Zone | Aislamiento, coste y disponibilidad requerida |
+| Mount targets | Acceso desde las AZ utilizadas |
+| Security Groups | NFS solo desde clientes previstos |
+| Access points | Directorio y contexto POSIX para una aplicación |
+| Permisos POSIX e IAM si se usa | Identidad y operaciones permitidas |
+
+No todo EFS es regional: One Zone tiene un dominio de fallo más acotado. Tampoco
+debes copiar el diseño de permisos de un disco local sin comprobar usuarios,
+grupos y acceso de los demás clientes.
+[Funcionamiento de EFS](https://docs.aws.amazon.com/efs/latest/ug/how-it-works.html),
+[tipos de filesystem](https://docs.aws.amazon.com/efs/latest/ug/features.html).
+
+## 5. Compartir no elimina coordinación
+
+Dos procesos que escriben el mismo archivo necesitan un contrato de concurrencia,
+bloqueos y recuperación compatible con la aplicación. Multi-Attach de EBS tiene
+restricciones y exige software que soporte acceso de bloques compartido; no
+transforma un filesystem corriente en uno distribuido seguro.
+
+<KnowledgeBlock kind="caution" title="No montar un disco común como solución de distribución">
+Adjuntar un volumen a varios servidores y escribir sin coordinación puede corromper
+datos. Elige un filesystem compartido o un motor distribuido cuando el software
+necesite esa semántica y verifícalo con las condiciones admitidas.
+</KnowledgeBlock>
+
+[EBS Multi-Attach](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html).
+
+## 6. Respaldo y restauración
+
+Un snapshot de EBS permite recuperar un volumen; debe acompañarse de un procedimiento
+para obtener consistencia de la aplicación. Datos pendientes en memoria pueden no
+estar reflejados. Para EFS, define backups y restauración de archivos o filesystem
+según el servicio y la política elegidos.
+
+| Pregunta | Evidencia |
+|---|---|
+| ¿Qué copia existe? | Fecha, ámbito y retención |
+| ¿Es consistente? | Procedimiento y verificación de la aplicación |
+| ¿Puede usarse en otra AZ? | Creación y montaje del recurso recuperado |
+| ¿Quién puede restaurar? | IAM, acceso a claves y red |
+| ¿Cuánto tarda? | Ejercicio medido frente al RTO |
+
+[Snapshots de EBS](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-snapshots.html).
+Un backup existente no demuestra que la aplicación arranque y reconozca los datos.
+
+## 7. Selección y diagnóstico
+
+| Caso | Primera evaluación | Motivo |
+|---|---|---|
+| Disco raíz o base autogestionada en una instancia | EBS | Acceso de bloques |
+| Archivos que comparten varias tareas Linux | EFS | Interfaz de filesystem compartido |
+| Documentos, imágenes o exportaciones por API | S3 | Claves y objetos desacoplados del cómputo |
+| Datos temporales reproducibles | Almacenamiento efímero si encaja | Evitar exigir persistencia innecesaria |
+
+Un montaje EFS fallido exige revisar DNS, mount target, SG y permisos. Un volumen
+lleno exige revisar espacio e inodos; una aplicación lenta requiere examinar
+latencia, cola, throughput e IOPS antes de atribuir el problema al proveedor.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Elige almacenamiento para un directorio compartido, un disco de sistema y un
+repositorio de documentos. Justifica interfaz, concurrencia, AZ, acceso y
+restauración. Explica qué cambia si se pierde la instancia que utiliza el dato.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsStorageBank} />
+</div>
+
+## Para continuar
+
+[Amazon RDS](/theory/nube/aws/05-datos/01-rds).

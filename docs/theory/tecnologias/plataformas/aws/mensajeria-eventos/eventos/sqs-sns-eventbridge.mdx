@@ -1,0 +1,158 @@
+---
+slug: /nube/aws/06-aplicaciones/02-mensajeria-y-eventos
+title: "SQS, SNS y EventBridge"
+description: "Elegir colas, topics o buses de eventos y diseñar procesamiento con reintentos, idempotencia y recuperación."
+learning_id: aws-messaging-events
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/cache-y-seleccion
+pagination_next: tecnologias/plataformas/aws/paquetes-dependencias/codeartifact
+---
+
+import {awsMessagingBank} from './sqs-sns-eventbridge-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Eventos']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Elegir colas, topics o buses de eventos y diseñar procesamiento con reintentos, idempotencia y recuperación.
+</KnowledgeBlock>
+
+## 1. El problema: desacoplar ritmos y responsabilidades
+
+Si el productor espera a todos sus consumidores, un fallo de correo puede impedir
+confirmar una operación válida. La mensajería permite aceptar trabajo y procesarlo
+después. A cambio, aparecen duplicados, retrasos y operaciones parcialmente
+completadas que deben tener un contrato explícito.
+
+| Necesidad | Primera evaluación |
+|---|---|
+| Repartir trabajo entre workers | SQS |
+| Distribuir una publicación a varios interesados | SNS |
+| Enrutar eventos según contenido y origen | EventBridge |
+| Consultar progreso de una operación | Estado de aplicación adicional |
+
+Un comando pide realizar una acción; un evento declara un hecho ocurrido. Nombrarlos
+con precisión permite decidir quién responde por su ejecución y qué ocurre si nadie
+los consume.
+
+## 2. SQS: recibir, procesar y borrar
+
+~~~mermaid
+flowchart LR
+    P["Productor"] --> Q["SQS"]
+    Q --> R["Receive"]
+    R --> V["Invisible temporalmente"]
+    V --> W["Procesar"]
+    W -->|Éxito| D["DeleteMessage"]
+    W -->|Sin borrar| Q
+~~~
+
+Recibir un mensaje no lo borra. El visibility timeout lo oculta temporalmente; si
+el consumidor no confirma mediante borrado, puede volver a entregarse. En Standard,
+diseña entrega al menos una vez y orden no garantizado.
+[Visibility timeout](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html).
+
+| Control | Qué cambia | Riesgo |
+|---|---|---|
+| Visibility timeout | Tiempo reservado para procesar | Corto: duplicados concurrentes; largo: recuperación lenta |
+| Long polling | Espera de recepción | Reducir consultas vacías |
+| Retention | Tiempo de conservación | No es un archivo permanente |
+| DLQ y maxReceiveCount | Aislamiento de fallos persistentes | Requiere alarma y plan de reproceso |
+| Batch | Varios registros por solicitud | Tratar éxito y error de cada registro |
+
+Un consumidor idempotente reconoce el identificador de operación y protege
+atómicamente el efecto. FIFO añade orden dentro de un message group y deduplicación
+con límites propios; no garantiza por sí sola que un efecto externo solo suceda
+una vez si el consumidor lo aplica y falla antes de confirmar.
+
+<KnowledgeBlock kind="example" title="Un correo falla después de enviar">
+El worker envía el correo y se interrumpe antes de borrar el mensaje. La entrega
+posterior puede repetirlo. Un identificador de envío y una estrategia de
+idempotencia coordinada con el proveedor reducen ese riesgo.
+</KnowledgeBlock>
+
+## 3. SNS y fan-out
+
+Un topic SNS publica a suscripciones como SQS o Lambda. Si dos servicios deben
+procesar cada evento independientemente, usa dos colas suscritas al topic. Dos
+workers en una sola cola compiten por trabajo; no reciben necesariamente una copia
+cada uno.
+[SNS con SQS](https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html).
+
+~~~mermaid
+flowchart TB
+    E["Evento confirmado"] --> T["SNS topic"]
+    T --> QA["SQS facturación"]
+    T --> QB["SQS notificaciones"]
+    QA --> A["Consumidor A"]
+    QB --> B["Consumidor B"]
+~~~
+
+Configura políticas que autoricen al topic a enviar a cada cola y revisa filtros
+de suscripción. La cola aporta buffering independiente: un consumidor lento no
+debe bloquear el progreso del otro.
+
+## 4. EventBridge y contrato de eventos
+
+EventBridge permite integrar fuentes y destinos mediante buses. En el modelo de
+bus por reglas, los patrones inspeccionan campos del evento y seleccionan targets;
+también existen modalidades de suscripción cuya elección debe revisarse en el
+servicio vigente. La idea central es declarar interés sin acoplar al productor a
+las direcciones de cada consumidor.
+[Buses de eventos](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html).
+
+Un contrato útil incluye tipo, origen, versión de esquema, identificador de evento,
+instante e identificador de la entidad. Separa hora del hecho de hora de recepción.
+Los consumidores deben tolerar campos nuevos y decidir cómo tratar eventos antiguos.
+
+EventBridge Pipes atiende integraciones punto a punto con una fuente y un destino,
+con transformación o enriquecimiento según compatibilidad. No es equivalente a
+publicar un evento para muchos interesados.
+[Pipes](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html).
+
+## 5. Publicar después de confirmar
+
+<KnowledgeBlock kind="caution" title="Guardar y publicar son dos operaciones">
+Si guardas en la base y falla la publicación, falta un evento. Si publicas y luego
+falla el guardado, anuncias un hecho inexistente. Un outbox transaccional registra
+el cambio y un evento pendiente en la misma transacción local; un publicador
+posterior lo entrega con reintentos e idempotencia.
+</KnowledgeBlock>
+
+[Patrón outbox](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html).
+
+## 6. Recuperar sin ocultar errores
+
+| Situación | Respuesta diseñada |
+|---|---|
+| Error temporal del destino | Backoff y reintentos limitados |
+| Mensaje incompatible | Conservar evidencia y enviar a DLQ según política |
+| Evento duplicado | Identificar operación ya aplicada |
+| Orden incorrecto | Versiones, secuencias o grupo de orden cuando corresponda |
+| Consumidor detenido | Retención, alarma de antigüedad y capacidad de recuperación |
+
+Una DLQ requiere propietario, alerta, diagnóstico y procedimiento de redrive.
+Reenviar todo sin corregir el mensaje o el consumidor puede reproducir la misma
+incidencia. El reproceso debe respetar idempotencia y el estado actual.
+[Dead-letter queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html).
+
+## 7. Observar y elegir
+
+Mide mensajes visibles e in-flight, antigüedad del más antiguo, errores del
+consumidor y tiempo de procesamiento. Escala por trabajo pendiente y capacidad de
+las dependencias; una cola puede absorber picos, pero también ocultar retraso.
+[SQS y CloudWatch](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html).
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña un evento que deba llegar a facturación y notificaciones. Elige topic, colas
+o bus, describe el fallo entre commit y publicación, y explica cómo recuperar un
+consumidor atrasado sin duplicar efectos.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsMessagingBank} />
+</div>
+
+## Para continuar
+
+[AWS CodeArtifact](/theory/nube/aws/06-aplicaciones/05-codeartifact).

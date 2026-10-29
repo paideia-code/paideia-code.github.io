@@ -1,0 +1,161 @@
+---
+slug: /nube/aws/07-operacion/04-fiabilidad-y-recuperacion
+title: "Fiabilidad, escalado y recuperación"
+description: "Relacionar escenarios de fallo, capacidad y recuperación con objetivos medibles y procedimientos comprobados."
+learning_id: aws-reliability-recovery
+learning_type: lección
+sidebar_position: 2
+pagination_prev: tecnologias/plataformas/aws/observabilidad-auditoria/cloudwatch/cloudwatch-metricas-logs-y-alarmas
+pagination_next: tecnologias/plataformas/aws/infraestructura-entrega/infraestructura-como-codigo/infraestructura-como-codigo
+---
+
+import {awsReliabilityBank} from './fiabilidad-escalado-y-recuperacion-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Operación']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Relacionar escenarios de fallo, capacidad y recuperación con objetivos medibles y procedimientos comprobados.
+</KnowledgeBlock>
+
+## 1. El problema: convertir continuidad en una afirmación comprobable
+
+Las lecciones de [disponibilidad](/theory/aws/fundamentos/disponibilidad-tolerancia-fallos)
+y [elasticidad](/theory/aws/fundamentos/escalabilidad-elasticidad) introdujeron los
+conceptos. Aquí los aplicamos a una carga completa: qué fallo debe soportar,
+qué servicio permanece disponible y cómo se recuperan datos y capacidad.
+
+| Objetivo | Pregunta operativa |
+|---|---|
+| SLO | ¿Qué resultado de servicio queremos mantener? |
+| RTO | ¿Cuánto tiempo de interrupción aceptamos? |
+| RPO | ¿Cuánta antigüedad de datos recuperados aceptamos? |
+| Dominio de fallo | ¿Proceso, AZ, región, dato o cambio de software? |
+
+Un objetivo sin escenario es ambiguo. Recuperar de una instancia caída y recuperar
+de corrupción de datos requieren procedimientos diferentes.
+
+## 2. Dependencias y capacidad de supervivencia
+
+~~~mermaid
+flowchart TB
+    O["Operación del usuario"] --> A["Entrada y cómputo"]
+    O --> D["Datos y claves"]
+    O --> N["DNS, red e identidad"]
+    A --> F["Escenario de pérdida"]
+    D --> F
+    N --> F
+    F --> V["Capacidad restante + recuperación"]
+~~~
+
+Identifica recursos comunes que afectan a todas las réplicas: base de datos,
+cuota, secreto, clave o configuración errónea. La distribución por AZ reduce
+ciertos fallos físicos; no evita que una mala versión llegue a todas las réplicas.
+
+<KnowledgeBlock kind="example" title="Perder media capacidad">
+Una carga utiliza dos grupos equivalentes y necesita seis unidades útiles en
+su pico. Si al perder una AZ quedan solo tres, la arquitectura tiene redundancia
+pero no capacidad suficiente para sostener ese pico. Ajusta base, margen o
+degradación y mide el resultado con el escenario real.
+</KnowledgeBlock>
+
+## 3. Salud, reintentos y degradación
+
+| Mecanismo | Función | Riesgo |
+|---|---|---|
+| Readiness | Retirar destinos que no deben recibir trabajo | Vaciar toda la flota ante una dependencia común |
+| Liveness | Reiniciar un proceso irrecuperable | Reinicios que agravan un incidente externo |
+| Timeout | Limitar tiempo de espera | Cortar trabajo cuyo resultado todavía es desconocido |
+| Retry con backoff y jitter | Recuperar fallos temporales | Amplificar carga si se repite sin límites |
+| Circuit breaker | Detener temporalmente llamadas que fallan | Necesita criterio de reapertura |
+| Degradación | Mantener operaciones esenciales | Debe ser compatible con el negocio |
+
+No compruebes toda dependencia externa en liveness. Si cae una base común,
+reiniciar todas las aplicaciones puede aumentar carga y retrasar recuperación.
+Los health checks deben corresponder al uso que hará de ellos cada controlador.
+[Resiliencia a fallos](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/withstand-component-failures.html).
+
+## 4. Escalado y límites
+
+El escalado requiere una señal relacionada con trabajo útil y tiempo para preparar
+capacidad. Revisa las cuotas y dependencias antes de diseñar el máximo. Una
+cola permite absorber trabajo, pero la antigüedad creciente puede incumplir el SLO.
+
+Aumentar réplicas multiplica conexiones, consumo de secretos y llamadas a datos.
+Usa límites de concurrencia, pools y control de admisión para proteger el cuello
+de botella. Un máximo de tareas controla una parte de la capacidad, no todo el
+coste de la cuenta.
+
+## 5. Estrategias de recuperación
+
+| Estrategia | Qué se conserva preparado | Comparación |
+|---|---|---|
+| Backup y restore | Datos y definición de infraestructura | Menor capacidad activa; recuperación más larga |
+| Pilot light | Componentes esenciales y datos | Exige completar capacidad para atender |
+| Warm standby | Entorno reducido funcional | Escalar y dirigir tráfico |
+| Activo/activo | Varias ubicaciones atienden | Mayor coste y coordinación de datos |
+
+La elección depende de RTO, RPO, presupuesto y fallos previstos. No asignes un
+tiempo garantizado a cada nombre: mide tu procedimiento y sus dependencias.
+[Estrategias de DR](https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html).
+
+## 6. Restaurar algo utilizable
+
+Un backup necesita datos, claves, IAM, configuración, artefactos y red para
+convertirse en una carga operativa. La replicación puede propagar borrados;
+conserva puntos recuperables y acceso de recuperación según el riesgo.
+
+~~~mermaid
+flowchart LR
+    B["Punto recuperable"] --> R["Restaurar"]
+    R --> C["Configurar acceso y claves"]
+    C --> V["Verificar datos y aplicación"]
+    V --> T["Dirigir tráfico"]
+    T --> M["Medir RTO y RPO"]
+~~~
+
+<KnowledgeBlock kind="caution" title="La recuperación no termina cuando existe el recurso">
+Una base restaurada puede tener endpoint distinto, permisos incompletos y datos
+anteriores. La operación debe verificar consistencia, reconciliar cambios y
+comprobar que la aplicación usa el destino correcto.
+</KnowledgeBlock>
+
+## 7. Cambios y despliegues
+
+| Patrón | Cómo introduce versión | Condición para revertir |
+|---|---|---|
+| Rolling | Sustituye parte de las réplicas | Compatibilidad entre versiones simultáneas |
+| Blue/green | Prepara otro entorno y cambia tráfico | Conservar versión y datos compatibles |
+| Canary | Envía una fracción inicial | Métricas que permitan decidir detener o ampliar |
+
+Revertir binarios no revierte automáticamente una migración destructiva. Diseña
+cambios de esquema compatibles, por ejemplo expandir antes de retirar campos,
+y separa despliegue de activación de una funcionalidad cuando ayude.
+
+## 8. Ejercicios y evidencia
+
+| Paso | Resultado esperado |
+|---|---|
+| Elegir escenario y alcance | Fallo controlado y condiciones de parada |
+| Medir antes | Línea base de servicio y capacidad |
+| Ejecutar recuperación | Tiempos de detección, decisión y restauración |
+| Verificar | Datos, operaciones y dependencias |
+| Revisar | Acciones con propietario y repetición del ejercicio |
+
+Un game day coordina un ejercicio de fallos con responsables y criterios de
+parada. Los resultados deben registrarse; una configuración prevista no acredita
+un RTO conseguido.
+[Validar fiabilidad](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/test-reliability.html).
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Define una operación con RTO y RPO y analiza pérdida de AZ y borrado accidental.
+Describe estrategia, permisos, claves, verificación y cómo impedir que los
+reintentos o un despliegue amplíen el incidente.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsReliabilityBank} />
+</div>
+
+## Para continuar
+
+[Infraestructura como código](/theory/nube/aws/07-operacion/02-infrastructure-as-code).

@@ -1,0 +1,171 @@
+---
+slug: /nube/aws/07-operacion/01-observabilidad
+title: "CloudWatch: métricas, logs y alarmas"
+description: "Construir señales, consultas y alarmas que permitan investigar un incidente y decidir una acción."
+learning_id: aws-cloudwatch
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/seguridad/seguridad-aplicada
+pagination_next: tecnologias/plataformas/aws/observabilidad-auditoria/fiabilidad-recuperacion/fiabilidad-escalado-y-recuperacion
+---
+
+import {awsCloudwatchBank} from './cloudwatch-metricas-logs-y-alarmas-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Operación']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Construir señales, consultas y alarmas que permitan investigar un incidente y decidir una acción.
+</KnowledgeBlock>
+
+## 1. El problema: investigar una operación con evidencia
+
+Una API puede estar encendida y responder lentamente. Observabilidad consiste en
+relacionar señales para saber qué ocurre, qué usuarios afecta y qué acción puede
+mejorarlo. CloudWatch ofrece métricas, logs, consultas, dashboards y alarmas;
+la aplicación debe aportar contexto de negocio y correlación.
+
+| Señal | Pregunta |
+|---|---|
+| Métrica | ¿Cuánto, con qué frecuencia y durante qué período? |
+| Log | ¿Qué evento y contexto se registró? |
+| Traza | ¿Dónde transcurrió el tiempo entre componentes? |
+| Auditoría | ¿Quién cambió un recurso AWS? |
+
+Un dashboard reúne señales, pero no toma decisiones ni demuestra por sí solo que
+la carga cumple sus objetivos.
+
+## 2. Identidad de una métrica
+
+Una serie se identifica por namespace, nombre y dimensiones. El punto incluye
+instante y valor; la consulta elige período y estadística. Una dimensión distinta
+puede producir otra serie: no es simplemente una etiqueta decorativa.
+[Conceptos de métricas](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html).
+
+| Campo | Ejemplo | Error frecuente |
+|---|---|---|
+| Namespace | AWS/Lambda o uno de aplicación | Buscar en otro servicio |
+| Nombre | Duration o Errors | Confundir conteo y tasa |
+| Dimensiones | FunctionName, InstanceId | Consultar otro recurso |
+| Período | Un minuto o cinco minutos | Ocultar picos con agregación larga |
+| Estadística | Sum, Average, Maximum, p95 | Usar Average para contar solicitudes |
+
+Para una tasa de error, relaciona conteos compatibles de errores e invocaciones.
+No promedies porcentajes de períodos con volúmenes muy diferentes sin ponderarlos.
+Un p95 no es el máximo: aproximadamente el 5 % de observaciones puede ser más lento.
+
+## 3. Recoger señales que realmente existen
+
+Las métricas disponibles dependen del servicio. EC2 no publica automáticamente
+toda la telemetría del sistema operativo invitado: memoria y uso de filesystem
+pueden requerir CloudWatch Agent u otra instrumentación.
+[CloudWatch Agent](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html).
+
+Para colas SQS usa señales como ApproximateAgeOfOldestMessage y mensajes visibles.
+IteratorAge de Lambda corresponde a fuentes de streams compatibles, no a SQS.
+[Métricas SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html).
+
+<KnowledgeBlock kind="caution" title="La cardinalidad también consume recursos">
+Un requestId por dimensión de métrica crea numerosas series. Conserva los
+identificadores individuales en logs o trazas y elige dimensiones agregables
+como servicio, entorno y operación.
+</KnowledgeBlock>
+
+## 4. Logs estructurados y consultas
+
+Un log group reúne streams; configura permisos y retención según necesidad.
+Usa JSON con campos consistentes, por ejemplo service, requestId, level,
+status y durationMs. No incluyas tokens, contraseñas o datos sensibles.
+
+~~~json
+{
+  "service": "orders",
+  "requestId": "req-42",
+  "level": "ERROR",
+  "status": 503,
+  "durationMs": 1200,
+  "message": "Dependency timeout"
+}
+~~~
+
+<KnowledgeBlock kind="example" title="Investigar errores recientes">
+Con esos campos JSON y el grupo de la aplicación seleccionado, esta consulta
+cuenta errores y estima p95 por intervalos de cinco minutos:
+</KnowledgeBlock>
+
+~~~text
+fields @timestamp, service, durationMs, level
+| filter level = "ERROR"
+| stats count(*) as errors, pct(durationMs, 95) as p95 by bin(5m), service
+| sort errors desc
+~~~
+
+El resultado describe las solicitudes con nivel ERROR filtradas, no la latencia
+de todas las solicitudes. Para estudiar una operación individual filtra por
+requestId; para latencia global elimina el filtro de errores.
+[Logs Insights QL](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html).
+
+## 5. Alarmas: señal, evaluación y acción
+
+~~~mermaid
+flowchart LR
+    M["Métrica y dimensiones"] --> E["Períodos + estadística"]
+    E --> T["Umbral y datos ausentes"]
+    T --> S["OK / ALARM / INSUFFICIENT_DATA"]
+    S --> A["Notificación o acción"]
+    A --> R["Runbook y verificación"]
+~~~
+
+Una alarma debe expresar cuándo actuar. Define umbral, período, cantidad de
+puntos requeridos, tratamiento de datos ausentes y destinatario. Dos períodos
+de cinco minutos no equivalen a diez observaciones por segundo.
+[Alarmas](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Alarms.html).
+
+| Decisión | Pregunta |
+|---|---|
+| Señal | ¿Representa impacto o un riesgo operativo? |
+| Ventana | ¿Cuánto ruido toleramos y cuánto tardamos en detectar? |
+| Ausencia de datos | ¿Es normal estar sin tráfico o indica un agente caído? |
+| Acción | ¿Quién responde y con qué procedimiento? |
+| Recuperación | ¿Cómo comprobamos que se resolvió? |
+
+Una alarma compuesta combina estados de otras alarmas y puede reducir ruido.
+No ocultes un fallo real solo para dejar el dashboard verde.
+
+## 6. Trazas y CloudTrail
+
+OpenTelemetry permite propagar contexto y registrar spans entre servicios. El
+muestreo reduce volumen, pero implica que no todas las solicitudes tendrán una
+traza completa. Conserva correlación en logs incluso cuando no se exporte una traza.
+
+CloudTrail cubre actividad AWS según configuración. Los logs de negocio explican
+quién inició una operación dentro del producto; un evento AWS con el rol del
+backend no identifica necesariamente a la persona final.
+[CloudTrail](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html).
+
+## 7. Operación y coste
+
+| Síntoma | Investigación |
+|---|---|
+| Latencia alta, CPU baja | Dependencias, conexiones, red y esperas |
+| Errores solo tras despliegue | Revisiones, configuración y tráfico afectado |
+| Alarma sin datos | Dimensiones, emisión y tratamiento de ausencias |
+| Log no aparece | Agente, driver, permisos, región y grupo |
+| Coste de observabilidad alto | Ingesta, retención, consultas y cardinalidad |
+
+Acota grupos y rango temporal en Logs Insights. Los dashboards con consultas
+frecuentes también consumen recursos. Define retención explícita en vez de
+conservar indefinidamente todo el detalle.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Elige métricas y logs para una API lenta y un worker atrasado. Diseña una alarma
+con umbral, ventana, datos ausentes y acción, y escribe una consulta que distinga
+fallos del backend de fallos de la dependencia.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsCloudwatchBank} />
+</div>
+
+## Para continuar
+
+[Fiabilidad, escalado y recuperación](/theory/nube/aws/07-operacion/04-fiabilidad-y-recuperacion).

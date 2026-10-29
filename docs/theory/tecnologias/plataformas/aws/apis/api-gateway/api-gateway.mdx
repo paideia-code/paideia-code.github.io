@@ -1,0 +1,140 @@
+---
+slug: /nube/aws/06-aplicaciones/01-lambda-y-api-gateway
+title: "API Gateway"
+description: "Elegir el tipo de API, diseñar rutas e integraciones y justificar autorización, control de tráfico y diagnóstico."
+learning_id: aws-api-gateway
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/computo/kubernetes/eks
+pagination_next: tecnologias/plataformas/aws/almacenamiento-datos/objetos/s3
+---
+
+import {awsApiGatewayBank} from './api-gateway-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['APIs']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Elegir el tipo de API, diseñar rutas e integraciones y justificar autorización, control de tráfico y diagnóstico.
+</KnowledgeBlock>
+
+## 1. El problema: publicar un contrato estable
+
+Una API necesita una dirección, rutas, autorización y una forma de controlar su
+tráfico. El backend puede cambiar de versión o tecnología mientras el contrato
+público permanece estable. API Gateway ofrece esa entrada administrada; la lógica
+de negocio y el acceso a cada dato siguen necesitando un diseño explícito.
+
+Como base, conviene comprender [Lambda](/theory/nube/aws/06-aplicaciones/01-lambda)
+y [DNS y balanceo](/theory/nube/aws/03-redes/03-dns-balanceo-y-cdn).
+Un endpoint es una dirección de entrada; una integración es el mecanismo que
+conecta una ruta con el servicio que la atenderá.
+
+## 2. Elegir HTTP, REST o WebSocket
+
+| Producto | Qué resuelve | Cuándo evaluarlo |
+|---|---|---|
+| HTTP API | Entrada HTTP con rutas, integraciones y authorizers | APIs con JWT y necesidades de gestión sencillas |
+| REST API | API HTTP con capacidades adicionales de gestión | Validación de solicitudes, API keys y usage plans por cliente |
+| WebSocket API | Comunicación persistente bidireccional | Notificaciones interactivas, chat o actualizaciones del servidor |
+
+HTTP API y REST API son nombres de productos: ambas pueden servir una API RESTful.
+No debe elegirse REST API solo porque el software utilice recursos y verbos HTTP.
+Las capacidades y costes difieren; hay que contrastarlas con el contrato.
+[Comparación oficial](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html).
+
+## 3. Ruta, integración, deployment y stage
+
+<KnowledgeBlock kind="model" title="La petición recorre varias decisiones">
+El método y la ruta seleccionan una operación; el authorizer decide si puede
+continuar; la integración transforma o transmite la petición al backend. El stage
+publica una configuración desplegada bajo un entorno o versión de acceso.
+</KnowledgeBlock>
+
+~~~mermaid
+flowchart LR
+    C["Cliente HTTPS"] --> R["Método y ruta"]
+    R --> A["Authorizer"]
+    A --> I["Integración"]
+    I --> B["Lambda / HTTP / servicio AWS"]
+    B --> O["Respuesta"]
+~~~
+
+Una integración Lambda proxy entrega un evento y espera un formato de respuesta
+compatible con la versión de payload configurada. Una integración HTTP transmite
+la solicitud a un endpoint HTTP. Para destinos privados puede intervenir un VPC
+Link y componentes compatibles de la VPC; "integrar ECS" requiere concretar ese
+camino, no señalar directamente un contenedor.
+[Integraciones HTTP privadas](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-private.html).
+
+Un deployment representa una configuración publicada y un stage la expone. Los
+detalles de publicación automática y despliegue dependen del producto. Cambiar
+una ruta en la configuración no basta si el stage continúa usando otra revisión.
+
+## 4. Autenticación y autorización
+
+| Mecanismo | Qué comprueba | Límite |
+|---|---|---|
+| IAM | Solicitud firmada por un principal AWS | No representa por sí solo al usuario de la aplicación |
+| JWT authorizer de HTTP API | Firma, emisor, audiencia y vigencia; scopes si se configuran | El backend debe comprobar propiedad y reglas de negocio |
+| Lambda authorizer | Decisión personalizada sobre la solicitud | Añade código, latencia y una política de caché |
+| API key de REST API | Identificación para gestión de consumo | No reemplaza autenticación ni autorización |
+
+Una API que valida un token sigue necesitando decidir si ese usuario puede leer
+ese pedido. Los scopes permiten expresar capacidades como orders:read; la
+propiedad del pedido debe verificarse contra el recurso.
+[JWT authorizers](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html).
+
+<KnowledgeBlock kind="caution" title="API keys y CORS tienen funciones acotadas">
+Una API key no es un sistema de login. CORS regula qué respuestas puede leer un
+navegador desde otro origen; clientes fuera del navegador pueden llamar igualmente
+a la API. Aplica autorización a cada ruta protegida.
+</KnowledgeBlock>
+
+## 5. Control de tráfico y tiempos
+
+Throttling controla tasas y ráfagas; el cliente debe tratar respuestas 429 con
+reintentos limitados y espera. Los usage plans de REST API permiten atribuir
+consumo por API key, pero sus cuotas se aplican con mejor esfuerzo: no son un
+techo económico estricto.
+[Usage plans y límites](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html).
+
+Alinea timeout del cliente, gateway, integración y backend. Si la operación excede
+el tiempo de integración, hacer más largo el timeout de Lambda no resuelve la
+espera del cliente. Para trabajos extensos, acepta la tarea, devuelve un
+identificador y ofrece consulta de estado o notificación posterior. El cliente
+que reintenta una escritura necesita una clave de idempotencia.
+
+<KnowledgeBlock kind="example" title="Aceptar una generación de informe">
+POST /reports valida identidad y parámetros, registra un trabajo y responde 202
+con su identificador. Un consumidor procesa el informe y GET /reports/id devuelve
+su estado. La duración del cálculo deja de mantener abierta la petición inicial.
+</KnowledgeBlock>
+
+## 6. Diagnóstico por capas
+
+| Síntoma | Evidencia y revisión |
+|---|---|
+| 401 o 403 | Token, authorizer, scopes y políticas aplicables |
+| 429 | Cuotas, throttling y reintentos del cliente |
+| 5xx de integración | Permiso de invocar, formato de respuesta, red y errores del backend |
+| Respuesta antigua | Stage, deployment y configuración publicada |
+| Funciona fuera del navegador | Revisar CORS, sin relajar autorización |
+
+Habilita access logs útiles con identificador de solicitud, ruta, estado y
+latencia. Correlaciona con logs del backend y evita registrar tokens o cuerpos
+sensibles. Distingue latencia de integración de la latencia total.
+[Monitorización](https://docs.aws.amazon.com/apigateway/latest/developerguide/monitoring-cloudwatch.html).
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña una ruta protegida para crear un informe. Elige producto, integración,
+authorizer y respuesta, y explica qué ocurrirá ante un token vencido, una ráfaga
+de solicitudes y un backend lento.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsApiGatewayBank} />
+</div>
+
+## Para continuar
+
+[Amazon S3](/theory/nube/aws/04-almacenamiento/01-s3).

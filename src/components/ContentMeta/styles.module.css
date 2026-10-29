@@ -1,0 +1,43 @@
+.tags {
+  --meta-area-text: #355d75;
+  --meta-area-bg: #edf3f6;
+  --meta-type-text: #6d547d;
+  --meta-type-bg: #f3eff7;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-block: 0.85rem 1.2rem;
+}
+
+:global([data-theme='dark']) .tags {
+  --meta-area-text: #a7c5d6;
+  --meta-area-bg: #1b2d39;
+  --meta-type-text: #cbb5dd;
+  --meta-type-bg: #2b2337;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  border: 1px solid var(--pc-border);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background: var(--pc-surface);
+  color: var(--pc-text);
+  overflow-wrap: anywhere;
+}
+
+.area {
+  border-color: var(--meta-area-text);
+  background: var(--meta-area-bg);
+  color: var(--meta-area-text);
+}
+
+.type {
+  border-color: var(--meta-type-text);
+  background: var(--meta-type-bg);
+  color: var(--meta-type-text);
+}

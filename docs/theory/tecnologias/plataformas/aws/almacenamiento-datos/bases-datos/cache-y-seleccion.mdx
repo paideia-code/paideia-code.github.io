@@ -1,0 +1,149 @@
+---
+slug: /nube/aws/05-datos/03-cache-y-seleccion-de-datos
+title: "Caché y selección de datos"
+description: "Introducir una caché con un contrato explícito de frescura, fallos e invalidación y elegir el almacén de datos."
+learning_id: aws-cache-selection
+learning_type: lección
+sidebar_position: 3
+pagination_prev: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/dynamodb
+pagination_next: tecnologias/plataformas/aws/mensajeria-eventos/eventos/sqs-sns-eventbridge
+---
+
+import {awsCacheBank} from './cache-y-seleccion-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Datos']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Introducir una caché con un contrato explícito de frescura, fallos e invalidación y elegir el almacén de datos.
+</KnowledgeBlock>
+
+## 1. El problema: reducir trabajo sin cambiar el significado del dato
+
+Una caché conserva una representación reutilizable para responder más rápido o
+reducir carga. Introduce otra copia con su propia vigencia. Antes de incorporarla,
+define qué dato puede estar desactualizado, durante cuánto tiempo y qué hará la
+aplicación si la caché falla.
+
+<KnowledgeBlock kind="concept" title="Fuente de verdad y copia derivada">
+La fuente de verdad decide el estado válido. Una caché de resultados puede
+reconstruirse desde ella. Si almacenas una sesión o contador que no puede
+reconstruirse, el sistema necesita un contrato de durabilidad distinto al de
+una simple caché.
+</KnowledgeBlock>
+
+## 2. Elegir el almacén según la operación
+
+| Necesidad | Primera evaluación | Motivo |
+|---|---|---|
+| Transacciones relacionales y joins | RDS | Consultas y restricciones relacionales |
+| Acceso por claves conocidas | DynamoDB | Modelo por patrones de acceso |
+| Documentos o exportaciones | S3 | Objetos por API |
+| Resultados reutilizables de baja latencia | ElastiCache | Acceso en memoria y expiración |
+| Exploración de grandes datasets | Servicios analíticos | Modelo de consultas diferente |
+
+La elección debe incluir consistencia, volumen, distribución y restauración.
+ElastiCache administra motores como Valkey, Redis OSS o Memcached según las
+opciones admitidas. No todos ofrecen las mismas estructuras, replicación y
+mecanismos de recuperación.
+[ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html).
+
+## 3. Cache-aside, hit y miss
+
+~~~mermaid
+flowchart TB
+    Q["Lectura"] --> C{"¿Existe entrada válida?"}
+    C -->|Sí: hit| R["Responder"]
+    C -->|No: miss| D["Consultar fuente"]
+    D --> P["Poblar caché con TTL"]
+    P --> R
+~~~
+
+En cache-aside la aplicación consulta primero la caché y, si falla, obtiene el
+dato del almacén principal y lo guarda. El primer acceso es más lento y muchos
+misses simultáneos pueden concentrar carga.
+[Patrones de caché](https://docs.aws.amazon.com/whitepapers/latest/database-caching-strategies-using-redis/caching-patterns.html).
+
+| Decisión | Consecuencia |
+|---|---|
+| Clave incluye identidad y parámetros | Evita mezclar respuestas diferentes |
+| TTL breve | Menor antigüedad, más lecturas de origen |
+| TTL largo | Más reutilización y mayor riesgo de obsolescencia |
+| Caché de "no existe" | Reduce consultas repetidas, puede ocultar altas recientes |
+| Tamaño y política de expulsión | Define qué ocurre al agotarse memoria |
+
+## 4. Escrituras e invalidación
+
+Actualizar el origen no actualiza automáticamente la caché. Puedes invalidar la
+entrada después de confirmar la escritura, o mantener ambas mediante una
+estrategia coordinada. Si la actualización del origen tiene éxito y falla la
+invalidación, todavía puede servirse información antigua.
+
+<KnowledgeBlock kind="example" title="Cambiar un precio">
+Una API actualiza el precio en la base y borra la entrada cacheada. Las lecturas
+posteriores vuelven al origen. Si un lector antiguo repuebla la caché tarde,
+puede reintroducir un precio anterior: el diseño debe considerar versiones,
+orden de operaciones y un TTL que limite el daño.
+</KnowledgeBlock>
+
+La técnica write-through actualiza la caché como parte del camino de escritura;
+la política debe aclarar orden, fallos y cuál es el dato autoritativo. Ningún
+nombre de patrón garantiza una transacción atómica entre dos servicios distintos.
+
+## 5. Stampede y protección del origen
+
+Un cache stampede ocurre cuando muchas solicitudes intentan regenerar al mismo
+tiempo una entrada ausente o expirada. La caída de caché puede enviar de golpe
+todo el tráfico al almacén principal.
+
+| Técnica | Efecto | Límite |
+|---|---|---|
+| Coalescer lecturas | Un cálculo compartido por clave | Coordinar tiempos y cancelación |
+| TTL con jitter | Evitar expiraciones simultáneas | No resuelve una única clave muy caliente |
+| Precarga | Preparar claves conocidas | Trabajo y capacidad adicionales |
+| Servir dato anterior temporalmente | Mantener respuesta mientras se refresca | Solo si el negocio acepta antigüedad |
+| Límite de concurrencia al origen | Proteger capacidad | Rechazar o diferir parte del tráfico |
+
+<KnowledgeBlock kind="caution" title="Fallback no significa capacidad infinita">
+Si la caché evita el 95 % de lecturas, el origen quizá no soporte recibir el
+100 % al fallar. Ensaya pérdida de caché y define degradación, límites y alarmas.
+</KnowledgeBlock>
+
+## 6. Operación de ElastiCache
+
+Configura subredes privadas, acceso de clientes, cifrado, autenticación y, según
+motor y modalidad, réplicas y recuperación. Revisa cómo cambia la conexión del
+cliente durante failover y si las escrituras confirmadas cumplen la durabilidad
+que necesitas.
+[Guía de mejores prácticas](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/BestPractices.html).
+
+| Señal | Interpretación |
+|---|---|
+| Hit ratio | Eficacia de reutilización para la carga observada |
+| Latencia y tiempo de regeneración | Coste de acceso y misses |
+| Evictions | Presión de memoria o política de expulsión |
+| CPU, memoria y conexiones | Saturación del motor y clientes |
+| Errores del origen | Posible cascada al perder caché |
+
+Un hit ratio alto no demuestra exactitud: podrías servir muy rápido datos
+incorrectos. Incluye métricas de frescura y comparaciones con la fuente en
+operaciones relevantes.
+
+## 7. Decidir cuándo cachear
+
+Mide primero consultas, índices y tiempos. Si una lectura ya es barata y poco
+repetida, la caché puede añadir complejidad sin beneficio. Para permisos,
+inventario o pagos, explicita qué margen de obsolescencia admite la operación.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña una caché de catálogo con cambios de precio. Define fuente de verdad,
+clave, TTL, invalidación y comportamiento ante caída. Explica cómo evitarías
+mostrar datos de otro usuario y cómo comprobarías el beneficio medido.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsCacheBank} />
+</div>
+
+## Para continuar
+
+[SQS, SNS y EventBridge](/theory/nube/aws/06-aplicaciones/02-mensajeria-y-eventos).

@@ -1,0 +1,158 @@
+---
+slug: /nube/aws/04-almacenamiento/01-s3
+title: "Amazon S3"
+description: "Diseñar almacenamiento privado de objetos con permisos, versiones, recuperación y un ciclo de vida coherente."
+learning_id: aws-s3
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/apis/api-gateway/api-gateway
+pagination_next: tecnologias/plataformas/aws/almacenamiento-datos/objetos/ebs-efs-y-almacenamiento
+---
+
+import {awsS3Bank} from './s3-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Objetos']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Diseñar almacenamiento privado de objetos con permisos, versiones, recuperación y un ciclo de vida coherente.
+</KnowledgeBlock>
+
+## 1. El problema: conservar objetos fuera del cómputo
+
+Un archivo debe poder sobrevivir al reemplazo de una instancia o contenedor.
+Amazon S3 ofrece almacenamiento de objetos accesible por API. La aplicación decide
+qué conservar, cómo identificarlo, quién puede acceder y cuándo retirarlo.
+
+La lección se centra en buckets de propósito general. Otras variantes de S3, como
+directory buckets, tienen reglas propias que deben revisarse antes de adoptarlas.
+[Modelo y consistencia de S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html).
+
+## 2. Bucket, clave, objeto y versión
+
+| Elemento | Significado | Decisión |
+|---|---|---|
+| Bucket | Contenedor de objetos con configuración regional | Región, acceso, cifrado y retención |
+| Clave | Nombre completo del objeto | Convención estable y sin secretos |
+| Objeto | Contenido más metadatos | Tipo, tamaño e integridad |
+| Version ID | Identificador de una variante cuando corresponde | Recuperación y borrado selectivo |
+
+La clave images/logo.png contiene un prefijo; no implica directorios físicos.
+No puedes tratar S3 como un disco POSIX con escrituras parciales arbitrarias y
+bloqueos de archivos. La aplicación utiliza operaciones como PUT, GET, LIST y DELETE.
+
+<KnowledgeBlock kind="concept" title="La durabilidad no reemplaza el control del borrado">
+Un servicio puede conservar datos de forma duradera y, aun así, ejecutar un
+borrado autorizado. Diseña versiones, retención y permisos según el fallo que
+necesitas poder revertir.
+</KnowledgeBlock>
+
+S3 ofrece consistencia fuerte para lecturas tras escrituras y listados de objetos
+en el modelo documentado. Eso no crea transacciones de aplicación entre varios
+objetos ni sincroniza automáticamente una base de datos externa con ellos.
+
+## 3. Autorizar lectura, escritura y listado
+
+~~~mermaid
+flowchart TB
+    C["Cliente"] --> APP["Aplicación autentica y autoriza"]
+    APP --> IAM["Rol: acción y recurso"]
+    IAM --> S3["Bucket y objetos"]
+    APP --> URL["URL prefirmada acotada"]
+    URL --> S3
+~~~
+
+Un permiso sobre el bucket y uno sobre sus objetos son distintos. ListBucket
+se aplica al ARN del bucket; GetObject y PutObject se aplican a ARNs de objetos.
+Un prefijo ayuda a organizar y limitar acceso cuando las políticas lo expresan,
+pero el nombre por sí solo no crea una barrera de seguridad.
+
+Mantén Block Public Access mientras no exista una necesidad pública comprobada.
+Prefiere roles y políticas frente a distribuir credenciales personales.
+[Control de acceso](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-overview.html).
+
+Una URL prefirmada delega una operación sobre un objeto usando los permisos del
+firmante. Quien posea el enlace puede utilizarlo mientras siga siendo válido; no
+demuestra la identidad de esa persona ni es obligatoriamente de un solo uso.
+La vigencia también queda limitada por las credenciales temporales utilizadas.
+[URLs prefirmadas](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html).
+
+## 4. Versionado y borrado
+
+| Operación con versionado habilitado | Resultado conceptual |
+|---|---|
+| Sobrescribir una clave | Añade una versión; la anterior permanece |
+| Borrar sin version ID | Crea un delete marker que oculta el objeto actual |
+| Borrar una versión concreta | Puede eliminar permanentemente esa versión |
+| Retirar el delete marker | Puede volver a hacer visible una versión anterior |
+
+Habilitar versionado no vuelve gratuita su conservación: cada versión ocupa
+almacenamiento. Suspenderlo no elimina las versiones existentes ni devuelve el
+bucket al estado nunca versionado.
+[Versionado](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html).
+
+<KnowledgeBlock kind="example" title="Recuperar una sobrescritura">
+Un proceso publica un documento incorrecto bajo la misma clave. El operador
+identifica la versión válida y la copia como actual, conserva evidencia del
+incidente y comprueba que la aplicación ya entrega el contenido correcto.
+</KnowledgeBlock>
+
+## 5. Clases y lifecycle
+
+| Necesidad | Opciones que comparar | Qué revisar |
+|---|---|---|
+| Lectura frecuente | Standard | Solicitudes y transferencia |
+| Patrón incierto | Intelligent-Tiering | Monitorización y elegibilidad |
+| Acceso infrecuente | Standard-IA u otras clases apropiadas | Recuperación, tamaño y duración mínimos |
+| Archivo | Clases Glacier | Acceso inmediato o restauración, tiempo y coste |
+| Datos reproducibles zonales | Clases One Zone si encajan | Riesgo de perder la ubicación |
+
+Las clases Glacier no comparten un único tiempo de recuperación. Elige una que
+cumpla el tiempo requerido para recuperar el dato y su frecuencia de consulta.
+Lifecycle puede transicionar o expirar objetos; con versionado debes revisar
+también versiones no actuales y delete markers.
+[Clases de almacenamiento](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html),
+[Lifecycle](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html).
+
+## 6. Cifrado, cargas y eventos
+
+El cifrado en reposo y TLS protegen capas diferentes. Con SSE-KMS, las políticas
+y permisos de KMS pueden participar en una lectura o escritura; un permiso S3
+aparentemente correcto no basta si la clave no es utilizable.
+
+Para cargas grandes, multipart upload divide la transferencia en partes y permite
+reanudar trabajo. Configura retirada de cargas incompletas y comprueba integridad
+con checksums apropiados. No asumas que todo ETag equivale al MD5 del archivo.
+
+Las notificaciones pueden iniciar procesamiento con SQS, Lambda o EventBridge.
+Trata la entrega como susceptible de duplicados y revisa el orden; evita bucles
+cuando una función escribe en el mismo ámbito que la activa.
+[Notificaciones de eventos](https://docs.aws.amazon.com/AmazonS3/latest/userguide/EventNotifications.html).
+
+## 7. Diagnóstico y errores frecuentes
+
+| Síntoma | Comprobación |
+|---|---|
+| AccessDenied | Principal efectivo, ARN, bucket policy, KMS y denegaciones |
+| URL vencida antes de lo previsto | Vigencia del enlace y de las credenciales |
+| Objeto parece borrado | Versiones y delete marker |
+| Factura crece | Versiones no actuales, transferencias y multipart incompleto |
+| Procesamiento duplicado | Idempotencia del consumidor y contrato del evento |
+
+<KnowledgeBlock kind="caution" title="Una solución de permisos no debe publicar el bucket">
+Diagnostica la solicitud concreta. Hacer público todo el almacenamiento para que
+funcione una descarga modifica el alcance de acceso de muchos otros objetos.
+</KnowledgeBlock>
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña una carga privada de documentos con descarga temporal y recuperación ante
+sobrescritura. Explica acciones IAM, expiración, versionado, lifecycle y evidencia
+necesaria para comprobar que no pueden leerse documentos ajenos.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsS3Bank} />
+</div>
+
+## Para continuar
+
+[EBS, EFS y selección de almacenamiento](/theory/nube/aws/04-almacenamiento/02-almacenamiento-de-bloques-y-archivos).
