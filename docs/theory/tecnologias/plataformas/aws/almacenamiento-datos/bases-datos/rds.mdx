@@ -1,0 +1,149 @@
+---
+slug: /nube/aws/05-datos/01-rds
+title: "Amazon RDS"
+description: "Separar operación gestionada, modelado relacional, alta disponibilidad, escalado de lectura y recuperación de datos."
+learning_id: aws-rds
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/almacenamiento-datos/objetos/ebs-efs-y-almacenamiento
+pagination_next: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/dynamodb
+---
+
+import {awsRdsBank} from './rds-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Datos']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Separar operación gestionada, modelado relacional, alta disponibilidad, escalado de lectura y recuperación de datos.
+</KnowledgeBlock>
+
+## 1. El problema: operar SQL con menos infraestructura propia
+
+Una base relacional ofrece tablas, restricciones, índices y transacciones. Su
+operación también requiere almacenamiento, copias, mantenimiento y recuperación.
+RDS gestiona una parte de esas tareas; el equipo conserva el esquema, consultas,
+usuarios, conexiones y requisitos de continuidad.
+
+El motor importa: PostgreSQL, MySQL y los demás motores tienen comportamientos y
+funcionalidades diferentes. Aurora pertenece a la familia RDS, pero tiene una
+arquitectura propia; no se deben trasladar sus garantías a cualquier instancia RDS.
+[Introducción a RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html).
+
+## 2. Instancia, endpoint y configuración
+
+| Pieza | Función | Decisión del equipo |
+|---|---|---|
+| DB instance | Cómputo y motor | Tamaño, versión y mantenimiento |
+| Almacenamiento | Datos, IOPS y throughput | Capacidad y crecimiento |
+| Endpoint | Nombre de conexión | DNS, reconexión y TLS |
+| DB subnet group | Subredes elegibles | AZ y exposición |
+| Parameter group | Configuración del motor | Compatibilidad y cambios que exigen reinicio |
+
+~~~mermaid
+flowchart LR
+    A["Aplicación"] --> P["Pool de conexiones"]
+    P --> SG["SG de base de datos"]
+    SG --> DB["Endpoint y motor RDS"]
+    DB --> B["Backups"]
+    DB --> R["Réplica o standby según despliegue"]
+~~~
+
+Coloca la base en subredes privadas y permite el puerto solo desde los orígenes
+necesarios. IAM de la cuenta y usuarios internos del motor son capas distintas;
+una credencial válida no compensa la ausencia de ruta o una regla de SG.
+[DB subnet groups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html).
+
+## 3. Alta disponibilidad y lecturas
+
+<KnowledgeBlock kind="concept" title="Multi-AZ requiere especificar el despliegue">
+La DB instance Multi-AZ clásica conserva un standby para failover que no atiende
+lecturas de la aplicación. Un Multi-AZ DB cluster tiene un writer y dos readers
+legibles en tres AZ. Disponibilidad y lectura pueden coexistir, pero dependen
+del modelo y motor admitidos.
+</KnowledgeBlock>
+
+| Mecanismo | Propósito | Consideración |
+|---|---|---|
+| Multi-AZ DB instance | Conmutación ante fallo y mantenimiento | El standby no es una réplica de lectura pública |
+| Multi-AZ DB cluster | Disponibilidad y readers | Distribuir conexiones según endpoint |
+| Read replica de DB instance | Descargar lecturas | Replicación asíncrona y posible retraso |
+| Snapshot / PITR | Recuperar datos | Crear y validar un destino restaurado |
+
+[Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html),
+[read replicas](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html).
+
+Una lectura inmediata desde una réplica asíncrona puede no ver todavía una escritura.
+Si el usuario necesita leer su propio cambio, elige el writer para ese flujo o
+diseña un contrato de frescura. Añadir réplicas tampoco elimina bloqueos de
+escritura, consultas deficientes ni límites del primario.
+
+## 4. Conexiones y fallos
+
+Un pool reutiliza conexiones; su tamaño debe respetar la capacidad del motor.
+Multiplicar réplicas de aplicación multiplica conexiones si cada una conserva el
+mismo pool. Evalúa RDS Proxy cuando necesites gestionar muchas conexiones cortas,
+comprobando compatibilidad y comportamiento de sesiones.
+
+Durante un failover pueden romperse conexiones y cambiar las direcciones asociadas
+al endpoint. Reconecta con límites, vuelve a resolver DNS y distingue un intento
+fallido de una transacción cuyo resultado es desconocido. Reintentar un pago sin
+idempotencia puede repetir su efecto.
+[RDS Proxy](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html).
+
+<KnowledgeBlock kind="example" title="La API escala y la base se satura">
+Una API pasa de dos a veinte tareas y cada una abre cincuenta conexiones. La
+demanda de conexiones se multiplica aunque la base conserve el mismo tamaño.
+El equipo revisa el pool total, consultas y límites antes de aumentar cómputo.
+</KnowledgeBlock>
+
+## 5. Recuperación de datos
+
+Las copias automáticas y los logs permiten point-in-time recovery dentro del
+período configurado y hasta el último instante recuperable. PITR crea una nueva
+instancia; no rebobina mágicamente la que está atendiendo producción.
+[Restauración a un instante](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIT.html).
+
+Antes de cambiar tráfico al destino restaurado, verifica datos, permisos,
+parameter groups, red y rendimiento. Documenta qué ocurre con las escrituras
+recibidas después del punto de restauración y cómo reconciliarlas.
+
+<KnowledgeBlock kind="caution" title="Un standby replica también errores lógicos">
+Borrados y cambios incorrectos pueden propagarse. Un failover no recupera
+necesariamente un registro eliminado: ese escenario requiere backups y una
+estrategia de recuperación de datos.
+</KnowledgeBlock>
+
+## 6. Operación y diagnóstico
+
+| Síntoma | Qué investigar |
+|---|---|
+| Conexión rechazada | Endpoint, ruta, SG, credencial y TLS |
+| Lentitud | Consultas, índices, locks, CPU y espera de I/O |
+| Conexiones agotadas | Pools por réplica, fugas y conexiones inactivas |
+| Lectura antigua | Endpoint reader y retraso de réplica |
+| Espacio próximo al límite | Crecimiento, almacenamiento y logs del motor |
+
+El mantenimiento exige conocer versiones, ventanas y cambios que requieren
+reinicio. Cifrado en reposo, TLS y custodia de credenciales cubren riesgos
+distintos. No registres contraseñas en cadenas de conexión o logs.
+
+## 7. Elegir RDS
+
+Evalúa RDS si necesitas un modelo relacional, joins y transacciones con un motor
+conocido. Compara DynamoDB cuando los accesos se expresen bien mediante claves
+previsibles. Una migración de motor requiere revisar consultas, costes y
+consistencia; no es un simple cambio de endpoint.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña una base para una API con varias réplicas. Justifica motor, subredes,
+SG, conexiones, modalidad de disponibilidad, uso de readers y recuperación ante
+un borrado accidental. Describe cómo medirías el resultado de una restauración.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsRdsBank} />
+</div>
+
+## Para continuar
+
+[Amazon DynamoDB](/theory/nube/aws/05-datos/02-dynamodb).

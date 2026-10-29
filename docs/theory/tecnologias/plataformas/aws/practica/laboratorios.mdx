@@ -1,0 +1,59 @@
+---
+slug: /nube/aws/08-practica/01-laboratorios
+title: "Laboratorios progresivos"
+sidebar_position: 1
+description: "Una secuencia de prácticas pequeñas y reversibles."
+unlisted: true
+---
+<UnderConstruction />
+
+
+<AwsMeta certs={['CLF-C02', 'DVA-C02', 'SAA-C03']} level="intermedio" type="laboratorio" />
+
+# Laboratorios progresivos
+
+
+> **🧭 En una mirada**
+> - **Qué es:** una secuencia de prácticas pequeñas y reversibles.
+> - **Por qué importa:** convierte conceptos en habilidades verificables y revela costes reales.
+> - **Cómo funciona:** cada laboratorio define objetivo, recursos, permisos, verificación y limpieza.
+> - **Para qué se usa:** ganar confianza antes de construir una arquitectura completa.
+
+## Laboratorio 0 — Cuenta y CLI
+
+Objetivo: MFA, Budget, IAM Identity Center, perfil SSO y `sts get-caller-identity`.
+
+## Laboratorio 1 — S3 e IAM
+
+Crear un bucket privado, subir un objeto, leerlo mediante rol y provocar un `AccessDenied` deliberado. Aplicar versionado y lifecycle. Limpiar al terminar.
+
+## Laboratorio 2 — VPC
+
+Crear una VPC con subredes públicas y privadas, route tables y Security Groups. Documentar el flujo ALB → aplicación → base de datos.
+
+## Laboratorio 3 — EC2
+
+Desplegar una API mínima, usar un instance profile, comprobar logs y acceder mediante Systems Manager sin abrir SSH a Internet.
+
+## Laboratorio 4 — RDS
+
+Crear PostgreSQL en subredes privadas, conectar desde una aplicación y comprobar que una conexión directa desde Internet no es posible.
+
+## Laboratorio 5 — Lambda y SQS
+
+Procesar mensajes desde una cola, implementar idempotencia, DLQ y alarma por mensajes antiguos.
+
+## Laboratorio 6 — Paideia en ECS
+
+Publicar una imagen de `user-service` en ECR y ejecutar ECS Fargate con RDS o una dependencia gestionada. Añadir ALB, logs y un task role limitado.
+
+## Laboratorio 7 — Terraform
+
+Recrear el laboratorio 6 desde código, revisar `plan`, destruir y volver a crear.
+
+## Laboratorio 8 — EKS
+
+Solo después de completar Kubernetes local y ECS. Desplegar un servicio mínimo, no toda Paideia de una vez.
+
+Cada laboratorio debe terminar con limpieza y una nota de costes observados.
+

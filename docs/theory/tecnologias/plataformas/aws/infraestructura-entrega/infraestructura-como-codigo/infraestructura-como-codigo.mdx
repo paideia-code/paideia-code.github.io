@@ -1,0 +1,175 @@
+---
+slug: /nube/aws/07-operacion/02-infrastructure-as-code
+title: "Infraestructura como código"
+description: "Definir infraestructura con CloudFormation y CDK y revisar cambios, estado, deriva y protección de datos."
+learning_id: aws-iac
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/observabilidad-auditoria/fiabilidad-recuperacion/fiabilidad-escalado-y-recuperacion
+pagination_next: tecnologias/plataformas/aws/infraestructura-entrega/entrega-continua/ci-cd
+---
+
+import {awsIacBank} from './infraestructura-como-codigo-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Automatización']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Definir infraestructura con CloudFormation y CDK y revisar cambios, estado, deriva y protección de datos.
+</KnowledgeBlock>
+
+## 1. El problema: reconstruir y revisar un entorno
+
+Crear infraestructura manualmente deja decisiones dispersas en la consola.
+Infraestructura como código describe recursos y relaciones en archivos revisables,
+para repetir entornos y entender cambios. No garantiza que la arquitectura sea
+correcta: permite inspeccionarla y controlar su evolución.
+
+| Concepto | Qué representa |
+|---|---|
+| Definición | Estado deseado expresado en código |
+| Estado administrado | Relación entre definición y recursos existentes |
+| Cambio propuesto | Diferencia que se pretende ejecutar |
+| Deriva o drift | Diferencia no incorporada a la definición |
+| Despliegue | Operación que intenta aplicar esa definición |
+
+## 2. CloudFormation: template y stack
+
+Una template YAML o JSON describe recursos AWS. Un stack es la unidad de despliegue
+que CloudFormation crea, actualiza y elimina. Los logical IDs identifican recursos
+en la definición; los physical IDs son identificadores de los recursos reales.
+[CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html).
+
+~~~yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  DocumentsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+~~~
+
+<KnowledgeBlock kind="example" title="Leer la intención de una template">
+El recurso DocumentsBucket habilita versiones, bloquea acceso público y conserva
+el bucket si se retira del stack o se reemplaza bajo las políticas mostradas.
+Conservarlo también deja responsabilidad de gestión y coste fuera de la
+eliminación normal del stack. El fragmento no concede acceso a ninguna aplicación.
+</KnowledgeBlock>
+
+References y dependencias enlazan recursos. Separar stacks por ciclo de vida
+evita que un cambio frecuente de aplicación obligue a tratar datos persistentes
+como recursos desechables.
+
+## 3. Change sets y cambios destructivos
+
+~~~mermaid
+flowchart LR
+    T["Template versionada"] --> CS["Crear change set"]
+    CS --> R["Revisar altas, cambios y reemplazos"]
+    R --> E["Ejecutar"]
+    E --> V["Eventos + verificación funcional"]
+~~~
+
+Un change set muestra cambios propuestos antes de ejecutarlos. Revisa reemplazos,
+eliminaciones, nombres, IAM y dependencias. La vista previa no garantiza éxito:
+durante ejecución pueden fallar permisos, lógica de recursos personalizados o
+condiciones de los servicios.
+[Change sets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html).
+
+| Protección | Qué atiende | Límite |
+|---|---|---|
+| DeletionPolicy | Retirada del recurso o stack | No sustituye backup |
+| UpdateReplacePolicy | Reemplazo durante actualización | Requiere plan para recurso retenido |
+| Termination protection | Borrado del stack | No evita todo cambio por actualización |
+| IAM de despliegue | Operaciones permitidas | No valida reglas de negocio |
+
+## 4. CDK: código que genera CloudFormation
+
+CDK permite escribir constructs en lenguajes compatibles y sintetizar templates.
+Una app contiene stacks y constructs. Los niveles de abstracción facilitan
+reutilización, pero los defaults generados deben revisarse.
+
+~~~text
+cdk synth
+cdk diff
+cdk deploy
+~~~
+
+Son fases conceptuales distintas: synth genera la definición, diff muestra
+diferencias y deploy inicia el despliegue. Preparar el entorno con bootstrap
+crea recursos y roles de apoyo cuando el flujo los necesita.
+[Flujo de CDK](https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html).
+
+<KnowledgeBlock kind="caution" title="Refactorizar código también puede reemplazar recursos">
+Cambiar construct paths o logical IDs puede alterar la identidad que ve
+CloudFormation. Antes de mover código, revisa el diff y la estrategia de
+conservación de datos; una refactorización de TypeScript no es necesariamente
+un cambio inocuo de infraestructura.
+</KnowledgeBlock>
+
+## 5. Deriva y propiedad
+
+Un cambio urgente en consola puede dejar el entorno distinto al código. Detecta
+drift en recursos y propiedades compatibles y decide si incorporar el cambio o
+restablecer la definición. La detección no cubre automáticamente todo atributo ni
+todo recurso.
+[Drift detection](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html).
+
+Define quién administra cada recurso. Dos stacks o herramientas que intentan
+controlar la misma propiedad pueden sobrescribir cambios y producir un estado
+difícil de explicar.
+
+## 6. Comparación con Terraform
+
+| Criterio | CloudFormation | CDK | Terraform |
+|---|---|---|---|
+| Definición | YAML o JSON | Lenguaje + constructs | Configuración de providers |
+| Motor de despliegue | CloudFormation | CloudFormation | Terraform |
+| Estado | Gestionado por el servicio | Gestionado por CloudFormation | State con backend elegido |
+| Vista de cambios | Change set | Diff y change set según flujo | Plan |
+| Reutilización | Stacks y módulos admitidos | Constructs | Modules |
+
+En Terraform, el state relaciona direcciones del código con recursos y puede
+contener información sensible. Un backend remoto necesita control de acceso,
+protección y coordinación de escrituras. Es una alternativa a estudiar, no un
+requisito para aprender CloudFormation.
+[Guía AWS de IaC](https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/infrastructure-as-code.html).
+
+## 7. Seguridad y recuperación del despliegue
+
+Usa parámetros para valores por entorno y referencias seguras para secretos.
+Ni marcar un parámetro como oculto ni usar una variable elimina el riesgo si
+después se imprime el valor en outputs o logs.
+
+| Fallo | Investigación |
+|---|---|
+| Update rollback | Eventos del stack y primer recurso que falló |
+| Reemplazo inesperado | Logical ID y propiedad que fuerza reemplazo |
+| Delete fallido | Dependencias, protección y recursos no vacíos |
+| Drift | Cambio fuera de la herramienta y propiedad soportada |
+| Entorno no reproducible | Dependencias, artefactos y configuración externa |
+
+Un rollback de infraestructura no revierte transacciones de usuarios ni recupera
+datos borrados por una migración. Incluye backups y compatibilidad de aplicación
+en el plan del cambio.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Revisa una actualización que reemplaza un recurso con datos. Explica cómo
+detectarías el reemplazo, qué retendrías, qué copiarías, quién ejecutaría el
+cambio y cómo verificarías recuperación y coste de recursos retenidos.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsIacBank} />
+</div>
+
+## Para continuar
+
+[CI/CD en AWS](/theory/nube/aws/07-operacion/03-cicd).

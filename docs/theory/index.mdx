@@ -4,18 +4,41 @@ hide_title: true
 sidebar_position: 0
 slug: /
 ---
-<UnderConstruction />
 
-
-import SidebarCards from "@site/src/components/SidebarCards";
-import SectionHero from "@site/src/components/SectionHero";
+import SidebarCards from '@site/src/components/SidebarCards';
+import SectionHero from '@site/src/components/SectionHero';
 
 <SectionHero
   eyebrow="THEORY / PAIDEIA CODE"
   title="Theory"
-  description="Conocimiento teórico organizado por dependencia conceptual: conceptos base, modelos de programación y comunicación, diseño, construcción, validación, forma de trabajo, ejecución, tecnologías concretas y referencias."
+  description="Conocimiento de software e informática organizado para comprender, conectar, consultar y seguir aprendiendo."
 />
+
+La biblioteca reúne conceptos, principios, patrones, técnicas, tecnologías y
+referencias. Las rutas de aprendizaje ofrecen secuencias sobre ese contenido;
+las relaciones entre temas ayudan a construir un mapa que puede crecer sin
+duplicar las explicaciones.
+
+## Cómo usar Theory {#como-usar-theory}
+
+Convenciones y herramientas comunes a todas las áreas:
+
+- [Cómo leer Theory](/theory/guia-de-lectura): estructura, colores y recursos didácticos.
+- [Práctica, quizzes y progreso](/theory/practica-y-quizzes): formas de practicar y consultar tus resultados.
 
 ## Contenido
 
-<SidebarCards />
+<SidebarCards root />
+
+## Un recorrido para comenzar
+
+<ContentCards
+  items={[
+    {
+      title: 'AWS desde cero',
+      description: 'Conceptos conectados, decisiones y práctica sobre una plataforma de cursos.',
+      href: '/theory/nube/aws/',
+      tags: ['Recorrido en desarrollo'],
+    },
+  ]}
+/>

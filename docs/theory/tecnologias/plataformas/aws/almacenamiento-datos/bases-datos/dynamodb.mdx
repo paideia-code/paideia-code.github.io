@@ -1,0 +1,149 @@
+---
+slug: /nube/aws/05-datos/02-dynamodb
+title: "Amazon DynamoDB"
+description: "Diseñar claves e índices a partir de consultas y evaluar consistencia, capacidad y escrituras condicionales."
+learning_id: aws-dynamodb
+learning_type: lección
+sidebar_position: 2
+pagination_prev: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/rds
+pagination_next: tecnologias/plataformas/aws/almacenamiento-datos/bases-datos/cache-y-seleccion
+---
+
+import {awsDynamoBank} from './dynamodb-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Datos']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Diseñar claves e índices a partir de consultas y evaluar consistencia, capacidad y escrituras condicionales.
+</KnowledgeBlock>
+
+## 1. El problema: responder accesos previsibles a escala
+
+DynamoDB es una base gestionada de clave-valor y documentos. El diseño se construye
+a partir de las preguntas que debe responder la aplicación: qué dato solicita,
+por qué clave, en qué orden y con qué frescura. Trasladar tablas relacionales sin
+revisar estos accesos suele producir scans costosos y claves concentradas.
+
+## 2. Tabla, ítem y clave
+
+| Elemento | Función | Decisión |
+|---|---|---|
+| Tabla | Colección de ítems | Patrones atendidos |
+| Ítem | Conjunto de atributos | Tamaño y estructura |
+| Partition key | Parte de la clave usada para distribución | Cardinalidad y carga |
+| Sort key | Orden dentro de una misma partition key | Rangos y consultas |
+| Índice secundario | Otra forma de acceso | Claves, proyección y coste |
+
+La clave primaria puede ser solo una partition key o la combinación partition key
+y sort key. En la combinación, ambas identifican un ítem único.
+[Componentes de DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html).
+
+<KnowledgeBlock kind="example" title="Pedidos por cliente y fecha">
+La consulta necesita los pedidos de un cliente entre dos fechas. Una propuesta
+es PK = CUSTOMER#id y SK = fecha#pedidoId. Query selecciona la partition key y
+un rango de sort keys; el identificador evita colisiones de pedidos con igual
+instante. Este diseño no resuelve automáticamente buscar por cualquier atributo.
+</KnowledgeBlock>
+
+## 3. Query, Scan e índices
+
+~~~mermaid
+flowchart LR
+    Q["Patrón de acceso"] --> K["Clave primaria o índice"]
+    K --> QUERY["Query por partition key"]
+    QUERY --> RANGE["Rango de sort key"]
+    RANGE --> PAGE["Resultados paginados"]
+~~~
+
+Query usa una partition key y puede acotar sort keys. Scan recorre datos de la
+tabla o índice; un filtro posterior no evita que se lean los ítems que deben
+examinarse. Revisa paginación: una primera respuesta no representa necesariamente
+el conjunto completo.
+[Query](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html).
+
+Un GSI introduce otra clave de partición y ordenamiento, con proyección de
+atributos elegida. Es útil cuando una segunda consulta no coincide con la clave
+principal, pero incrementa almacenamiento, escrituras y requisitos de capacidad.
+No crees un índice por cada atributo sin un acceso justificado.
+
+## 4. Distribución y capacidad
+
+| Modo | Qué administra | Qué debes vigilar |
+|---|---|---|
+| On-demand | Ajusta capacidad a solicitudes dentro de sus límites | Picos, coste y claves calientes |
+| Provisioned | Lecturas/escrituras aprovisionadas, con auto scaling opcional | Utilización, mínimos, máximos y throttling |
+
+Una clave caliente concentra acceso aunque la tabla tenga capacidad total libre.
+Elegir un valor idéntico para todos los eventos puede crear ese problema. El
+sharding reparte carga, pero obliga a combinar consultas y complica el acceso:
+evalúa la distribución con datos y tráfico previstos.
+[Capacidad de lectura y escritura](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html).
+
+<KnowledgeBlock kind="caution" title="On-demand no elimina límites ni decisiones de coste">
+Una clave concentrada o un crecimiento brusco puede seguir produciendo throttling.
+Observa capacidad consumida, errores y distribución antes de multiplicar
+reintentos. Aplica backoff y un presupuesto operativo.
+</KnowledgeBlock>
+
+## 5. Consistencia y concurrencia
+
+Las tablas y LSIs admiten lecturas eventualmente consistentes o fuertes según la
+operación. Los GSIs ofrecen lecturas eventualmente consistentes. Un dato recién
+escrito puede no estar visible inmediatamente en un índice.
+[Consistencia de lectura](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html).
+
+| Necesidad | Mecanismo |
+|---|---|
+| Crear solo si no existe | Escritura condicional |
+| Actualizar solo una revisión conocida | Condición sobre versión |
+| Cambiar varios ítems atómicamente | Transacción, dentro de sus límites |
+| Detectar modificaciones para otro consumidor | DynamoDB Streams |
+
+<KnowledgeBlock kind="model" title="Evitar leer y escribir sin condición">
+Dos procesos pueden leer saldo = 10 y sobrescribir el valor con decisiones
+incompatibles. Una condición o una transacción debe proteger la regla, no solo
+una lectura anterior. La lectura fuerte no bloquea el ítem hasta que escribas.
+</KnowledgeBlock>
+
+[Escrituras condicionales](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html).
+
+## 6. TTL, Streams y recuperación
+
+TTL marca un instante de expiración en segundos Unix. La eliminación ocurre
+asíncronamente, normalmente días después; una aplicación debe rechazar o filtrar
+ítems expirados cuando la vigencia sea una regla de negocio.
+[TTL](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html).
+
+Streams publica modificaciones para procesamiento posterior. El consumidor debe
+manejar reintentos y retrasos; no sustituye una consulta directa de datos vigentes.
+PITR y backups permiten recuperación; una restauración crea una tabla nueva que
+requiere verificar configuración y redirigir los accesos.
+[Recuperación a un instante](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html).
+
+## 7. Diagnóstico y selección
+
+| Síntoma | Revisión |
+|---|---|
+| Lecturas inesperadamente caras | Scan, tamaño, consistencia y paginación |
+| Un cliente se satura | Distribución de claves y throttling |
+| Un GSI no refleja un cambio | Consistencia eventual y atraso |
+| Escritura rechazada | Condición incumplida, IAM o capacidad |
+| Sesión vencida aún presente | Vigencia lógica frente a limpieza TTL |
+
+DynamoDB encaja con accesos por clave, latencia acotada y patrones conocidos.
+Cuando necesitas joins frecuentes o consultas exploratorias, compara RDS y
+almacenes analíticos antes de forzar índices y duplicaciones de datos.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña consulta por cliente/fecha y búsqueda por identificador de pago. Explica
+clave, índice, consistencia y coste; protege la creación duplicada y distingue
+expiración lógica de retirada física por TTL.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsDynamoBank} />
+</div>
+
+## Para continuar
+
+[Caché y selección de datos](/theory/nube/aws/05-datos/03-cache-y-seleccion-de-datos).

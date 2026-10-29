@@ -2,11 +2,13 @@ import React from "react";
 import {
   useCurrentSidebarSiblings,
   useDocsVersion,
+  useDocsSidebar,
 } from "@docusaurus/plugin-content-docs/client";
 import type {
   PropSidebarItem,
   PropVersionDoc,
 } from "@docusaurus/plugin-content-docs";
+import { useLocation } from "@docusaurus/router";
 import DocCardList from "@theme/DocCardList";
 import styles from "./styles.module.css";
 
@@ -41,12 +43,21 @@ function getIndexDescription(
   return indexDoc?.description;
 }
 
-export default function SidebarCards(): React.ReactElement | null {
+type SidebarCardsProps = {
+  root?: boolean;
+};
+
+export default function SidebarCards({ root = false }: SidebarCardsProps): React.ReactElement | null {
   const { docs } = useDocsVersion();
-  const items = useCurrentSidebarSiblings().filter(
+  const siblings = useCurrentSidebarSiblings();
+  const sidebar = useDocsSidebar();
+  const { pathname } = useLocation();
+  const candidates = root ? sidebar?.items ?? [] : siblings;
+  const items = candidates.filter(
     (item): item is Extract<PropSidebarItem, { type: "category" | "link" }> =>
-      (item.type === "category" && Boolean(item.href) && item.items.length > 0) ||
-      (item.type === "link" && item.docId !== "index" && Boolean(item.href)),
+      ((item.type === "category" && Boolean(item.href) && item.items.length > 0) ||
+        (item.type === "link" && item.docId !== "index" && Boolean(item.href))) &&
+      normalizePath(item.href ?? "") !== normalizePath(pathname),
   );
   const itemsWithDescriptions = items.map((item) => {
     if (item.type !== "category" || item.description) {

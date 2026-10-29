@@ -1,34 +1,18 @@
-import type {ReactNode} from 'react';
-import clsx from 'clsx';
-import styles from './styles.module.css';
-
+import type { ReactNode } from 'react';
+import KnowledgeBlock from '@site/src/components/KnowledgeBlock';
 type ConceptCardType = 'definicion' | 'principio' | 'patron' | 'advertencia';
-
 type ConceptCardProps = {
-  title: string;
-  type?: ConceptCardType;
-  children: ReactNode;
+    title: string;
+    type?: ConceptCardType;
+    children: ReactNode;
 };
-
 const TYPE_LABELS: Record<ConceptCardType, string> = {
-  definicion: 'Definición',
-  principio: 'Principio',
-  patron: 'Patrón',
-  advertencia: 'Advertencia',
+    definicion: 'Definición',
+    principio: 'Principio',
+    patron: 'Patrón',
+    advertencia: 'Advertencia',
 };
-
-export default function ConceptCard({
-  title,
-  type = 'definicion',
-  children,
-}: ConceptCardProps): ReactNode {
-  return (
-    <div className={clsx(styles.card, styles[type])}>
-      <div className={styles.header}>
-        <span className={styles.title}>{title}</span>
-        <span className={styles.badge}>{TYPE_LABELS[type]}</span>
-      </div>
-      <div className={styles.body}>{children}</div>
-    </div>
-  );
+export default function ConceptCard({ title, type = 'definicion', children, }: ConceptCardProps): ReactNode {
+    const kind = type === 'advertencia' ? 'caution' : type === 'patron' ? 'model' : 'concept';
+    return <KnowledgeBlock kind={kind} title={title} label={TYPE_LABELS[type]}>{children}</KnowledgeBlock>;
 }

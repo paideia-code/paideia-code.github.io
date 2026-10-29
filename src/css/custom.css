@@ -1,4 +1,5 @@
 @import '@fontsource/source-serif-4/400.css';
+@import './learning.css';
 @import '@fontsource/source-serif-4/600.css';
 @import '@fontsource/source-sans-3/400.css';
 @import '@fontsource/source-sans-3/500.css';
@@ -77,6 +78,12 @@ a:hover { color: var(--pc-primary); }
   width: 1.1rem;
 }
 .navbar-pillar-link .navbar-pillar-label { display: inline; }
+
+@media (max-width: 996px) {
+  .navbar__items > .navbar-pillar-link {
+    display: none;
+  }
+}
 .navbar-github-link {
   align-items: center;
   display: inline-flex;

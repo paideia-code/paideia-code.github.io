@@ -1,0 +1,176 @@
+---
+slug: /nube/aws/07-operacion/03-cicd
+title: "CI/CD en AWS"
+description: "Construir una entrega trazable con artefactos inmutables, permisos acotados, verificación y reversión."
+learning_id: aws-cicd
+learning_type: lección
+sidebar_position: 2
+pagination_prev: tecnologias/plataformas/aws/infraestructura-entrega/infraestructura-como-codigo/infraestructura-como-codigo
+pagination_next: null
+---
+
+import {awsCicdBank} from './ci-cd-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Automatización']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Construir una entrega trazable con artefactos inmutables, permisos acotados, verificación y reversión.
+</KnowledgeBlock>
+
+## 1. El problema: publicar una versión identificable
+
+Una entrega debe vincular código, dependencias, artefacto, configuración y entorno.
+Si cada ambiente reconstruye lo mismo de forma independiente, pueden terminar
+ejecutándose binarios distintos. El pipeline debe promover un artefacto conocido
+y dejar evidencia de la decisión.
+
+| Concepto | Resultado |
+|---|---|
+| Integración continua | Integrar cambios y ejecutar validaciones frecuentes |
+| Entrega continua | Mantener un cambio preparado para liberación |
+| Despliegue continuo | Publicar automáticamente tras superar condiciones |
+| Release | Activar una versión o capacidad para usuarios |
+
+La aprobación manual puede formar parte de entrega continua. Desplegar y activar
+una funcionalidad pueden ser decisiones distintas.
+
+## 2. CodePipeline, CodeBuild y CodeDeploy
+
+| Servicio | Responsabilidad | No reemplaza |
+|---|---|---|
+| CodePipeline | Coordinar stages, acciones y artefactos | Herramienta de build o decisiones de negocio |
+| CodeBuild | Ejecutar comandos en un entorno de construcción | Orquestación completa de release |
+| CodeDeploy | Coordinar despliegues en destinos admitidos | Compilación del artefacto |
+| ECR / S3 / CodeArtifact | Conservar artefactos según su formato | Verificación del resultado desplegado |
+
+CodeDeploy admite EC2/on-premises, Lambda y ECS con modelos diferentes. No todos
+los destinos requieren CodeDeploy: un pipeline también puede actualizar servicios
+mediante acciones compatibles u otras herramientas.
+[CodePipeline](https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html),
+[CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html),
+[CodeDeploy](https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html).
+
+## 3. Flujo de artefactos
+
+~~~mermaid
+flowchart LR
+    S["Commit identificado"] --> B["Build y validación"]
+    B --> A["Artefacto inmutable"]
+    A --> ST["Desplegar staging"]
+    ST --> V["Verificar"]
+    V --> P["Aprobar o condición automática"]
+    P --> PROD["Promover a producción"]
+    PROD --> O["Observar y decidir"]
+~~~
+
+Registra commit, versiones de dependencias, digest o checksum, configuración,
+resultado y destino. Una etiqueta latest no ofrece trazabilidad suficiente. La
+aprobación debe mostrar qué versión se promoverá y qué evidencia existe.
+
+<KnowledgeBlock kind="example" title="La misma imagen en dos entornos">
+Un build publica una imagen con digest conocido. Staging y producción referencian
+ese digest; cambian los permisos y la configuración del entorno. La aprobación
+promueve el artefacto validado, no recompila otra imagen desde una rama que pudo
+haber avanzado.
+</KnowledgeBlock>
+
+## 4. Buildspec y entorno de construcción
+
+CodeBuild usa una especificación de comandos y artefactos, habitualmente un
+buildspec.yml. Las fases organizan preparación, construcción y publicación.
+
+~~~yaml
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm ci
+  build:
+    commands:
+      - npm run typecheck
+      - npm run build
+artifacts:
+  base-directory: build
+  files:
+    - "**/*"
+~~~
+
+Este ejemplo presupone un proyecto con esos scripts y salida build. Es un
+fragmento didáctico, no una instrucción para ejecutar el repositorio del sitio.
+Para imágenes se añade construcción y publicación en ECR con permisos específicos.
+[Referencia buildspec](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html).
+
+Define runtime, herramientas, cachés y límites. Un cache hit acelera el build,
+pero puede ocultar una dependencia ausente o desactualizada; contrasta builds
+limpios cuando cambie la cadena de herramientas.
+
+## 5. Permisos por acción y entorno
+
+El rol de orquestación necesita iniciar acciones y acceder a artefactos según
+su diseño; el rol de build necesita leer fuente y publicar resultados; el rol de
+despliegue necesita modificar solo los recursos del destino.
+
+| Control | Intención |
+|---|---|
+| Roles distintos | Acotar impacto de una acción comprometida |
+| Federación OIDC para CI externo | Obtener sesiones temporales con confianza restringida |
+| Secrets Manager / Parameter Store | Evitar secretos en código y comandos visibles |
+| Artefactos protegidos | Preservar integridad entre build y deploy |
+| Separación de entornos | Evitar cambios accidentales en producción |
+
+No basta con eliminar una access key si la trust policy permite asumir un rol
+desde cualquier repositorio o rama. Restringe sujeto y audiencia según el
+proveedor y revisa los permisos efectivos.
+
+## 6. Despliegue y reversión
+
+CodeDeploy utiliza AppSpec para describir la revisión y hooks según la plataforma.
+En ECS se relacionan task definition, contenedor, puerto y conjunto de tareas;
+en Lambda se mueve tráfico entre versiones mediante alias; EC2 usa su propio
+ciclo de archivos y hooks.
+[AppSpec](https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file.html).
+
+| Estrategia | Beneficio | Condición |
+|---|---|---|
+| Rolling | Reemplazo progresivo | Versiones compatibles simultáneamente |
+| Blue/green | Destino nuevo verificable | Capacidad extra y cambio de tráfico |
+| Canary | Exposición inicial acotada | Métricas y criterio de detención |
+| Rollback | Restablecer versión utilizable | Artefacto y datos compatibles |
+
+<KnowledgeBlock kind="caution" title="Una imagen anterior puede no entender el esquema actual">
+Las migraciones destructivas pueden impedir rollback. Usa cambios compatibles y
+un plan para datos; conserva también la configuración y permisos que necesita
+la versión de recuperación.
+</KnowledgeBlock>
+
+## 7. Verificación y diagnóstico
+
+| Fase | Evidencia |
+|---|---|
+| Build | Resultado, dependencias, digest y logs sin secretos |
+| Deploy | Revisión, destino y eventos de rollout |
+| Verificación | Operación representativa y health checks |
+| Observación | Latencia, errores y señales de negocio |
+| Incidente | Acción de detener, revertir o desactivar |
+
+Una acción de pipeline en verde significa que cumplió su criterio técnico; no
+demuestra que todos los usuarios puedan completar la operación. Elige smoke checks
+que atraviesen dependencias relevantes y observa el período posterior.
+Si una ejecución queda esperando, revisa aprobaciones, roles, artefactos y estado
+de la acción antes de repetir el despliegue.
+
+## 8. Cierre del recorrido
+
+La infraestructura, los paquetes y la entrega forman un sistema: IaC define
+recursos, CodeArtifact/ECR conservan artefactos y el pipeline aplica versiones.
+La trazabilidad debe unir esas piezas con observabilidad y recuperación.
+
+<KnowledgeBlock kind="check" title="Criterio de cierre">
+Dibuja la entrega de una API contenedorizada con dependencia privada. Identifica
+qué hace cada servicio, qué rol usa, qué artefacto conserva y qué evidencia
+detendría una promoción. Explica también cómo revertirías sin reconstruir.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsCicdBank} />
+</div>

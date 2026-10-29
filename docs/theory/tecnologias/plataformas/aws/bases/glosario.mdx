@@ -1,0 +1,96 @@
+---
+slug: /nube/aws/08-practica/04-glosario
+title: "Glosario AWS esencial"
+description: "Vocabulario del recorrido con definiciones y enlaces a las lecciones."
+learning_id: aws-glossary
+learning_type: referencia
+sidebar_position: 3
+pagination_prev: null
+pagination_next: null
+---
+
+<ContentMeta area="AWS" level="básico" type="referencia" topics={['Vocabulario']} />
+
+Consulta esta referencia para distinguir términos que cumplen funciones distintas.
+Cada enlace lleva a la explicación y sus fuentes oficiales. El Glosario acompaña
+el recorrido; no añade un capítulo que debas completar antes de continuar.
+
+## Cloud, aislamiento y continuidad
+
+| Término | Significado y relación |
+|---|---|
+| Cloud computing | Uso de recursos bajo demanda mediante servicios y responsabilidades definidas. [Cloud computing](/theory/nube/aws/01-fundamentos/01-conceptos-cloud). |
+| Servicio | Capacidad ofrecida mediante una interfaz y condiciones; un recurso es una entidad concreta creada o utilizada en él. [Fundamentos](/theory/nube/aws/01-fundamentos/01-conceptos-cloud). |
+| Región | Área geográfica de AWS que contiene AZ y servicios con alcance regional. [Infraestructura global](/theory/aws/fundamentos/infraestructura-global). |
+| AZ | Zona de disponibilidad: dominio de aislamiento dentro de una región. No equivale a un único centro de datos. [Infraestructura global](/theory/aws/fundamentos/infraestructura-global). |
+| Plano de control | Operaciones para configurar y administrar recursos. [Infraestructura global](/theory/aws/fundamentos/infraestructura-global). |
+| Plano de datos | Operaciones que prestan la función del recurso, como leer o procesar. [Infraestructura global](/theory/aws/fundamentos/infraestructura-global). |
+| Escalabilidad | Capacidad de afrontar más trabajo ajustando recursos y diseño bajo objetivos. [Escalabilidad](/theory/aws/fundamentos/escalabilidad-elasticidad). |
+| Elasticidad | Ajuste de capacidad a necesidades variables, incorporando y liberando recursos. [Elasticidad](/theory/aws/fundamentos/escalabilidad-elasticidad). |
+| SLO | Objetivo de nivel de servicio con alcance y criterio de medición. [Disponibilidad](/theory/aws/fundamentos/disponibilidad-tolerancia-fallos). |
+| SLA | Acuerdo de servicio con condiciones y reglas propias de medición. [Disponibilidad](/theory/aws/fundamentos/disponibilidad-tolerancia-fallos). |
+| RTO | Objetivo de tiempo máximo aceptable para restablecer la operación tras una interrupción definida. [Recuperación](/theory/nube/aws/07-operacion/04-fiabilidad-y-recuperacion). |
+| RPO | Objetivo de pérdida de datos tolerable expresado como separación temporal respecto al estado previo al incidente. [Recuperación](/theory/nube/aws/07-operacion/04-fiabilidad-y-recuperacion). |
+| Failover | Cambio hacia una alternativa preparada ante fallo; requiere detección, capacidad y acceso. [Fiabilidad](/theory/nube/aws/07-operacion/04-fiabilidad-y-recuperacion). |
+
+## Identidad y seguridad
+
+| Término | Significado y relación |
+|---|---|
+| Principal | Entidad que realiza una solicitud y participa en su autorización. [IAM](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos). |
+| ARN | Nombre de recurso de Amazon usado para identificar recursos según el formato del servicio. [IAM](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos). |
+| Policy | Documento que concede o limita operaciones según acciones, recursos, principales y condiciones aplicables. [Políticas](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos). |
+| Rol | Identidad asumible que aporta permisos a una sesión. [Roles](/theory/nube/aws/02-seguridad/01-iam/03-roles-y-credenciales). |
+| Trust policy | Determina quién puede asumir un rol y bajo qué condiciones. [Roles](/theory/nube/aws/02-seguridad/01-iam/03-roles-y-credenciales). |
+| STS | Servicio que emite credenciales temporales mediante operaciones autorizadas. [Credenciales](/theory/nube/aws/02-seguridad/01-iam/03-roles-y-credenciales). |
+| SCP | Política de Organizations que limita permisos aplicables en cuentas miembro; no concede por sí sola acceso. [Evaluación](/theory/aws/iam/evaluacion-de-permisos-y-diagnostico). |
+| Permission boundary | Límite de permisos de una identidad, con reglas de evaluación según el principal y las policies. [Evaluación](/theory/aws/iam/evaluacion-de-permisos-y-diagnostico). |
+| Mínimo privilegio | Conceder acciones, recursos y condiciones que el trabajo necesita y revisar su uso. [IAM](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos). |
+| JWT | Token con claims que deben validarse criptográfica y contextualmente antes de confiar. [Seguridad](/theory/nube/aws/02-seguridad/02-seguridad-aplicada). |
+| Scope | Capacidad solicitada o autorizada en un flujo de API; no sustituye propiedad del recurso. [API Gateway](/theory/nube/aws/06-aplicaciones/01-lambda-y-api-gateway). |
+| PKCE | Mecanismo que vincula el canje de un código OAuth con el cliente que inició el flujo. [Cognito](/theory/nube/aws/02-seguridad/02-seguridad-aplicada). |
+| Cifrado de sobre | Un contenido se cifra con una clave de datos y esta se protege con otra clave. [KMS](/theory/nube/aws/02-seguridad/02-seguridad-aplicada). |
+
+## Redes y publicación
+
+| Término | Significado y relación |
+|---|---|
+| CIDR | Notación de una red y longitud de prefijo; en IPv4 /24 deja ocho bits para direcciones del rango. [VPC](/theory/nube/aws/03-redes/01-vpc-y-subredes). |
+| VPC | Red virtual regional que contiene subredes y controles de conectividad. [VPC](/theory/nube/aws/03-redes/01-vpc-y-subredes). |
+| Subred | Segmento de direcciones de la VPC asociado a una AZ. [Subredes](/theory/nube/aws/03-redes/01-vpc-y-subredes). |
+| SG | Security Group: control stateful de tráfico asociado a interfaces; utiliza permisos. [Seguridad de red](/theory/nube/aws/03-redes/02-routing-y-seguridad). |
+| NACL | Control stateless de subred con reglas ordenadas de permitir o denegar. [Seguridad de red](/theory/nube/aws/03-redes/02-routing-y-seguridad). |
+| NAT | Traducción de direcciones; un NAT público puede permitir salida IPv4 privada sin publicar un servicio de entrada. [VPC](/theory/nube/aws/03-redes/01-vpc-y-subredes). |
+| DNS | Sistema de resolución de nombres mediante registros y cachés. [DNS](/theory/nube/aws/03-redes/03-dns-balanceo-y-cdn). |
+| TTL | Tiempo de vida o validez según contexto. DNS, caché y limpieza de DynamoDB tienen comportamientos diferentes. [Caché](/theory/nube/aws/05-datos/03-cache-y-seleccion-de-datos). |
+| CDN | Distribución de contenido mediante ubicaciones edge y políticas de caché/origen. [CloudFront](/theory/nube/aws/03-redes/03-dns-balanceo-y-cdn). |
+| CORS | Política que aplica el navegador para acceso entre orígenes; no autentica a los clientes. [API Gateway](/theory/nube/aws/06-aplicaciones/01-lambda-y-api-gateway). |
+
+## Cómputo, datos y entrega
+
+| Término | Significado y relación |
+|---|---|
+| AMI | Imagen utilizada como base para lanzar una instancia EC2. [EC2](/theory/nube/aws/04-computo/01-ec2). |
+| Instance profile | Contenedor del rol IAM asociado a EC2 para obtener credenciales de workload. [EC2](/theory/nube/aws/04-computo/01-ec2). |
+| Cold start | Inicialización de un entorno de ejecución antes de procesar una invocación. [Lambda](/theory/nube/aws/06-aplicaciones/01-lambda). |
+| Concurrencia | Trabajo ejecutándose simultáneamente; debe contrastarse con capacidad de dependencias. [Lambda](/theory/nube/aws/06-aplicaciones/01-lambda). |
+| Digest | Identificador de contenido de una imagen; permite precisar qué artefacto se despliega. [ECR](/theory/nube/aws/06-aplicaciones/03-contenedores). |
+| Task definition | Plantilla ECS versionada de ejecución, recursos, imagen, puertos, logs y roles. [ECS](/theory/nube/aws/06-aplicaciones/03-contenedores). |
+| Pod | Unidad de ejecución y scheduling de Kubernetes que agrupa contenedores. [EKS](/theory/nube/aws/06-aplicaciones/04-eks). |
+| Readiness | Condición que determina si un destino está preparado para recibir tráfico. [EKS](/theory/nube/aws/06-aplicaciones/04-eks). |
+| Snapshot | Copia puntual cuya recuperación y consistencia deben comprobarse. [EBS](/theory/nube/aws/04-almacenamiento/02-almacenamiento-de-bloques-y-archivos). |
+| PITR | Recuperación a un instante dentro de la cobertura conservada; requiere validar el destino. [RDS](/theory/nube/aws/05-datos/01-rds). |
+| GSI | Índice secundario global con otra clave de acceso y consistencia eventual. [DynamoDB](/theory/nube/aws/05-datos/02-dynamodb). |
+| Idempotencia | Aplicar repetidamente una misma operación sin duplicar su efecto válido. [Mensajería](/theory/nube/aws/06-aplicaciones/02-mensajeria-y-eventos). |
+| DLQ | Cola de mensajes no procesados tras la política de fallos; necesita diagnóstico y reproceso. [Mensajería](/theory/nube/aws/06-aplicaciones/02-mensajeria-y-eventos). |
+| Outbox | Registro transaccional de un cambio y su evento pendiente para publicación posterior. [Eventos](/theory/nube/aws/06-aplicaciones/02-mensajeria-y-eventos). |
+| Drift | Diferencia entre definición administrada y recurso real. [IaC](/theory/nube/aws/07-operacion/02-infrastructure-as-code). |
+| Change set | Vista previa de una modificación de stack antes de ejecutarla. [CloudFormation](/theory/nube/aws/07-operacion/02-infrastructure-as-code). |
+| Buildspec | Especificación de comandos y artefactos de CodeBuild. [CI/CD](/theory/nube/aws/07-operacion/03-cicd). |
+| AppSpec | Especificación de revisión y hooks de CodeDeploy según plataforma. [CI/CD](/theory/nube/aws/07-operacion/03-cicd). |
+| Artefacto inmutable | Resultado identificado que se promueve conservando el mismo contenido. [Entrega](/theory/nube/aws/07-operacion/03-cicd). |
+
+## Fuentes
+
+Las lecciones enlazadas incluyen referencias de comportamiento y configuración.
+Consulta también el [glosario oficial de AWS](https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html).

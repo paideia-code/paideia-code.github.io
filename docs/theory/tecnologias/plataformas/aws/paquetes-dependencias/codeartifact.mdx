@@ -1,0 +1,156 @@
+---
+slug: /nube/aws/06-aplicaciones/05-codeartifact
+title: "AWS CodeArtifact"
+description: "Publicar y consumir dependencias privadas con versiones, upstreams, permisos y credenciales temporales."
+learning_id: aws-codeartifact
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/mensajeria-eventos/eventos/sqs-sns-eventbridge
+pagination_next: tecnologias/plataformas/aws/seguridad/seguridad-aplicada
+---
+
+import {awsCodeArtifactBank} from './codeartifact-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Paquetes']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Publicar y consumir dependencias privadas con versiones, upstreams, permisos y credenciales temporales.
+</KnowledgeBlock>
+
+## 1. El problema: distribuir dependencias de forma controlada
+
+Una librería compartida necesita versiones, permisos y un canal de distribución.
+Copiar archivos entre repositorios impide saber qué versión construyó cada servicio.
+CodeArtifact almacena paquetes y ofrece endpoints compatibles con gestores de
+dependencias; ECR cumple un papel diferente para imágenes de contenedor.
+
+| Artefacto | Servicio del recorrido | Consumidor |
+|---|---|---|
+| Librería Maven, npm, Python u otro formato admitido | CodeArtifact | Gestor de dependencias |
+| Imagen de aplicación | ECR | ECS, EKS o entorno compatible |
+| Archivo arbitrario | S3 | Aplicación o proceso de distribución |
+
+[Introducción](https://docs.aws.amazon.com/codeartifact/latest/ug/welcome.html).
+
+## 2. Dominio, repositorio y versión
+
+Un dominio organiza repositorios y recursos compartidos de almacenamiento.
+Un repositorio contiene paquetes; cada paquete tiene versiones y assets, como un
+JAR o archivo de distribución. El namespace depende del formato.
+
+~~~mermaid
+flowchart TB
+    D["Dominio"] --> R["Repositorio interno"]
+    R --> P["Paquete"]
+    P --> V1["Versión 1"]
+    P --> V2["Versión 2"]
+    B["Build"] --> R
+~~~
+
+| Pieza | Pregunta de diseño |
+|---|---|
+| Dominio | ¿Qué repositorios comparten administración? |
+| Repositorio | ¿Quién publica y quién consume? |
+| Paquete / namespace | ¿Cómo se identifica sin colisiones? |
+| Versión | ¿Qué compatibilidad promete? |
+| Assets | ¿Qué contenido se verificará? |
+
+Una etiqueta o una versión elegida dinámicamente dificulta reproducir un build.
+Usa lockfiles o mecanismos equivalentes del ecosistema, repositorio controlado y
+versiones de release que no cambien silenciosamente.
+
+## 3. Upstreams y conexiones externas
+
+Un upstream es otro repositorio CodeArtifact usado como fuente. Una external
+connection conecta con un repositorio público compatible. Configurarlos permite
+resolver paquetes mediante un endpoint común y conservar versiones según las
+reglas del servicio.
+[Repositorios upstream](https://docs.aws.amazon.com/codeartifact/latest/ug/repos-upstream.html).
+
+~~~mermaid
+flowchart LR
+    C["Cliente de paquetes"] --> R["Repositorio de consumo"]
+    R --> U["Upstream CodeArtifact"]
+    U --> X["Conexión externa"]
+    X --> P["Repositorio público"]
+~~~
+
+La prioridad de resolución afecta de dónde procede una dependencia. Revisa el
+origen de paquetes privados para evitar dependency confusion: un nombre interno
+no debería empezar a resolverse desde un repositorio público por accidente.
+[Package origin controls](https://docs.aws.amazon.com/codeartifact/latest/ug/package-origin-controls.html).
+
+<KnowledgeBlock kind="example" title="Una librería interna y dependencias públicas">
+Un servicio consume una librería privada de autenticación y librerías públicas.
+El repositorio de consumo obtiene las privadas del repositorio interno y las
+públicas del upstream autorizado. El equipo registra versión y procedencia para
+reconstruir el artefacto meses después.
+</KnowledgeBlock>
+
+## 4. Autenticación y permisos
+
+CodeArtifact utiliza tokens de autorización obtenidos con una identidad AWS.
+No confundas credenciales de la sesión IAM con el token que usa npm o Maven:
+tienen flujos y vigencias relacionados, pero distintos.
+[Tokens](https://docs.aws.amazon.com/codeartifact/latest/ug/tokens-authentication.html).
+
+| Operación | Permisos que evaluar |
+|---|---|
+| Obtener token | codeartifact:GetAuthorizationToken y sts:GetServiceBearerToken |
+| Resolver endpoint | codeartifact:GetRepositoryEndpoint |
+| Consumir | codeartifact:ReadFromRepository |
+| Publicar | Acciones de publicación propias del formato |
+| Administrar | Crear repositorios, configurar políticas y upstreams |
+
+Asigna a cada acción el recurso y las condiciones que admite; no copies una
+policy de administración para un consumidor. El token puede tener una vigencia
+distinta a la sesión asumida por defecto; ajusta duración al proceso autorizado.
+[Referencia de permisos](https://docs.aws.amazon.com/codeartifact/latest/ug/auth-and-access-control-permissions-reference.html).
+
+## 5. Flujo de build reproducible
+
+1. El runner obtiene una sesión temporal del rol.
+2. Solicita token y endpoint para el gestor.
+3. Configura credenciales en un ámbito temporal y protegido.
+4. Resuelve dependencias y verifica versiones.
+5. Construye una vez y conserva el artefacto identificado.
+6. Retira archivos temporales y evita que los logs revelen el token.
+
+<KnowledgeBlock kind="caution" title="Una credencial de build no debe viajar al runtime">
+Un archivo de configuración copiado a una imagen puede conservar el token o
+su ubicación. Usa mecanismos de secretos del build y separa las capas que
+requieren dependencias del artefacto final.
+</KnowledgeBlock>
+
+## 6. Versionado, retirada y diagnóstico
+
+Publica nuevas versiones para cambios de contenido y documenta compatibilidad.
+Deprecar, despublicar o eliminar afectan consumidores que todavía dependen de una
+versión; antes de retirar, identifica builds y lockfiles afectados.
+[Estado de versiones](https://docs.aws.amazon.com/codeartifact/latest/ug/packages-overview.html).
+
+| Síntoma | Revisión |
+|---|---|
+| No obtiene token | Rol, permisos STS/CodeArtifact y vigencia |
+| Paquete no encontrado | Formato, namespace, versión y repositorio |
+| Descarga otra versión | Lockfile, rango y prioridad de upstream |
+| Publicación denegada | Acciones del formato y política del recurso |
+| Build falla solo en CI | Configuración temporal, red, endpoint y caché local |
+
+La caché del runner puede ocultar que el repositorio ya no permite descargar una
+dependencia. Verifica periódicamente un build desde un entorno limpio y conserva
+evidencia de versiones utilizadas.
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña permisos para publicar una librería y consumirla desde otro proyecto.
+Describe cómo renovarías credenciales, fijarías versiones, evitarías exposición
+de tokens y retirarías una versión vulnerable sin perder trazabilidad.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsCodeArtifactBank} />
+</div>
+
+## Para continuar
+
+[Seguridad aplicada en AWS](/theory/nube/aws/02-seguridad/02-seguridad-aplicada).

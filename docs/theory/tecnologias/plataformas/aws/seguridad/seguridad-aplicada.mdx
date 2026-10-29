@@ -1,0 +1,167 @@
+---
+slug: /nube/aws/02-seguridad/02-seguridad-aplicada
+title: "Seguridad aplicada en AWS"
+description: "Integrar identidad de usuarios, secretos, cifrado, certificados y auditoría en un flujo de aplicación."
+learning_id: aws-security-applied
+learning_type: lección
+sidebar_position: 1
+pagination_prev: tecnologias/plataformas/aws/paquetes-dependencias/codeartifact
+pagination_next: tecnologias/plataformas/aws/observabilidad-auditoria/cloudwatch/cloudwatch-metricas-logs-y-alarmas
+---
+
+import {awsSecurityBank} from './seguridad-aplicada-questions';
+
+<ContentMeta area="AWS" level="intermedio" type="lección" topics={['Seguridad']} />
+
+<KnowledgeBlock kind="check" title="Objetivo de la lección">
+Integrar identidad de usuarios, secretos, cifrado, certificados y auditoría en un flujo de aplicación.
+</KnowledgeBlock>
+
+## 1. El problema: proteger un flujo completo
+
+Una aplicación conecta usuarios, APIs, credenciales, datos y operadores. Proteger
+cada recurso sin relacionarlo con el flujo deja huecos: un token válido puede
+acceder al dato de otro usuario o un secreto rotado puede seguir expuesto en logs.
+
+El mínimo privilegio de [IAM](/theory/nube/aws/02-seguridad/01-iam/02-politicas-y-permisos)
+se extiende aquí a identidad de usuarios, cifrado, secretos y auditoría.
+
+| Pregunta | Capa |
+|---|---|
+| ¿Quién inicia sesión? | Cognito o proveedor de identidad |
+| ¿Qué puede hacer en esta API? | Authorizer, scopes y reglas de negocio |
+| ¿Con qué identidad llama el backend a AWS? | Rol de workload |
+| ¿Cómo protege datos y credenciales? | TLS, KMS y almacén de secretos |
+| ¿Cómo se investiga un cambio? | CloudTrail y logs de aplicación |
+
+## 2. Cognito: usuarios de aplicación
+
+Un user pool administra usuarios y actúa como proveedor OIDC. Puede ofrecer
+registro, login, MFA y federación con otros proveedores. Un app client describe
+una aplicación y su configuración de autenticación.
+[User pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html).
+
+Un identity pool resuelve otro problema: intercambiar identidades admitidas por
+credenciales temporales AWS. No es obligatorio para proteger una API mediante
+tokens de un user pool. Tampoco conviene crear un usuario IAM por cada cliente
+del producto.
+
+~~~mermaid
+flowchart LR
+    U["Usuario"] --> LOGIN["Cognito user pool"]
+    LOGIN --> TOK["Tokens"]
+    TOK --> GW["API Gateway valida"]
+    GW --> APP["Backend autoriza el recurso"]
+    APP --> IAM["Rol del workload"]
+    IAM --> D["Dato AWS"]
+~~~
+
+| Token | Propósito del flujo |
+|---|---|
+| ID token | Claims sobre la identidad autenticada |
+| Access token | Autorizar operaciones y scopes de API |
+| Refresh token | Obtener nuevos tokens según configuración y vigencia |
+
+No confíes en un JWT solo porque puede decodificarse. Verifica firma, algoritmo,
+emisor, destinatario o client_id según tipo de token, expiración y token_use.
+Después aplica scopes y reglas de acceso al recurso.
+[Access tokens](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-the-access-token.html),
+[validación JWT](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html).
+
+## 3. Flujos de login y autorización
+
+Para clientes públicos como una SPA, el secreto del cliente no puede conservarse
+privado en JavaScript. Usa un flujo apropiado, como authorization code con PKCE,
+y configura callbacks y logout URLs exactas. PKCE vincula el canje del código
+con el cliente que inició el flujo; no reemplaza la validación del token.
+
+Un servicio a servicio puede usar client credentials con scopes adecuados cuando
+el producto y flujo lo admitan. No representa a una persona ni debe reutilizarse
+como autorización de cualquier cuenta de usuario.
+[Flujos OAuth](https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html).
+
+<KnowledgeBlock kind="example" title="El usuario correcto solicita el pedido equivocado">
+El authorizer acepta un access token válido. El backend consulta el propietario
+del pedido y compara su identidad con el sujeto autorizado. Sin esa comprobación,
+un usuario podría cambiar el identificador de la URL para consultar pedidos ajenos.
+</KnowledgeBlock>
+
+## 4. Configuración y secretos
+
+| Servicio | Uso principal | Decisión |
+|---|---|---|
+| Parameter Store | Parámetros de configuración y SecureString | Jerarquía, permisos y cifrado |
+| Secrets Manager | Gestión de secretos y rotación | Compatibilidad del destino y renovación de clientes |
+| KMS | Operaciones y políticas de claves | Administradores, usuarios y ciclo de vida |
+
+Rotar exige actualizar tanto el secreto almacenado como la credencial del
+destino y permitir que los clientes adopten la nueva. Guardarlo en Secrets
+Manager no hace que la aplicación cambie automáticamente un pool de conexiones.
+[Rotación](https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html).
+
+<KnowledgeBlock kind="caution" title="El secreto puede filtrarse después de obtenerlo">
+No lo registres en logs, imágenes, dumps ni respuestas. Concede lectura al rol
+que lo necesita y define caché de corta duración, renovación y comportamiento
+cuando la lectura del almacén falle.
+</KnowledgeBlock>
+
+## 5. KMS, cifrado y certificados
+
+KMS administra claves y autorización de operaciones criptográficas. En cifrado
+de sobre, una clave de datos cifra el contenido y una clave de KMS protege esa
+clave de datos. Una política de almacenamiento y una key policy pueden ser
+necesarias para completar el acceso.
+[Conceptos de KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html).
+
+| Control | Riesgo que atiende | Límite |
+|---|---|---|
+| TLS | Interceptación en tránsito | No decide si el usuario puede leer el dato |
+| Cifrado en reposo | Exposición del almacenamiento | Un principal autorizado puede descifrar |
+| Key policy | Uso y administración de la clave | Debe mantenerse con IAM y servicio |
+| Rotación de clave | Ciclo del material criptográfico | No equivale a revocar todo dato ya accesible |
+
+ACM gestiona certificados TLS para integraciones compatibles. Valida dominio,
+región requerida por el servicio, renovación y configuración del listener.
+El nombre que usa el cliente debe coincidir con los nombres del certificado.
+[ACM](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html).
+
+Eliminar o deshabilitar una clave puede impedir restaurar datos cifrados. El
+procedimiento de recuperación debe incluir permisos y disponibilidad de claves,
+no solo la existencia del backup.
+
+## 6. Auditoría y detección
+
+CloudTrail registra actividad AWS según configuración y cobertura. Los management
+events y los data events tienen alcances distintos: no presupongas que consultar
+Event history mostrará cada GetObject. Los data events deben habilitarse para los
+recursos y operaciones pertinentes y pueden generar costes adicionales.
+[Data events](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html).
+
+Los logs de aplicación explican decisiones de negocio; CloudTrail ayuda a
+atribuir cambios AWS. AWS Config registra y evalúa configuraciones según reglas;
+GuardDuty detecta señales de amenaza; Security Hub reúne hallazgos. Estas
+herramientas requieren responsables y acciones, no solo activación.
+
+## 7. Diseñar una respuesta
+
+| Incidente | Acción y evidencia |
+|---|---|
+| Token expuesto | Contención de sesiones según flujo, vigencia y validación |
+| Secreto filtrado | Rotar en destino y almacén; localizar copias y revisar uso |
+| Permiso excesivo | Reducir alcance, investigar llamadas y verificar el flujo |
+| Clave deshabilitada | Restablecer mediante procedimiento autorizado |
+| Cambio sospechoso | Principal, hora, acción, recurso y logs correlacionados |
+
+<KnowledgeBlock kind="check" title="Criterio para continuar">
+Diseña un acceso a documentos privados: login con Cognito, API con scopes y
+propiedad, rol del backend, secreto si procede, clave de cifrado y auditoría.
+Explica qué cambiarías ante filtración de token y ante filtración de contraseña.
+</KnowledgeBlock>
+
+<div id="practica-y-quizzes">
+  <QuizWorkbench bank={awsSecurityBank} />
+</div>
+
+## Para continuar
+
+[CloudWatch: métricas, logs y alarmas](/theory/nube/aws/07-operacion/01-observabilidad).
